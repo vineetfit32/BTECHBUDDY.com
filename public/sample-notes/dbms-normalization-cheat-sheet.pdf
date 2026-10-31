@@ -1,0 +1,67 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1183 >>
+stream
+BT
+/F1 22 Tf
+50 740 Td
+(BTECHBUDDY - DBMS Normalization Cheat Sheet) Tj
+/F1 14 Tf
+0 -30 Td
+(Rapid Revision Guide: Functional Dependencies to BCNF) Tj
+/F1 11 Tf
+0 -25 Td
+(------------------------------------------------------------------------------------------) Tj
+0 -20 Td
+(Subject: CS301 | Database Management Systems | 5th Semester) Tj
+0 -18 Td
+(Summary of Normal Forms:) Tj
+0 -18 Td
+(1. 1NF: Atomic values only. No repeating groups or multi-valued attributes.) Tj
+0 -18 Td
+(2. 2NF: Must be in 1NF + No Partial Dependency All non-prime attributes fully dependent on candidate key.) Tj
+0 -18 Td
+(3. 3NF: Must be in 2NF + No Transitive Dependency X -> Y where X is super key or Y is prime attribute.) Tj
+0 -18 Td
+(4. BCNF: Strictest form: For every functional dependency X -> Y, X MUST be a Super Key.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Armstrongs Axioms: Reflexivity, Augmentation, Transitivity.) Tj
+0 -18 Td
+(Closure of Attribute Set: Algorithm to determine candidate keys in 30 seconds.) Tj
+0 -18 Td
+(ACID Properties: Atomicity, Consistency, Isolation, Durability with recovery logs.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Created for BTECHBUDDY students. Free downloadable copy.) Tj
+0 -18 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000229 00000 n 
+0000000302 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1583
+%%EOF

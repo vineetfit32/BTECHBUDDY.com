@@ -1,0 +1,61 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1099 >>
+stream
+BT
+/F1 22 Tf
+50 740 Td
+(BTECHBUDDY - Engineering Mathematics - I) Tj
+/F1 14 Tf
+0 -30 Td
+(Solved University Examination Papers) Tj
+/F1 11 Tf
+0 -25 Td
+(------------------------------------------------------------------------------------------) Tj
+0 -20 Td
+(Subject: MA101 | 1st Year Common to All Engineering Branches) Tj
+0 -18 Td
+(Unit 1: Matrices - Rank of Matrix, Cayley-Hamilton Theorem, Eigenvalues & Eigenvectors.) Tj
+0 -18 Td
+(Unit 2: Differential Calculus - Successive differentiation, Leibnitz theorem, Maclaurin and Taylor series.) Tj
+0 -18 Td
+(Unit 3: Multivariable Calculus - Partial derivatives, Euler theorem for homogeneous functions, Jacobians.) Tj
+0 -18 Td
+(Unit 4: Multiple Integrals - Double and Triple integrals, Change of order of integration, Beta and Gamma functions.) Tj
+0 -18 Td
+(Unit 5: Vector Calculus - Gradient, Divergence, Curl, Gauss Divergence Theorem, Stokes Theorem.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Step-by-step solved questions with formulas highlighted for scoring 90%+ in semester exams.) Tj
+0 -18 Td
+(BTECHBUDDY: Your Engineering Journey, Simplified.) Tj
+0 -18 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000229 00000 n 
+0000000302 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1499
+%%EOF

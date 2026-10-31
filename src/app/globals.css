@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas-bg: #F7F8FC;
+    --canvas-elevated: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --card-border: #E2E8F0;
+    --card-hover-border: #CBD5E1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    
+    --primary-violet: #6D5DF6;
+    --primary-violet-hover: #5B4AE4;
+    --primary-violet-subtle: rgba(109, 93, 246, 0.08);
+    
+    --accent-cyan: #0284C7;
+    --accent-cyan-subtle: rgba(2, 132, 199, 0.08);
+    
+    --accent-amber: #D97706;
+    --accent-amber-subtle: rgba(217, 119, 6, 0.08);
+
+    --accent-emerald: #059669;
+    --accent-emerald-subtle: rgba(5, 150, 105, 0.08);
+
+    --grid-line: rgba(100, 116, 139, 0.06);
+    --glow-color: rgba(109, 93, 246, 0.12);
+  }
+
+  .dark {
+    --canvas-bg: #0B1020;
+    --canvas-elevated: #0E162E;
+    --card-bg: #121C38;
+    --card-border: #1E2D54;
+    --card-hover-border: #2D3F75;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    
+    --primary-violet: #6D5DF6;
+    --primary-violet-hover: #7E70FF;
+    --primary-violet-subtle: rgba(109, 93, 246, 0.15);
+    
+    --accent-cyan: #00F2FE;
+    --accent-cyan-subtle: rgba(0, 242, 254, 0.12);
+    
+    --accent-amber: #F59E0B;
+    --accent-amber-subtle: rgba(245, 158, 11, 0.15);
+
+    --accent-emerald: #10B981;
+    --accent-emerald-subtle: rgba(16, 185, 129, 0.15);
+
+    --grid-line: rgba(109, 93, 246, 0.05);
+    --glow-color: rgba(109, 93, 246, 0.25);
+  }
+
+  body {
+    background-color: var(--canvas-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Blueprint Graph Paper Pattern */
+.bg-blueprint {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+}
+
+.bg-blueprint-dense {
+  background-size: 12px 12px;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+}
+
+/* Subtle circuit divider motif */
+.circuit-line {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--card-border) 20%, var(--card-border) 80%, transparent 100%);
+}
+
+.circuit-line::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: var(--primary-violet);
+  box-shadow: 0 0 8px var(--primary-violet);
+}
+
+/* Soft Glow Cards */
+.desk-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.desk-card:hover {
+  border-color: var(--card-hover-border);
+  box-shadow: 0 4px 20px -2px var(--glow-color);
+}
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary-violet);
+  outline-offset: 2px;
+}
+
+/* Custom engineering scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Data-Saver Mode modifications */
+.data-saver-mode img {
+  filter: contrast(0.95);
+}
+
+/* Media query for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

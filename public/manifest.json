@@ -1,0 +1,18 @@
+{
+  "name": "BTECHBUDDY — Complete B.Tech Learning Platform",
+  "short_name": "BTECHBUDDY",
+  "description": "Indian B.Tech student learning portal with PYQs, lecture notes, placement sheets, and exam tools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B132B",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education", "books", "productivity"]
+}

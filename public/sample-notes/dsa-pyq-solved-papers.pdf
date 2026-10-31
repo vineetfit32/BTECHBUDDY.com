@@ -1,0 +1,65 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1113 >>
+stream
+BT
+/F1 22 Tf
+50 740 Td
+(BTECHBUDDY - DSA Previous Year Solved Papers) Tj
+/F1 14 Tf
+0 -30 Td
+(Semester Exam Solved Question Bank (2020 - 2024)) Tj
+/F1 11 Tf
+0 -25 Td
+(------------------------------------------------------------------------------------------) Tj
+0 -20 Td
+(University: AKTU, RTU, VTU, GGSIPU Standard Curriculum) Tj
+0 -18 Td
+(Section A: 2-Marks Short Answer Questions Solved) Tj
+0 -18 Td
+(Q1: Define Balance Factor of an AVL tree node. Ans: HeightLeft - HeightRight) Tj
+0 -18 Td
+(Q2: Differentiate between Stack and Queue. Ans: LIFO vs FIFO principle.) Tj
+0 -18 Td
+(Section B: 7-Marks Long Answer Questions with Full Stepwise Derivation) Tj
+0 -18 Td
+(Q3: Construct AVL tree for keys: 10, 20, 30, 40, 50, 25 with rotational diagrams.) Tj
+0 -18 Td
+(Q4: Write iterative algorithm to reverse a singly linked list in On time and O1 space.) Tj
+0 -18 Td
+(Section C: 10-Marks Code Implementations and Complexities) Tj
+0 -18 Td
+(Q5: Trace Dijkstra Algorithm on a 6-node weighted graph step by step.) Tj
+0 -18 Td
+() Tj
+0 -18 Td
+(Verified by University Gold Medalists. BTECHBUDDY Academic Team.) Tj
+0 -18 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000229 00000 n 
+0000000302 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1513
+%%EOF
