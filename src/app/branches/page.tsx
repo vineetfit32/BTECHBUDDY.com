@@ -17,6 +17,9 @@ import {
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
 
 export default async function BranchesPage() {
+  // #region agent log
+  fetch("http://127.0.0.1:7863/ingest/69005fa4-f6cf-43e1-ac04-a58eb906e019", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "fe4cd9" }, body: JSON.stringify({ sessionId: "fe4cd9", runId: "pre-fix", hypothesisId: "A", location: "src/app/branches/page.tsx:20", message: "branches page prerender query start", data: {}, timestamp: Date.now() }) }).catch(() => {});
+  // #endregion
   const branches = await prisma.branch.findMany({
     orderBy: { order: "asc" },
     include: {

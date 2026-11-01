@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { Tag, BookOpen, Layers } from "lucide-react";
 
 export default async function AdminCategoriesPage() {
+  // #region agent log
+  fetch("http://127.0.0.1:7863/ingest/69005fa4-f6cf-43e1-ac04-a58eb906e019", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "fe4cd9" }, body: JSON.stringify({ sessionId: "fe4cd9", runId: "pre-fix", hypothesisId: "D", location: "src/app/admin/categories/page.tsx:5", message: "admin categories prerender query start", data: {}, timestamp: Date.now() }) }).catch(() => {});
+  // #endregion
   const [branches, subjects, units] = await Promise.all([
     prisma.branch.findMany({ include: { _count: { select: { subjects: true } } } }),
     prisma.subject.findMany({ select: { id: true, name: true, code: true } }),

@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { BookOpen, Plus, Users, Clock, ArrowRight } from "lucide-react";
 
 export default async function AdminCoursesPage() {
+  // #region agent log
+  fetch("http://127.0.0.1:7863/ingest/69005fa4-f6cf-43e1-ac04-a58eb906e019", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "fe4cd9" }, body: JSON.stringify({ sessionId: "fe4cd9", runId: "pre-fix", hypothesisId: "D", location: "src/app/admin/courses/page.tsx:6", message: "admin courses prerender query start", data: {}, timestamp: Date.now() }) }).catch(() => {});
+  // #endregion
   const courses = await prisma.course.findMany({
     include: {
       instructor: true,

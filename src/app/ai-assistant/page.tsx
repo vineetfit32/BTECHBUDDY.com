@@ -12,6 +12,7 @@ import {
   Key,
   HelpCircle,
 } from "lucide-react";
+import { emitMascot } from "@/lib/mascot/bus";
 
 export default function AiAssistantPage() {
   const [messages, setMessages] = useState<any[]>([
@@ -40,6 +41,7 @@ export default function AiAssistantPage() {
     setMessages((prev) => [...prev, userMsg]);
     setInputPrompt("");
     setLoading(true);
+    emitMascot({ type: "AI_START" });
 
     try {
       const res = await fetch("/api/ai/ask", {
@@ -50,6 +52,7 @@ export default function AiAssistantPage() {
 
       const data = await res.json();
       setProviderStatus(data);
+      emitMascot({ type: data.answer || data.instantAnswer ? "AI_DONE" : "AI_FAILED" });
 
       let botResponseContent = "";
 
@@ -71,6 +74,7 @@ export default function AiAssistantPage() {
       ]);
     } catch (err) {
       console.error(err);
+      emitMascot({ type: "AI_FAILED" });
       setMessages((prev) => [
         ...prev,
         {
