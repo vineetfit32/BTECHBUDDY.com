@@ -133,7 +133,7 @@ These accounts are created by the seed script for local development.
 
 | Role | Email | Password | Access |
 | :--- | :--- | :--- | :--- |
-| Super Admin | `admin@btechbuddy.in` | `Admin@12345` | `/admin/dashboard`, full control |
+| Super Admin | Set `ADMIN_EMAIL` | Set `ADMIN_PASSWORD` | `/admin/dashboard`, full control. Not shown on the login page. |
 | Student | `student@btechbuddy.in` | `Student@12345` | `/student/dashboard` |
 | Instructor | `instructor@btechbuddy.in` | `Instructor@12345` | Course and quiz management |
 

@@ -1,36 +1,51 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Radio, Plus, Calendar, Clock, Video, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Plus, Calendar, Loader2 } from "lucide-react";
 import { formatDateTimeIST } from "@/lib/utils";
 
+type Tutor = { id: string; name: string; email: string };
+type LiveClass = {
+  id: string;
+  title: string;
+  description?: string | null;
+  status: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  subject?: { code: string; name: string };
+  instructor?: { id: string; name: string } | null;
+};
+
 export default function AdminLiveClassesPage() {
-  const [classes, setClasses] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
+  const [classes, setClasses] = useState<LiveClass[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string; code: string; name: string }[]>([]);
+  const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
-
-  // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subjectId, setSubjectId] = useState("");
+  const [instructorId, setInstructorId] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
   const [durationMinutes, setDurationMinutes] = useState("60");
-  const [meetingUrl, setMeetingUrl] = useState("");
   const [saving, setSaving] = useState(false);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
 
   const fetchData = () => {
     setLoading(true);
     Promise.all([
       fetch("/api/live-classes").then((r) => r.json()),
       fetch("/api/subjects").then((r) => r.json()),
+      fetch("/api/admin/users?role=INSTRUCTOR").then((r) => r.json()),
     ])
-      .then(([cData, sData]) => {
+      .then(([cData, sData, tutorsData]) => {
         setClasses(cData.liveClasses || []);
         setSubjects(sData.subjects || []);
-        if (sData.subjects?.length > 0 && !subjectId) {
-          setSubjectId(sData.subjects[0].id);
-        }
+        const nextTutors = tutorsData.users || [];
+        setTutors(nextTutors);
+        if (sData.subjects?.length > 0 && !subjectId) setSubjectId(sData.subjects[0].id);
+        if (nextTutors.length > 0 && !instructorId) setInstructorId(nextTutors[0].id);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -51,12 +66,11 @@ export default function AdminLiveClassesPage() {
           title,
           description,
           subjectId,
+          instructorId,
           scheduledAt: new Date(scheduledAt).toISOString(),
           durationMinutes,
-          meetingUrl: meetingUrl || undefined,
         }),
       });
-
       const data = await res.json();
       if (!res.ok) {
         alert(data.error || "Failed to schedule live class");
@@ -74,15 +88,32 @@ export default function AdminLiveClassesPage() {
     }
   };
 
+  const reassign = async (classId: string, nextInstructorId: string) => {
+    setAssigningId(classId);
+    try {
+      const res = await fetch(`/api/live-classes/${classId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instructorId: nextInstructorId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Could not assign that tutor");
+        return;
+      }
+      setClasses((current) => current.map((item) => (item.id === classId ? data.liveClass : item)));
+    } finally {
+      setAssigningId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-ink">
-            Schedule Live Classes
-          </h1>
+          <h1 className="text-2xl font-black text-ink">Schedule Live Classes</h1>
           <p className="text-xs text-ink-3">
-            Create interactive doubt-clearing sessions, broadcast meetings, and archive recordings
+            Assign a tutor, then they teach in the app. Students watch; the session is recorded.
           </p>
         </div>
         <button
@@ -112,18 +143,13 @@ export default function AdminLiveClassesPage() {
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      item.status === "LIVE"
-                        ? "bg-danger text-white animate-pulse"
-                        : "bg-surface-2 text-ink-3"
+                      item.status === "LIVE" ? "bg-danger text-white animate-pulse" : "bg-surface-2 text-ink-3"
                     }`}
                   >
                     {item.status}
                   </span>
                 </div>
-
-                <h3 className="text-base font-bold text-ink mt-1">
-                  {item.title}
-                </h3>
+                <h3 className="text-base font-bold text-ink mt-1">{item.title}</h3>
                 <p className="text-xs text-ink-3 mt-1 line-clamp-2">{item.description}</p>
                 <div className="text-xs text-ink-3 pt-2 flex items-center gap-2">
                   <Calendar className="w-3.5 h-3.5 text-brand" />
@@ -131,32 +157,36 @@ export default function AdminLiveClassesPage() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-line flex items-center justify-between text-xs">
-                <span className="text-ink-3">
-                  Faculty: {item.instructor?.name || "Senior Faculty"}
-                </span>
-                <a
-                  href={item.meetingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold text-danger hover:underline"
-                >
-                  Room Link →
-                </a>
+              <div className="pt-3 border-t border-line space-y-2 text-xs">
+                <label className="block text-ink-3">
+                  Assigned tutor
+                  <select
+                    value={item.instructor?.id || ""}
+                    disabled={item.status !== "SCHEDULED" || assigningId === item.id}
+                    onChange={(e) => reassign(item.id, e.target.value)}
+                    className="mt-1 w-full p-2 bg-surface-2 border border-line rounded-xl outline-hidden"
+                  >
+                    {!item.instructor && <option value="">Unassigned</option>}
+                    {tutors.map((tutor) => (
+                      <option key={tutor.id} value={tutor.id}>
+                        {tutor.name} ({tutor.email})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <Link href={`/live-classes/${item.id}`} className="inline-block font-bold text-danger hover:underline">
+                  Open classroom →
+                </Link>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
           <div className="w-full max-w-md bg-surface rounded-2xl p-6 border border-line shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-ink">
-              Schedule Live Class
-            </h3>
-
+            <h3 className="text-lg font-bold text-ink">Schedule Live Class</h3>
             <form onSubmit={handleSchedule} className="space-y-3.5 text-xs">
               <div className="space-y-1">
                 <label className="font-bold text-ink-2">Session Title</label>
@@ -169,13 +199,13 @@ export default function AdminLiveClassesPage() {
                   className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="font-bold text-ink-2">Subject</label>
                   <select
                     value={subjectId}
                     onChange={(e) => setSubjectId(e.target.value)}
+                    required
                     className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   >
                     {subjects.map((s) => (
@@ -185,7 +215,6 @@ export default function AdminLiveClassesPage() {
                     ))}
                   </select>
                 </div>
-
                 <div className="space-y-1">
                   <label className="font-bold text-ink-2">Duration (Mins)</label>
                   <input
@@ -196,7 +225,22 @@ export default function AdminLiveClassesPage() {
                   />
                 </div>
               </div>
-
+              <div className="space-y-1">
+                <label className="font-bold text-ink-2">Tutor</label>
+                <select
+                  required
+                  value={instructorId}
+                  onChange={(e) => setInstructorId(e.target.value)}
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
+                >
+                  {tutors.length === 0 && <option value="">Add a tutor under Admins & Instructors first</option>}
+                  {tutors.map((tutor) => (
+                    <option key={tutor.id} value={tutor.id}>
+                      {tutor.name} ({tutor.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="space-y-1">
                 <label className="font-bold text-ink-2">Date & Time (IST)</label>
                 <input
@@ -207,20 +251,6 @@ export default function AdminLiveClassesPage() {
                   className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-ink-2">
-                  Custom Meeting Room URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  value={meetingUrl}
-                  onChange={(e) => setMeetingUrl(e.target.value)}
-                  placeholder="Defaults to auto-generated Jitsi room"
-                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
-                />
-              </div>
-
               <div className="space-y-1">
                 <label className="font-bold text-ink-2">Description</label>
                 <textarea
@@ -231,7 +261,6 @@ export default function AdminLiveClassesPage() {
                   className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
-
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
                 <button
                   type="button"
@@ -242,7 +271,7 @@ export default function AdminLiveClassesPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
+                  disabled={saving || tutors.length === 0}
                   className="px-4 py-2 rounded-xl bg-danger hover:bg-danger/90 text-white font-bold"
                 >
                   {saving ? "Scheduling..." : "Confirm Schedule"}

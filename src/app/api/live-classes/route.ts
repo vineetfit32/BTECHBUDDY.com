@@ -18,9 +18,9 @@ const createBody = z.object({
   subjectId: id,
   branchId: optionalId,
   semesterId: optionalId,
+  instructorId: optionalId,
   scheduledAt: z.coerce.date(),
   durationMinutes: z.coerce.number().int().min(10).max(600).default(60),
-  status: status.default("SCHEDULED"),
 });
 
 export async function GET(req: Request) {
@@ -58,20 +58,36 @@ export async function POST(req: Request) {
   const parsed = await parseJson(req, createBody);
   if (parsed.error) return parsed.error;
   const input = parsed.data;
+  const admin = isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN"]) && user.role !== "INSTRUCTOR";
+  let instructorId = user.id;
+  if (admin) {
+    if (!input.instructorId) {
+      return NextResponse.json({ error: "Choose a tutor to take this lecture" }, { status: 400 });
+    }
+    instructorId = input.instructorId;
+  }
 
   try {
+    const tutor = await prisma.user.findUnique({
+      where: { id: instructorId },
+      select: { id: true, role: true, isActive: true },
+    });
+    if (!tutor || !tutor.isActive || tutor.role !== "INSTRUCTOR") {
+      return NextResponse.json({ error: "That account is not an active tutor" }, { status: 400 });
+    }
+
     const liveClass = await prisma.liveClass.create({
       data: {
         title: input.title,
         description: input.description ?? null,
-        instructorId: user.id,
+        instructorId: tutor.id,
         subjectId: input.subjectId,
         branchId: input.branchId ?? null,
         semesterId: input.semesterId ?? null,
         scheduledAt: input.scheduledAt,
         durationMinutes: input.durationMinutes,
         roomName: `btb-${crypto.randomBytes(9).toString("base64url")}`,
-        status: input.status,
+        status: "SCHEDULED",
       },
     });
     return NextResponse.json({ success: true, liveClass });

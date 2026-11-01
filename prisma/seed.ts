@@ -7,23 +7,41 @@ async function main() {
   console.log("🌱 Seeding BTECHBUDDY database...");
 
   // 1. Password Hashes
-  const adminHash = await bcrypt.hash("Admin@12345", 10);
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword || adminPassword.length < 12) {
+    throw new Error("Set ADMIN_EMAIL and a 12+ character ADMIN_PASSWORD before seeding the admin account.");
+  }
+  const adminHash = await bcrypt.hash(adminPassword, 10);
   const studentHash = await bcrypt.hash("Student@12345", 10);
   const instructorHash = await bcrypt.hash("Instructor@12345", 10);
 
   // 2. Super Admin
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@btechbuddy.in" },
-    update: {},
-    create: {
-      name: "Admin BTechBuddy",
-      email: "admin@btechbuddy.in",
-      passwordHash: adminHash,
-      role: "SUPER_ADMIN",
-      college: "BTechBuddy HQ",
-      branch: "CSE",
-    },
-  });
+  const legacyAdmin = adminEmail === "admin@btechbuddy.in"
+    ? null
+    : await prisma.user.findUnique({ where: { email: "admin@btechbuddy.in" } });
+  const admin = legacyAdmin
+    ? await prisma.user.update({
+        where: { id: legacyAdmin.id },
+        data: {
+          email: adminEmail,
+          passwordHash: adminHash,
+          role: "SUPER_ADMIN",
+          tokenVersion: { increment: 1 },
+        },
+      })
+    : await prisma.user.upsert({
+        where: { email: adminEmail },
+        update: { passwordHash: adminHash, role: "SUPER_ADMIN" },
+        create: {
+          name: "Admin BTechBuddy",
+          email: adminEmail,
+          passwordHash: adminHash,
+          role: "SUPER_ADMIN",
+          college: "BTechBuddy HQ",
+          branch: "CSE",
+        },
+      });
 
   // 3. Demo Instructor
   const instructor = await prisma.user.upsert({
@@ -390,8 +408,18 @@ async function main() {
   const dayAfter = new Date(now.getTime() + 48 * 60 * 60 * 1000);
   dayAfter.setHours(19, 30, 0, 0); // 7:30 PM IST day after tomorrow
 
-  await prisma.liveClass.create({
-    data: {
+  await prisma.liveClass.updateMany({
+    where: { meetingUrl: { contains: "jit.si" } },
+    data: { meetingUrl: null },
+  });
+
+  await prisma.liveClass.upsert({
+    where: { roomName: "btb-dsa-doubt" },
+    update: {
+      instructorId: instructor.id,
+      meetingUrl: null,
+    },
+    create: {
       title: "Live Doubt Clearing: Graph Algorithms & Dynamic Programming",
       description: "Live interactive problem-solving session for B.Tech 2nd & 3rd Year students. We will code Dijkstra and 0/1 Knapsack live and solve previous year university exam questions.",
       instructorId: instructor.id,
@@ -400,13 +428,18 @@ async function main() {
       semesterId: semesters[3].id,
       scheduledAt: tomorrow,
       durationMinutes: 90,
-      meetingUrl: "https://meet.jit.si/BTechBuddy_DSA_LiveDoubt_Session",
+      roomName: "btb-dsa-doubt",
       status: "SCHEDULED",
     },
   });
 
-  await prisma.liveClass.create({
-    data: {
+  await prisma.liveClass.upsert({
+    where: { roomName: "btb-dbms-masterclass" },
+    update: {
+      instructorId: instructor.id,
+      meetingUrl: null,
+    },
+    create: {
       title: "DBMS Normalization Masterclass (1NF to BCNF in 60 Mins)",
       description: "Learn how to decompose any relation step-by-step and identify candidate keys in 30 seconds for university exams.",
       instructorId: instructor.id,
@@ -415,7 +448,7 @@ async function main() {
       semesterId: semesters[5].id,
       scheduledAt: dayAfter,
       durationMinutes: 60,
-      meetingUrl: "https://meet.jit.si/BTechBuddy_DBMS_Masterclass",
+      roomName: "btb-dbms-masterclass",
       status: "SCHEDULED",
     },
   });

@@ -35,7 +35,10 @@ async function runTests() {
   assert(subjectCount >= 10, `Academic subjects present (Found ${subjectCount} subjects)`);
 
   // 2. Authentication & Role Permissions
-  const adminUser = await prisma.user.findUnique({ where: { email: "admin@btechbuddy.in" } });
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminUser = adminEmail
+    ? await prisma.user.findUnique({ where: { email: adminEmail } })
+    : await prisma.user.findFirst({ where: { role: "SUPER_ADMIN" } });
   assert(adminUser !== null, "Super Admin user exists");
   assert(adminUser?.role === "SUPER_ADMIN", "Super Admin role correctly configured");
 
@@ -45,8 +48,10 @@ async function runTests() {
 
   // Verify password hash
   if (adminUser) {
-    const isMatch = await bcrypt.compare("Admin@12345", adminUser.passwordHash);
-    assert(isMatch, "Admin password hash matches Admin@12345 securely");
+    if (process.env.ADMIN_PASSWORD) {
+      const isMatch = await bcrypt.compare(process.env.ADMIN_PASSWORD, adminUser.passwordHash);
+      assert(isMatch, "Admin password matches ADMIN_PASSWORD");
+    }
   }
 
   // 3. Notes & PDF Management

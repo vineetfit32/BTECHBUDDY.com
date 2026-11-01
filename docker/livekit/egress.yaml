@@ -1,0 +1,9 @@
+# Writes MP4s to /out, which compose bind-mounts onto storage/recordings.
+api_key: btechbuddy
+api_secret: change-me-to-a-long-random-livekit-secret
+ws_url: ws://livekit:7880
+insecure: true
+redis:
+  address: redis:6379
+logging:
+  level: info
