@@ -16,17 +16,17 @@ export default async function StudentLiveClassesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+      <div className="border-b border-line pb-3">
+        <h1 className="text-2xl font-black text-ink">
           Upcoming Live Classes & Masterclasses
         </h1>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink-3">
           Scheduled doubt sessions and live engineering problem solving classes
         </p>
       </div>
 
       {liveClasses.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 text-slate-500 text-xs">
+        <div className="p-12 text-center rounded-2xl bg-surface border border-line text-ink-3 text-xs">
           No live sessions currently scheduled for your branch.
         </div>
       ) : (
@@ -34,28 +34,28 @@ export default async function StudentLiveClassesPage() {
           {liveClasses.map((item) => (
             <div
               key={item.id}
-              className="p-6 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs flex flex-col justify-between space-y-4"
+              className="p-6 rounded-2xl bg-surface border border-line shadow-2xs flex flex-col justify-between space-y-4"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="text-xs font-bold text-brand">
                     {item.subject.code}: {item.subject.name}
                   </span>
                   <LiveCountdown scheduledAt={item.scheduledAt} status={item.status} />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">{item.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                <h3 className="text-base font-bold text-ink">{item.title}</h3>
+                <p className="text-xs text-ink-3 line-clamp-2">
                   {item.description}
                 </p>
-                <div className="pt-2 text-xs text-slate-400">
-                  Scheduled for: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDateTimeIST(item.scheduledAt)}</span>
+                <div className="pt-2 text-xs text-ink-3">
+                  Scheduled for: <span className="font-semibold text-ink-2">{formatDateTimeIST(item.scheduledAt)}</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-4 border-t border-line">
                 <Link
                   href={`/live-classes/${item.id}`}
-                  className="block text-center py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs"
+                  className="block text-center py-2.5 rounded-xl text-xs font-bold bg-brand hover:bg-brand-strong text-white shadow-2xs"
                 >
                   Enter Live Room →
                 </Link>

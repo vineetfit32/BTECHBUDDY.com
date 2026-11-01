@@ -37,10 +37,10 @@ export default async function VideosPage({
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs font-bold text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/30 uppercase tracking-wider">
           <Video className="w-3.5 h-3.5" /> High-Definition Video Lectures
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl font-black text-ink">
           Recorded Video Lectures
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        <p className="text-sm sm:text-base text-ink-2">
           In-depth video tutorials, algorithmic breakdowns, and exam problem solving recorded by top engineering faculty.
         </p>
       </div>
@@ -53,7 +53,7 @@ export default async function VideosPage({
             className={`px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all ${
               !subjectId
                 ? "bg-primary-violet text-white shadow-glow-sm"
-                : "desk-card hover:border-primary-violet text-slate-400"
+                : "desk-card hover:border-primary-violet text-ink-3"
             }`}
           >
             All Subjects
@@ -65,7 +65,7 @@ export default async function VideosPage({
               className={`px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all ${
                 subjectId === sub.id
                   ? "bg-primary-violet text-white shadow-glow-sm"
-                  : "desk-card hover:border-primary-violet text-slate-400"
+                  : "desk-card hover:border-primary-violet text-ink-3"
               }`}
             >
               {sub.code}: {sub.name} ({sub._count.videos})
@@ -85,7 +85,7 @@ export default async function VideosPage({
             <div>
               <div className="relative aspect-video bg-desk-card overflow-hidden">
                 <img
-                  src={vid.thumbnail || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600"}
+                  src={vid.thumbnail || "/placeholders/lecture.svg"}
                   alt={vid.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
                 />
@@ -94,7 +94,7 @@ export default async function VideosPage({
                     <Play className="w-5 h-5 ml-0.5 fill-white" />
                   </div>
                 </div>
-                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-desk-canvas/90 text-white border border-desk-border">
+                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm font-mono text-[10px] font-bold bg-desk-canvas/90 text-white border border-desk-border">
                   {vid.duration}
                 </span>
               </div>
@@ -103,11 +103,11 @@ export default async function VideosPage({
                 <div className="font-mono text-xs font-bold text-primary-violet">
                   {vid.subject.code} • {vid.subject.name}
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary-violet transition-colors line-clamp-2">
+                <h3 className="text-sm font-bold text-ink group-hover:text-primary-violet transition-colors line-clamp-2">
                   {vid.title}
                 </h3>
                 {vid.unit && (
-                  <div className="font-mono text-[11px] text-slate-400">
+                  <div className="font-mono text-[11px] text-ink-3">
                     Unit 0{vid.unit.unitNumber}: {vid.unit.title}
                   </div>
                 )}

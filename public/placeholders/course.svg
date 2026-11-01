@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Course">
+  <defs>
+    <pattern id="g" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M25 0H0V25" fill="none" stroke="#22d3ee" stroke-opacity=".1"/>
+    </pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#121c38"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6d5df6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect width="800" height="450" fill="url(#g)"/>
+  <g transform="translate(400 220)" stroke="#0b1020" stroke-width="3">
+    <rect x="-150" y="-90" width="300" height="180" rx="18" fill="#0b1020" transform="translate(8 8)"/>
+    <rect x="-150" y="-90" width="300" height="180" rx="18" fill="#e9e7e1"/>
+    <rect x="-150" y="-90" width="300" height="40" rx="18" fill="url(#a)"/>
+    <rect x="-150" y="-62" width="300" height="12" fill="url(#a)" stroke="none"/>
+    <g stroke="#94a3b8" stroke-width="10" stroke-linecap="round">
+      <path d="M-110-10h160"/>
+      <path d="M-110 20h220"/>
+      <path d="M-110 50h120"/>
+    </g>
+  </g>
+  <text x="40" y="56" fill="#e9e7e1" fill-opacity=".7" font-family="ui-monospace,Consolas,monospace" font-size="18" letter-spacing="3">BTECHBUDDY · COURSE</text>
+</svg>

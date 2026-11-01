@@ -57,7 +57,7 @@ export default function LiveCountdown({ scheduledAt, status }: LiveCountdownProp
 
   if (status === "CANCELLED") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-danger/10 text-danger border border-danger/20">
         Cancelled
       </span>
     );
@@ -65,7 +65,7 @@ export default function LiveCountdown({ scheduledAt, status }: LiveCountdownProp
 
   if (timeLeft.isLive) {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-rose-600 text-white animate-pulse shadow-xs shadow-rose-600/30">
+      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-danger text-white animate-pulse shadow-2xs shadow-danger/30">
         <Radio className="w-3.5 h-3.5" />
         LIVE NOW
       </span>
@@ -74,15 +74,15 @@ export default function LiveCountdown({ scheduledAt, status }: LiveCountdownProp
 
   if (timeLeft.isPast) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-surface-2 text-ink-3">
         Ended (Recording Available)
       </span>
     );
   }
 
   return (
-    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-xl border border-indigo-200/50 dark:border-indigo-800/40">
-      <Clock className="w-3.5 h-3.5 text-indigo-500" />
+    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-brand bg-brand-soft px-3 py-1 rounded-xl border border-brand/50">
+      <Clock className="w-3.5 h-3.5 text-brand" />
       <span>Starts in:</span>
       {timeLeft.days > 0 && <span>{timeLeft.days}d</span>}
       <span>{String(timeLeft.hours).padStart(2, "0")}h</span>:

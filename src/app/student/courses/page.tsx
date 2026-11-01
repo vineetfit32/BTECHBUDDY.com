@@ -28,33 +28,33 @@ export default async function StudentCoursesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex items-center justify-between border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-ink">
             My Enrolled Tracks
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-3">
             Structured courses and placement bootcamps you are actively learning
           </p>
         </div>
         <Link
           href="/courses"
-          className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700"
+          className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand text-white hover:bg-brand-strong"
         >
           Explore More Courses
         </Link>
       </div>
 
       {enrollments.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 space-y-3">
-          <BookOpen className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">No courses enrolled</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+        <div className="p-12 text-center rounded-2xl bg-surface border border-line space-y-3">
+          <BookOpen className="w-10 h-10 text-ink-3 mx-auto" />
+          <h3 className="text-sm font-bold text-ink">No courses enrolled</h3>
+          <p className="text-xs text-ink-3 max-w-sm mx-auto">
             Browse our free placement bootcamps, Data Structures tracks, and semester roadmaps.
           </p>
           <Link
             href="/courses"
-            className="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white"
+            className="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-brand text-white"
           >
             Browse Courses
           </Link>
@@ -64,35 +64,35 @@ export default async function StudentCoursesPage() {
           {enrollments.map((e) => (
             <div
               key={e.id}
-              className="p-6 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4"
+              className="p-6 rounded-2xl bg-surface border border-line shadow-2xs space-y-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-brand uppercase tracking-wider">
                     {e.course.subject?.name || "Track"}
                   </span>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
+                  <h3 className="text-base font-bold text-ink mt-0.5">
                     {e.course.title}
                   </h3>
                 </div>
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-bold text-brand">
                   {e.progressPercent}%
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-surface-2 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-2 rounded-full transition-all"
+                  className="bg-brand h-2 rounded-full transition-all"
                   style={{ width: `${e.progressPercent}%` }}
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800">
-                <span className="text-slate-400">{e.course._count.videos} Lectures Available</span>
+              <div className="pt-2 flex items-center justify-between text-xs border-t border-line">
+                <span className="text-ink-3">{e.course._count.videos} Lectures Available</span>
                 <Link
                   href={`/courses/${e.course.id}`}
-                  className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                  className="font-bold text-brand hover:underline flex items-center gap-1"
                 >
                   Continue Course <ArrowRight className="w-3.5 h-3.5" />
                 </Link>

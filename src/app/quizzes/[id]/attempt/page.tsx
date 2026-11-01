@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useEffectEvent, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import {
   Clock,
@@ -29,6 +29,7 @@ export default function QuizAttemptPage({
   const [timeLeft, setTimeLeft] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const submittedRef = useRef(false);
 
   useEffect(() => {
     fetch(`/api/quizzes/${quizId}`)
@@ -46,27 +47,9 @@ export default function QuizAttemptPage({
       .finally(() => setLoading(false));
   }, [quizId]);
 
-  // Countdown timer
-  useEffect(() => {
-    if (!quiz || timeLeft <= 0 || submitting) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          // Auto submit when time runs out
-          handleSubmit();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [quiz, timeLeft, submitting]);
-
   const handleSubmit = async () => {
-    if (submitting) return;
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     setSubmitting(true);
     setShowConfirmModal(false);
 
@@ -93,18 +76,34 @@ export default function QuizAttemptPage({
         router.push(`/quizzes/${quizId}/result?attemptId=${result.attemptId}`);
       } else {
         alert(result.error || "Submission failed. Please try again.");
+        submittedRef.current = false;
         setSubmitting(false);
       }
     } catch (err) {
       console.error("Submission failed:", err);
       alert("An unexpected error occurred during submission.");
+      submittedRef.current = false;
       setSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    if (!quiz || submitting) return;
+    const timer = setInterval(() => setTimeLeft((prev) => Math.max(0, prev - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [quiz, submitting]);
+
+  const submitOnTimeout = useEffectEvent(() => {
+    void handleSubmit();
+  });
+
+  useEffect(() => {
+    if (quiz && timeLeft === 0 && !submittedRef.current) submitOnTimeout();
+  }, [quiz, timeLeft]);
+
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] text-slate-400">
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-ink-3">
         <Loader2 className="w-10 h-10 text-primary-violet animate-spin mb-3" />
         <span className="font-mono text-xs font-semibold">Configuring examination environment...</span>
       </div>
@@ -113,7 +112,7 @@ export default function QuizAttemptPage({
 
   if (!quiz || !quiz.questions || quiz.questions.length === 0) {
     return (
-      <div className="max-w-xl mx-auto p-8 text-center text-slate-500 font-mono text-sm">
+      <div className="max-w-xl mx-auto p-8 text-center text-ink-3 font-mono text-sm">
         Questions for this quiz could not be loaded.
       </div>
     );
@@ -132,7 +131,7 @@ export default function QuizAttemptPage({
           <span className="font-mono text-xs font-bold text-primary-violet">
             {quiz.subject.code}: {quiz.subject.name}
           </span>
-          <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate">
+          <h2 className="text-base sm:text-lg font-black text-ink truncate">
             {quiz.title}
           </h2>
         </div>
@@ -142,7 +141,7 @@ export default function QuizAttemptPage({
           <div
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-sm font-bold border transition-colors ${
               timeLeft < 180
-                ? "bg-rose-500/10 text-rose-400 border-rose-500/40 animate-pulse"
+                ? "bg-danger/10 text-danger border-danger/40 animate-pulse"
                 : "bg-desk-canvas text-accent-amber border-desk-border"
             }`}
           >
@@ -171,13 +170,13 @@ export default function QuizAttemptPage({
               <span className="font-mono text-xs font-bold text-primary-violet uppercase tracking-wider">
                 Question {currentIndex + 1} / {quiz.questions.length}
               </span>
-              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-desk-canvas border border-desk-border text-slate-300">
+              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-sm bg-desk-canvas border border-desk-border text-ink-2">
                 +{currentQ.marks} Marks {quiz.negativeMarkingRate > 0 && `(-${quiz.negativeMarkingRate})`}
               </span>
             </div>
 
             {/* Question Text */}
-            <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+            <div className="text-base sm:text-lg font-semibold text-ink leading-relaxed">
               {currentQ.questionText}
             </div>
 
@@ -198,14 +197,14 @@ export default function QuizAttemptPage({
                     className={`w-full text-left p-4 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-start gap-3 border ${
                       isSelected
                         ? "bg-primary-violet/10 border-primary-violet text-white shadow-glow-sm"
-                        : "desk-card hover:border-primary-violet/50 text-slate-800 dark:text-slate-200"
+                        : "desk-card hover:border-primary-violet/50 text-ink"
                     }`}
                   >
                     <span
                       className={`w-6 h-6 rounded-lg font-mono flex items-center justify-center font-bold text-xs shrink-0 ${
                         isSelected
                           ? "bg-primary-violet text-white"
-                          : "bg-desk-canvas border border-desk-border text-slate-400"
+                          : "bg-desk-canvas border border-desk-border text-ink-3"
                       }`}
                     >
                       {optLetter}
@@ -224,7 +223,7 @@ export default function QuizAttemptPage({
                   delete updated[currentQ.id];
                   setAnswers(updated);
                 }}
-                className="font-mono text-xs text-slate-400 hover:text-rose-400 transition-colors"
+                className="font-mono text-xs text-ink-3 hover:text-danger transition-colors"
               >
                 Clear Selection
               </button>
@@ -233,7 +232,7 @@ export default function QuizAttemptPage({
                 <button
                   onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
                   disabled={currentIndex === 0}
-                  className="flex items-center gap-1 px-3 py-2 rounded-xl font-mono text-xs font-semibold desk-card hover:border-primary-violet text-slate-300 disabled:opacity-40"
+                  className="flex items-center gap-1 px-3 py-2 rounded-xl font-mono text-xs font-semibold desk-card hover:border-primary-violet text-ink-2 disabled:opacity-40"
                 >
                   <ChevronLeft className="w-4 h-4" /> Prev
                 </button>
@@ -254,7 +253,7 @@ export default function QuizAttemptPage({
         {/* Question Palette Sidebar */}
         <div className="space-y-4">
           <div className="p-5 rounded-2xl desk-card space-y-4">
-            <h3 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <h3 className="font-mono text-xs font-bold text-ink-3 uppercase tracking-wider">
               Question Palette ({answeredCount}/{quiz.questions.length})
             </h3>
 
@@ -272,8 +271,8 @@ export default function QuizAttemptPage({
                         : ""
                     } ${
                       isAnswered
-                        ? "bg-accent-emerald text-white shadow-xs"
-                        : "desk-card hover:border-primary-violet text-slate-300"
+                        ? "bg-accent-emerald text-white shadow-2xs"
+                        : "desk-card hover:border-primary-violet text-ink-2"
                     }`}
                   >
                     {i + 1}
@@ -282,13 +281,13 @@ export default function QuizAttemptPage({
               })}
             </div>
 
-            <div className="pt-3 border-t border-desk-border space-y-2 font-mono text-[11px] text-slate-400">
+            <div className="pt-3 border-t border-desk-border space-y-2 font-mono text-[11px] text-ink-3">
               <div className="flex items-center gap-2">
-                <div className="w-3.5 h-3.5 rounded bg-accent-emerald" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-accent-emerald" />
                 <span>Attempted ({answeredCount})</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3.5 h-3.5 rounded bg-desk-card border border-desk-border" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-desk-card border border-desk-border" />
                 <span>Unattempted ({quiz.questions.length - answeredCount})</span>
               </div>
             </div>
@@ -303,7 +302,7 @@ export default function QuizAttemptPage({
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <ShieldAlert className="w-5 h-5 text-accent-amber" /> Confirm Test Submission?
             </h3>
-            <p className="font-mono text-xs text-slate-300 leading-relaxed">
+            <p className="font-mono text-xs text-ink-2 leading-relaxed">
               You have answered <span className="font-bold text-accent-cyan">{answeredCount}</span> out of{" "}
               <span className="font-bold text-white">{quiz.questions.length}</span> questions. Once submitted, your
               answers will be automatically graded on the server.
@@ -312,7 +311,7 @@ export default function QuizAttemptPage({
             <div className="flex items-center justify-end gap-3 pt-3">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="px-4 py-2 font-mono text-xs font-semibold text-slate-300 hover:text-white desk-card rounded-xl"
+                className="px-4 py-2 font-mono text-xs font-semibold text-ink-2 hover:text-white desk-card rounded-xl"
               >
                 Continue Test
               </button>

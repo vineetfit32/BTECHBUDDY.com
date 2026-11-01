@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { reward } from "@/lib/reward";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -38,8 +39,6 @@ export default function SubjectImportantQuestionsPage({
 
   // Expanded solutions map
   const [expandedSolutions, setExpandedSolutions] = useState<Record<string, boolean>>({});
-  const [xpToast, setXpToast] = useState<string | null>(null);
-
   useEffect(() => {
     // Load subject details, questions, and repeated topics
     Promise.all([
@@ -77,8 +76,7 @@ export default function SubjectImportantQuestionsPage({
         prev.map((q) => (q.id === questionId ? { ...q, isAttempted: data.attempted } : q))
       );
       if (data.attempted && data.xpEarned) {
-        setXpToast(`+${data.xpEarned} XP Earned! Great job.`);
-        setTimeout(() => setXpToast(null), 3500);
+        reward({ xp: data.xpEarned, reason: "Question practised" });
       }
     } catch (err) {
       console.error("Failed to toggle attempt:", err);
@@ -115,31 +113,22 @@ export default function SubjectImportantQuestionsPage({
   const progressPercent = questions.length > 0 ? Math.round((attemptedCount / questions.length) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
-      
-      {/* Floating XP Toast */}
-      {xpToast && (
-        <div className="fixed top-20 right-6 z-50 bg-emerald-600 text-white font-bold text-sm px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce">
-          <Award className="w-5 h-5 text-amber-300" />
-          <span>{xpToast}</span>
-        </div>
-      )}
-
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Back Link */}
         <Link
           href={`/subjects/${subjectId}`}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 mb-6 transition"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3 hover:text-brand mb-6 transition"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Subject Overview
         </Link>
 
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-indigo-700 via-blue-700 to-indigo-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl mb-10">
+        <div className="bg-linear-to-r from-brand via-blue-700 to-brand rounded-3xl p-8 sm:p-10 text-white shadow-xl mb-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-semibold mb-3 border border-white/10">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-accent text-xs font-semibold mb-3 border border-white/10">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />
                 <span>Repeated Exam Topics & Question Bank</span>
               </div>
               <h1 className="text-2xl sm:text-4xl font-black tracking-tight mb-2">
@@ -153,7 +142,7 @@ export default function SubjectImportantQuestionsPage({
 
             {/* Student Progress Pill */}
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 sm:p-5 min-w-[200px] shrink-0 text-center">
-              <span className="text-xs uppercase font-bold text-cyan-300 tracking-wider">
+              <span className="text-xs uppercase font-bold text-accent tracking-wider">
                 Practice Progress
               </span>
               <div className="text-3xl font-black my-1">
@@ -161,7 +150,7 @@ export default function SubjectImportantQuestionsPage({
               </div>
               <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden mt-2">
                 <div
-                  className="bg-cyan-400 h-full rounded-full transition-all duration-500"
+                  className="bg-accent h-full rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -174,10 +163,10 @@ export default function SubjectImportantQuestionsPage({
 
         {/* Repeated Topics Analytics Section */}
         {repeatedTopics.length > 0 && (
-          <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm mb-10">
+          <div className="bg-surface rounded-2xl p-6 border border-line shadow-xs mb-10">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              <TrendingUp className="w-5 h-5 text-brand" />
+              <h2 className="text-base font-bold text-ink">
                 Most Repeated Exam Topics (Past 5 Years)
               </h2>
             </div>
@@ -185,17 +174,17 @@ export default function SubjectImportantQuestionsPage({
               {repeatedTopics.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-surface-2 border border-line/80 flex items-center justify-between"
                 >
                   <div className="overflow-hidden">
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">
+                    <span className="text-xs font-bold text-ink block truncate">
                       {item.topic}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="text-[11px] text-ink-3">
                       Avg: {item.averageMarks} Marks
                     </span>
                   </div>
-                  <span className="ml-2 px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 text-xs font-extrabold shrink-0 border border-rose-200 dark:border-rose-800">
+                  <span className="ml-2 px-2 py-0.5 rounded-full bg-danger-soft text-danger text-xs font-extrabold shrink-0 border border-danger/35">
                     {item.frequency}x
                   </span>
                 </div>
@@ -205,13 +194,13 @@ export default function SubjectImportantQuestionsPage({
         )}
 
         {/* Filters Bar */}
-        <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-surface rounded-2xl p-4 sm:p-5 border border-line shadow-xs mb-8 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
             {/* Unit Filter */}
             <select
               value={selectedUnit}
               onChange={(e) => setSelectedUnit(e.target.value)}
-              className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200"
+              className="text-xs font-semibold px-3 py-2 rounded-xl border border-line bg-surface-2 text-ink-2"
             >
               <option value="">All Syllabus Units</option>
               {subject?.units?.map((u: any) => (
@@ -225,7 +214,7 @@ export default function SubjectImportantQuestionsPage({
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200"
+              className="text-xs font-semibold px-3 py-2 rounded-xl border border-line bg-surface-2 text-ink-2"
             >
               <option value="">All Difficulties</option>
               <option value="EASY">Easy</option>
@@ -237,7 +226,7 @@ export default function SubjectImportantQuestionsPage({
             <select
               value={selectedMarks}
               onChange={(e) => setSelectedMarks(e.target.value)}
-              className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200"
+              className="text-xs font-semibold px-3 py-2 rounded-xl border border-line bg-surface-2 text-ink-2"
             >
               <option value="">All Marks</option>
               <option value="5">5 Marks</option>
@@ -246,12 +235,12 @@ export default function SubjectImportantQuestionsPage({
           </div>
 
           {/* Only Important Checkbox */}
-          <label className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-xs font-bold text-ink-2 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={onlyImportant}
               onChange={(e) => setOnlyImportant(e.target.checked)}
-              className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+              className="rounded-sm border-line-strong text-brand focus:ring-brand w-4 h-4"
             />
             <span>Show Only High-Probability ⭐</span>
           </label>
@@ -260,16 +249,16 @@ export default function SubjectImportantQuestionsPage({
         {/* Questions List */}
         {loading ? (
           <div className="py-20 text-center">
-            <div className="inline-block w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-slate-500 text-sm">Loading questions...</p>
+            <div className="inline-block w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4" />
+            <p className="text-ink-3 text-sm">Loading questions...</p>
           </div>
         ) : filteredQuestions.length === 0 ? (
-          <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800">
-            <HelpCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-1">
+          <div className="bg-surface rounded-2xl p-12 text-center border border-line">
+            <HelpCircle className="w-12 h-12 text-ink-3 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-ink mb-1">
               No Questions Match Criteria
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-3">
               Clear your filters or select another syllabus unit.
             </p>
           </div>
@@ -280,30 +269,30 @@ export default function SubjectImportantQuestionsPage({
               return (
                 <div
                   key={q.id}
-                  className={`bg-white dark:bg-[#1C2541] rounded-2xl border transition-all p-5 sm:p-6 ${
+                  className={`bg-surface rounded-2xl border transition-all p-5 sm:p-6 ${
                     q.isAttempted
-                      ? "border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/20 dark:bg-emerald-950/10"
-                      : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                      ? "border-ok/35 bg-ok/20"
+                      : "border-line hover:border-line-strong"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-brand-soft text-brand border border-brand/35">
                         {q.topicTag}
                       </span>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/80">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-warn-soft text-warn border border-warn/80">
                         {q.marks} Marks
                       </span>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800/80">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-danger-soft text-danger border border-danger/80">
                         Appeared {q.frequencyCount}x in PYQs
                       </span>
                       <span
                         className={`text-[11px] font-bold px-2 py-0.5 rounded-md uppercase ${
                           q.difficulty === "HARD"
-                            ? "bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400"
+                            ? "bg-danger-soft text-danger"
                             : q.difficulty === "MEDIUM"
-                            ? "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400"
-                            : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                            ? "bg-warn-soft text-warn"
+                            : "bg-ok-soft text-ok"
                         }`}
                       >
                         {q.difficulty}
@@ -315,13 +304,13 @@ export default function SubjectImportantQuestionsPage({
                       onClick={() => handleToggleBookmark(q.id)}
                       className={`p-2 rounded-xl transition ${
                         q.isBookmarked
-                          ? "bg-amber-50 dark:bg-amber-950/50 text-amber-600"
-                          : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                          ? "bg-warn-soft text-warn"
+                          : "text-ink-3 hover:text-ink-2"
                       }`}
                       title={q.isBookmarked ? "Remove Bookmark" : "Save Question"}
                     >
                       {q.isBookmarked ? (
-                        <BookmarkCheck className="w-5 h-5 text-amber-500 fill-amber-500" />
+                        <BookmarkCheck className="w-5 h-5 text-warn fill-warn" />
                       ) : (
                         <Bookmark className="w-5 h-5" />
                       )}
@@ -329,15 +318,15 @@ export default function SubjectImportantQuestionsPage({
                   </div>
 
                   {/* Question Text */}
-                  <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 mb-4 leading-relaxed">
+                  <p className="text-sm sm:text-base font-semibold text-ink mb-4 leading-relaxed">
                     Q{idx + 1}. {q.questionText}
                   </p>
 
                   {/* Action Buttons: Solution toggle & Mark Solved */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-line">
                     <button
                       onClick={() => toggleSolution(q.id)}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:underline"
                     >
                       {isExpanded ? (
                         <>
@@ -354,8 +343,8 @@ export default function SubjectImportantQuestionsPage({
                       onClick={() => handleToggleAttempt(q.id)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                         q.isAttempted
-                          ? "bg-emerald-600 text-white shadow-xs"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                          ? "bg-ok text-white shadow-2xs"
+                          : "bg-surface-2 text-ink-2 hover:bg-surface-3"
                       }`}
                     >
                       {q.isAttempted ? (
@@ -364,7 +353,7 @@ export default function SubjectImportantQuestionsPage({
                         </>
                       ) : (
                         <>
-                          <Circle className="w-4 h-4 text-slate-400" /> Mark as Solved
+                          <Circle className="w-4 h-4 text-ink-3" /> Mark as Solved
                         </>
                       )}
                     </button>
@@ -372,8 +361,8 @@ export default function SubjectImportantQuestionsPage({
 
                   {/* Solution Expansion */}
                   {isExpanded && (
-                    <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-2 animate-fadeIn">
-                      <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                    <div className="mt-4 p-4 rounded-xl bg-surface-2 border border-line text-xs sm:text-sm text-ink-2 space-y-2 animate-fadeIn">
+                      <div className="flex items-center gap-1.5 text-brand font-bold uppercase tracking-wider text-[11px]">
                         <CheckCircle2 className="w-4 h-4" /> Verified Solution
                       </div>
                       <p className="whitespace-pre-line leading-relaxed">

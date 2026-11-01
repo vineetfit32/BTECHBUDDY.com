@@ -76,26 +76,26 @@ export default function AdminLiveClassesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-ink">
             Schedule Live Classes
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-3">
             Create interactive doubt-clearing sessions, broadcast meetings, and archive recordings
           </p>
         </div>
         <button
           onClick={() => setShowScheduleModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-danger hover:bg-danger/90 text-white shadow-2xs"
         >
           <Plus className="w-3.5 h-3.5" /> Schedule New Session
         </button>
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-slate-400">
-          <Loader2 className="w-8 h-8 text-rose-500 animate-spin mx-auto mb-2" />
+        <div className="py-20 text-center text-ink-3">
+          <Loader2 className="w-8 h-8 text-danger animate-spin mx-auto mb-2" />
           <span className="text-xs">Loading live timetable...</span>
         </div>
       ) : (
@@ -103,43 +103,43 @@ export default function AdminLiveClassesPage() {
           {classes.map((item) => (
             <div
               key={item.id}
-              className="p-5 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs flex flex-col justify-between space-y-3"
+              className="p-5 rounded-2xl bg-surface border border-line shadow-2xs flex flex-col justify-between space-y-3"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="text-xs font-bold text-brand">
                     {item.subject?.code}: {item.subject?.name}
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       item.status === "LIVE"
-                        ? "bg-rose-600 text-white animate-pulse"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                        ? "bg-danger text-white animate-pulse"
+                        : "bg-surface-2 text-ink-3"
                     }`}
                   >
                     {item.status}
                   </span>
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1">
+                <h3 className="text-base font-bold text-ink mt-1">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
-                <div className="text-xs text-slate-400 pt-2 flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                <p className="text-xs text-ink-3 mt-1 line-clamp-2">{item.description}</p>
+                <div className="text-xs text-ink-3 pt-2 flex items-center gap-2">
+                  <Calendar className="w-3.5 h-3.5 text-brand" />
                   {formatDateTimeIST(item.scheduledAt)} • {item.durationMinutes} mins
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-slate-400">
+              <div className="pt-3 border-t border-line flex items-center justify-between text-xs">
+                <span className="text-ink-3">
                   Faculty: {item.instructor?.name || "Senior Faculty"}
                 </span>
                 <a
                   href={item.meetingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-rose-600 hover:underline"
+                  className="font-bold text-danger hover:underline"
                 >
                   Room Link →
                 </a>
@@ -152,31 +152,31 @@ export default function AdminLiveClassesPage() {
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          <div className="w-full max-w-md bg-surface rounded-2xl p-6 border border-line shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-ink">
               Schedule Live Class
             </h3>
 
             <form onSubmit={handleSchedule} className="space-y-3.5 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Session Title</label>
+                <label className="font-bold text-ink-2">Session Title</label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Live Doubt Session: Dynamic Programming & Graphs"
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Subject</label>
+                  <label className="font-bold text-ink-2">Subject</label>
                   <select
                     value={subjectId}
                     onChange={(e) => setSubjectId(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                    className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   >
                     {subjects.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -187,29 +187,29 @@ export default function AdminLiveClassesPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Duration (Mins)</label>
+                  <label className="font-bold text-ink-2">Duration (Mins)</label>
                   <input
                     type="number"
                     value={durationMinutes}
                     onChange={(e) => setDurationMinutes(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                    className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Date & Time (IST)</label>
+                <label className="font-bold text-ink-2">Date & Time (IST)</label>
                 <input
                   type="datetime-local"
                   required
                   value={scheduledAt}
                   onChange={(e) => setScheduledAt(e.target.value)}
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">
+                <label className="font-bold text-ink-2">
                   Custom Meeting Room URL (Optional)
                 </label>
                 <input
@@ -217,33 +217,33 @@ export default function AdminLiveClassesPage() {
                   value={meetingUrl}
                   onChange={(e) => setMeetingUrl(e.target.value)}
                   placeholder="Defaults to auto-generated Jitsi room"
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Description</label>
+                <label className="font-bold text-ink-2">Description</label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Doubt-clearing outline, problem sets..."
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
                 <button
                   type="button"
                   onClick={() => setShowScheduleModal(false)}
-                  className="px-3.5 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-3.5 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold"
+                  className="px-4 py-2 rounded-xl bg-danger hover:bg-danger/90 text-white font-bold"
                 >
                   {saving ? "Scheduling..." : "Confirm Schedule"}
                 </button>

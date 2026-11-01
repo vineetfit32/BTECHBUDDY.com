@@ -1,33 +1,56 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, isAuthorized } from "@/lib/auth";
+import { isSafeKey } from "@/lib/storage";
+import { id, optionalId, optionalText, ownedFileUrl, parseJson, parseQuery, text, z } from "@/lib/validation";
+
+const listQuery = z.object({
+  subjectId: optionalId,
+  courseId: optionalId,
+  search: optionalText(120),
+});
+
+const createBody = z
+  .object({
+    title: text(200, "Title"),
+    description: optionalText(5000),
+    sourceKey: z.string().max(512).refine(isSafeKey, "Invalid upload key").optional(),
+    videoUrl: ownedFileUrl,
+    thumbnail: ownedFileUrl,
+    subjectId: id,
+    unitId: optionalId,
+    courseId: optionalId,
+    order: z.coerce.number().int().min(1).max(10_000).default(1),
+    isFree: z.boolean().default(true),
+    language: z.enum(["ENGLISH", "HINDI", "HINGLISH"]).default("HINGLISH"),
+  })
+  .refine((v) => v.sourceKey || v.videoUrl, "Upload a lecture video first");
 
 export async function GET(req: Request) {
+  const parsed = parseQuery(req, listQuery);
+  if (parsed.error) return parsed.error;
+  const { subjectId, courseId, search } = parsed.data;
+
   try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
-    const courseId = searchParams.get("courseId");
-    const search = searchParams.get("search");
-
-    const where: any = { isPublished: true };
-    if (subjectId) where.subjectId = subjectId;
-    if (courseId) where.courseId = courseId;
-    if (search) {
-      where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
-      ];
-    }
-
     const videos = await prisma.videoLecture.findMany({
-      where,
+      where: {
+        isPublished: true,
+        ...(subjectId && { subjectId }),
+        ...(courseId && { courseId }),
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }),
+      },
       include: {
         subject: { select: { id: true, name: true, code: true } },
         unit: { select: { id: true, title: true, unitNumber: true } },
       },
       orderBy: { order: "asc" },
+      take: 300,
     });
-
     return NextResponse.json({ videos });
   } catch (error) {
     console.error("Fetch videos error:", error);
@@ -36,52 +59,33 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const user = await getCurrentUser();
+  if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
+  }
+  const parsed = await parseJson(req, createBody);
+  if (parsed.error) return parsed.error;
+  const input = parsed.data;
+
   try {
-    const user = await getCurrentUser();
-    if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
-      return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
-    }
-
-    const body = await req.json();
-    const {
-      title,
-      description,
-      videoUrl,
-      videoProvider,
-      duration,
-      durationSec,
-      thumbnail,
-      subjectId,
-      unitId,
-      courseId,
-      order,
-      isFree,
-    } = body;
-
-    if (!title || !videoUrl || !subjectId) {
-      return NextResponse.json(
-        { error: "Title, video URL, and subject are required" },
-        { status: 400 }
-      );
-    }
-
     const video = await prisma.videoLecture.create({
       data: {
-        title,
-        description,
-        videoUrl,
-        videoProvider: videoProvider || "YOUTUBE",
-        duration: duration || "45:00",
-        durationSec: durationSec || 2700,
-        thumbnail,
-        subjectId,
-        unitId: unitId || null,
-        courseId: courseId || null,
-        order: order ? parseInt(order) : 1,
-        isFree: isFree !== undefined ? Boolean(isFree) : true,
+        title: input.title,
+        description: input.description ?? null,
+        videoUrl: input.videoUrl ?? "",
+        videoProvider: input.sourceKey ? "HLS" : "DIRECT",
+        sourceKey: input.sourceKey ?? null,
+        transcodeStatus: input.sourceKey ? "PENDING" : "NONE",
+        thumbnail: input.thumbnail ?? null,
+        subjectId: input.subjectId,
+        unitId: input.unitId ?? null,
+        courseId: input.courseId ?? null,
+        order: input.order,
+        isFree: input.isFree,
+        language: input.language,
+        isPublished: !input.sourceKey,
       },
     });
-
     return NextResponse.json({ success: true, video });
   } catch (error) {
     console.error("Create video error:", error);

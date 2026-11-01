@@ -50,10 +50,10 @@ export default async function BranchesPage() {
         <div className="font-mono text-xs text-primary-violet font-bold uppercase tracking-widest">
           Academic Taxonomy
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl font-black text-ink">
           Engineering Branches & Curricula
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        <p className="text-sm sm:text-base text-ink-2">
           Select your engineering discipline to access structured semester syllabi, subject notes, video lectures, and previous year question papers.
         </p>
       </div>
@@ -75,15 +75,15 @@ export default async function BranchesPage() {
                 <span className="font-mono text-xs font-bold text-accent-cyan">
                   {b.code}
                 </span>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1 group-hover:text-primary-violet transition-colors">
+                <h3 className="text-lg font-bold text-ink mt-1 group-hover:text-primary-violet transition-colors">
                   {b.name}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-ink-3 mt-2 line-clamp-2 leading-relaxed">
                   {b.description || "Comprehensive syllabus, verified topper notes, and exam question banks."}
                 </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-desk-border flex items-center justify-between text-xs text-slate-400 font-mono">
+              <div className="mt-6 pt-4 border-t border-desk-border flex items-center justify-between text-xs text-ink-3 font-mono">
                 <div className="flex items-center gap-3">
                   <span>{b._count.subjects} Subjects</span>
                   <span>•</span>

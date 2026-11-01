@@ -1,95 +1,60 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { advanceStreak, isStreakAtRisk, type StreakEvent } from "@/lib/streak";
+
+const STREAK_BADGES: Array<[number, string]> = [
+  [3, "STREAK_3"],
+  [7, "STREAK_7"],
+];
 
 export async function GET() {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ streak: null });
+
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ streak: null });
+    const now = new Date();
+    const existing = await prisma.userStreak.findUnique({ where: { userId: user.id } });
+
+    if (!existing) {
+      const streak = await prisma.userStreak.create({
+        data: { userId: user.id, currentStreak: 1, longestStreak: 1, freezesLeft: 2, lastActiveAt: now },
+      });
+      return NextResponse.json({ streak, event: "STARTED" satisfies StreakEvent, xpEarned: 0, newBadges: [], atRisk: false });
     }
 
-    let streak = await prisma.userStreak.findUnique({
-      where: { userId: user.id },
+    const atRisk = isStreakAtRisk(existing.lastActiveAt, now);
+    const { next, event } = advanceStreak(existing, now);
+    if (event === "SAME_DAY") {
+      return NextResponse.json({ streak: existing, event, xpEarned: 0, newBadges: [], atRisk: false });
+    }
+
+    const streak = await prisma.userStreak.update({
+      where: { id: existing.id },
+      data: {
+        currentStreak: next.currentStreak,
+        longestStreak: next.longestStreak,
+        freezesLeft: next.freezesLeft,
+        lastActiveAt: next.lastActiveAt,
+      },
     });
 
-    if (!streak) {
-      streak = await prisma.userStreak.create({
-        data: {
-          userId: user.id,
-          currentStreak: 1,
-          longestStreak: 1,
-          freezesLeft: 2,
-        },
-      });
-    }
-
-    // Check days since lastActiveAt
-    const now = new Date();
-    const last = new Date(streak.lastActiveAt);
-    const diffDays = Math.floor((now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 1) {
-      // Active yesterday -> Increment streak!
-      const newCurrent = streak.currentStreak + 1;
-      const newLongest = Math.max(newCurrent, streak.longestStreak);
-      streak = await prisma.userStreak.update({
-        where: { id: streak.id },
-        data: {
-          currentStreak: newCurrent,
-          longestStreak: newLongest,
-          lastActiveAt: now,
-        },
-      });
-
-      // Award XP
-      await prisma.xpTransaction.create({
-        data: {
-          userId: user.id,
-          amount: 15,
-          action: "STREAK_CHECKIN",
-        },
-      });
-
-      // Award 3-day / 7-day badge if reached
-      if (newCurrent >= 3) {
-        await prisma.userBadge.upsert({
-          where: { userId_badgeCode: { userId: user.id, badgeCode: "STREAK_3" } },
-          update: {},
-          create: { userId: user.id, badgeCode: "STREAK_3" },
+    let xpEarned = 0;
+    const newBadges: string[] = [];
+    if (event === "INCREMENTED") {
+      xpEarned = 15;
+      await prisma.xpTransaction.create({ data: { userId: user.id, amount: xpEarned, action: "STREAK_CHECKIN" } });
+      for (const [days, code] of STREAK_BADGES) {
+        if (streak.currentStreak < days) continue;
+        const created = await prisma.userBadge.createMany({
+          data: [{ userId: user.id, badgeCode: code }],
+          skipDuplicates: true,
         });
-      }
-      if (newCurrent >= 7) {
-        await prisma.userBadge.upsert({
-          where: { userId_badgeCode: { userId: user.id, badgeCode: "STREAK_7" } },
-          update: {},
-          create: { userId: user.id, badgeCode: "STREAK_7" },
-        });
-      }
-    } else if (diffDays > 1) {
-      // Missed more than 1 day
-      if (streak.freezesLeft > 0) {
-        // Use freeze
-        streak = await prisma.userStreak.update({
-          where: { id: streak.id },
-          data: {
-            freezesLeft: streak.freezesLeft - 1,
-            lastActiveAt: now,
-          },
-        });
-      } else {
-        // Reset streak
-        streak = await prisma.userStreak.update({
-          where: { id: streak.id },
-          data: {
-            currentStreak: 1,
-            lastActiveAt: now,
-          },
-        });
+        if (created.count) newBadges.push(code);
       }
     }
 
-    return NextResponse.json({ streak });
+    return NextResponse.json({ streak, event, xpEarned, newBadges, atRisk });
   } catch (error) {
     console.error("Error evaluating streak:", error);
     return NextResponse.json({ error: "Failed to evaluate streak" }, { status: 500 });

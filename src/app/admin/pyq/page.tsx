@@ -127,7 +127,7 @@ export default function AdminPYQPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -135,13 +135,13 @@ export default function AdminPYQPage() {
 
           <main className="flex-1 w-full space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#1C2541] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface p-6 rounded-2xl border border-line shadow-xs">
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-rose-600" />
+                <h1 className="text-xl sm:text-2xl font-black text-ink flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-danger" />
                   PYQ & Question Bank Management
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                <p className="text-xs sm:text-sm text-ink-3 mt-1">
                   Upload university semester question papers and curate repeated important questions.
                 </p>
               </div>
@@ -150,14 +150,14 @@ export default function AdminPYQPage() {
                 {activeTab === "papers" ? (
                   <button
                     onClick={() => setPaperModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 shadow-sm transition"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-danger text-white text-xs font-bold hover:bg-danger/90 shadow-xs transition"
                   >
                     <Plus className="w-4 h-4" /> Upload Exam Paper
                   </button>
                 ) : (
                   <button
                     onClick={() => setQuestionModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 shadow-sm transition"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-danger text-white text-xs font-bold hover:bg-danger/90 shadow-xs transition"
                   >
                     <Plus className="w-4 h-4" /> Add Question
                   </button>
@@ -167,20 +167,20 @@ export default function AdminPYQPage() {
 
             {/* Status Alert */}
             {statusMessage && (
-              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+              <div className="p-4 rounded-xl bg-ok-soft border border-ok/35 text-ok text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{statusMessage}</span>
               </div>
             )}
 
             {/* Tab Nav */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+            <div className="flex border-b border-line gap-6">
               <button
                 onClick={() => setActiveTab("papers")}
                 className={`pb-3 text-sm font-bold border-b-2 transition ${
                   activeTab === "papers"
-                    ? "border-rose-600 text-rose-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    ? "border-danger text-danger"
+                    : "border-transparent text-ink-3 hover:text-ink-2"
                 }`}
               >
                 Exam Papers ({papers.length})
@@ -189,8 +189,8 @@ export default function AdminPYQPage() {
                 onClick={() => setActiveTab("questions")}
                 className={`pb-3 text-sm font-bold border-b-2 transition ${
                   activeTab === "questions"
-                    ? "border-rose-600 text-rose-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    ? "border-danger text-danger"
+                    : "border-transparent text-ink-3 hover:text-ink-2"
                 }`}
               >
                 Question Bank ({questions.length})
@@ -199,10 +199,10 @@ export default function AdminPYQPage() {
 
             {/* Content Tab: Papers */}
             {activeTab === "papers" && (
-              <div className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div className="bg-surface rounded-2xl border border-line overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                    <thead className="bg-surface-2 text-ink-3 font-bold border-b border-line uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Title / Year</th>
                         <th className="py-3 px-4">University</th>
@@ -212,30 +212,30 @@ export default function AdminPYQPage() {
                         <th className="py-3 px-4">Downloads</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-line">
                       {papers.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                        <tr key={p.id} className="hover:bg-surface-2/50">
                           <td className="py-3 px-4">
-                            <span className="font-bold text-slate-900 dark:text-slate-100 block">
+                            <span className="font-bold text-ink block">
                               {p.title}
                             </span>
-                            <span className="text-[11px] text-slate-400">Exam Year: {p.examYear}</span>
+                            <span className="text-[11px] text-ink-3">Exam Year: {p.examYear}</span>
                           </td>
-                          <td className="py-3 px-4 font-semibold text-indigo-600 dark:text-indigo-400">
+                          <td className="py-3 px-4 font-semibold text-brand">
                             {p.university?.code}
                           </td>
-                          <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
+                          <td className="py-3 px-4 text-ink-2">
                             {p.subject?.name}
                           </td>
-                          <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
+                          <td className="py-3 px-4 text-ink-2">
                             {p.branch?.code}
                           </td>
                           <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded-md bg-warn-soft text-warn text-[10px] font-bold">
                               {p.examType}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
+                          <td className="py-3 px-4 text-ink-2">
                             {p.downloadCount}
                           </td>
                         </tr>
@@ -248,10 +248,10 @@ export default function AdminPYQPage() {
 
             {/* Content Tab: Questions */}
             {activeTab === "questions" && (
-              <div className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div className="bg-surface rounded-2xl border border-line overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                    <thead className="bg-surface-2 text-ink-3 font-bold border-b border-line uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Topic / Question</th>
                         <th className="py-3 px-4">Subject</th>
@@ -261,36 +261,36 @@ export default function AdminPYQPage() {
                         <th className="py-3 px-4">Important</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-line">
                       {questions.map((q) => (
-                        <tr key={q.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                        <tr key={q.id} className="hover:bg-surface-2/50">
                           <td className="py-3 px-4 max-w-md">
-                            <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-bold text-[10px] mr-2">
+                            <span className="px-2 py-0.5 rounded-md bg-brand-soft text-brand font-bold text-[10px] mr-2">
                               {q.topicTag}
                             </span>
-                            <p className="text-slate-800 dark:text-slate-200 mt-1 line-clamp-2">
+                            <p className="text-ink mt-1 line-clamp-2">
                               {q.questionText}
                             </p>
                           </td>
-                          <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
+                          <td className="py-3 px-4 text-ink-2">
                             {q.subject?.name}
                           </td>
-                          <td className="py-3 px-4 font-bold text-slate-800 dark:text-slate-200">
+                          <td className="py-3 px-4 font-bold text-ink">
                             {q.marks}M
                           </td>
                           <td className="py-3 px-4 uppercase text-[10px] font-bold">
                             {q.difficulty}
                           </td>
                           <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 font-extrabold text-[11px]">
+                            <span className="px-2 py-0.5 rounded-full bg-danger-soft text-danger font-extrabold text-[11px]">
                               {q.frequencyCount}x
                             </span>
                           </td>
                           <td className="py-3 px-4">
                             {q.isImportant ? (
-                              <span className="text-amber-500 font-bold">⭐ High</span>
+                              <span className="text-warn font-bold">⭐ High</span>
                             ) : (
-                              <span className="text-slate-400">Regular</span>
+                              <span className="text-ink-3">Regular</span>
                             )}
                           </td>
                         </tr>
@@ -307,8 +307,8 @@ export default function AdminPYQPage() {
       {/* Upload Paper Modal */}
       {paperModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-surface rounded-3xl max-w-lg w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-lg font-bold text-ink mb-4">
               Upload PYQ Exam Paper
             </h3>
             <form onSubmit={handleCreatePaper} className="space-y-3 text-xs">
@@ -320,7 +320,7 @@ export default function AdminPYQPage() {
                   placeholder="e.g. Data Structures End-Term Paper 2024"
                   value={paperForm.title}
                   onChange={(e) => setPaperForm({ ...paperForm, title: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -331,7 +331,7 @@ export default function AdminPYQPage() {
                     required
                     value={paperForm.universityId}
                     onChange={(e) => setPaperForm({ ...paperForm, universityId: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="">Select University</option>
                     {universities.map((u) => (
@@ -348,7 +348,7 @@ export default function AdminPYQPage() {
                     required
                     value={paperForm.branchId}
                     onChange={(e) => setPaperForm({ ...paperForm, branchId: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="">Select Branch</option>
                     {branches.map((b) => (
@@ -367,7 +367,7 @@ export default function AdminPYQPage() {
                     required
                     value={paperForm.subjectId}
                     onChange={(e) => setPaperForm({ ...paperForm, subjectId: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="">Select Subject</option>
                     {subjects.map((s) => (
@@ -385,7 +385,7 @@ export default function AdminPYQPage() {
                     required
                     value={paperForm.examYear}
                     onChange={(e) => setPaperForm({ ...paperForm, examYear: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
 
@@ -394,7 +394,7 @@ export default function AdminPYQPage() {
                   <select
                     value={paperForm.examType}
                     onChange={(e) => setPaperForm({ ...paperForm, examType: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="END_TERM">End Term</option>
                     <option value="MID_TERM">Mid Term</option>
@@ -410,7 +410,7 @@ export default function AdminPYQPage() {
                   required
                   value={paperForm.pdfUrl}
                   onChange={(e) => setPaperForm({ ...paperForm, pdfUrl: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -418,13 +418,13 @@ export default function AdminPYQPage() {
                 <button
                   type="button"
                   onClick={() => setPaperModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-4 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700"
+                  className="px-5 py-2 rounded-xl bg-danger text-white font-bold hover:bg-danger/90"
                 >
                   Upload Paper
                 </button>
@@ -437,8 +437,8 @@ export default function AdminPYQPage() {
       {/* Add Question Modal */}
       {questionModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-surface rounded-3xl max-w-lg w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-lg font-bold text-ink mb-4">
               Add Question to Question Bank
             </h3>
             <form onSubmit={handleCreateQuestion} className="space-y-3 text-xs">
@@ -451,7 +451,7 @@ export default function AdminPYQPage() {
                     onChange={(e) =>
                       setQuestionForm({ ...questionForm, subjectId: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="">Select Subject</option>
                     {subjects.map((s) => (
@@ -472,7 +472,7 @@ export default function AdminPYQPage() {
                     onChange={(e) =>
                       setQuestionForm({ ...questionForm, topicTag: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
               </div>
@@ -486,7 +486,7 @@ export default function AdminPYQPage() {
                   onChange={(e) =>
                     setQuestionForm({ ...questionForm, questionText: e.target.value })
                   }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -499,7 +499,7 @@ export default function AdminPYQPage() {
                     onChange={(e) =>
                       setQuestionForm({ ...questionForm, marks: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
 
@@ -510,7 +510,7 @@ export default function AdminPYQPage() {
                     onChange={(e) =>
                       setQuestionForm({ ...questionForm, difficulty: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="EASY">Easy</option>
                     <option value="MEDIUM">Medium</option>
@@ -526,7 +526,7 @@ export default function AdminPYQPage() {
                     onChange={(e) =>
                       setQuestionForm({ ...questionForm, frequencyCount: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
               </div>
@@ -540,7 +540,7 @@ export default function AdminPYQPage() {
                   onChange={(e) =>
                     setQuestionForm({ ...questionForm, solutionText: e.target.value })
                   }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -551,7 +551,7 @@ export default function AdminPYQPage() {
                   onChange={(e) =>
                     setQuestionForm({ ...questionForm, isImportant: e.target.checked })
                   }
-                  className="rounded text-rose-600 focus:ring-rose-500 w-4 h-4"
+                  className="rounded-sm text-danger focus:ring-danger w-4 h-4"
                 />
                 <span>High Probability Exam Question ⭐</span>
               </label>
@@ -560,13 +560,13 @@ export default function AdminPYQPage() {
                 <button
                   type="button"
                   onClick={() => setQuestionModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-4 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700"
+                  className="px-5 py-2 rounded-xl bg-danger text-white font-bold hover:bg-danger/90"
                 >
                   Save Question
                 </button>

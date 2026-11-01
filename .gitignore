@@ -6,3 +6,16 @@ out/
 !.env.example
 *.db
 *.db-journal
+*.tsbuildinfo
+
+# Self-hosted object storage (local driver) and generated artefacts
+/storage/
+/src/generated/
+/public/vendor/
+/public/sw.js
+/public/sw.js.map
+
+# Test output
+/coverage/
+/test-results/
+/playwright-report/

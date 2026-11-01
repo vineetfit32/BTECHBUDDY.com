@@ -28,7 +28,9 @@ export default function StudentSidebar() {
   const router = useRouter();
 
   const links = [
-    { label: "Desk Overview", href: "/student/dashboard", icon: LayoutDashboard },
+    { label: "Study Board", href: "/student/board", icon: LayoutDashboard, badge: "Now" },
+    { label: "Flashcards", href: "/student/flashcards", icon: Sparkles },
+    { label: "Desk Overview", href: "/student/dashboard", icon: BookOpen },
     { label: "Placement & DSA", href: "/student/placement", icon: Briefcase, badge: "Hub" },
     { label: "Study Planner", href: "/student/study-planner", icon: Calendar },
     { label: "Attendance Tracker", href: "/student/attendance", icon: Calculator },
@@ -52,12 +54,12 @@ export default function StudentSidebar() {
   };
 
   return (
-    <aside className="w-full lg:w-64 desk-card rounded-2xl p-4 shrink-0 shadow-xs h-fit">
+    <aside className="w-full lg:w-64 desk-card rounded-2xl p-4 shrink-0 shadow-2xs h-fit">
       <div className="flex items-center gap-2 px-3 py-2 mb-4 border-b border-desk-border">
         <div className="w-7 h-7 rounded-lg bg-primary-violet flex items-center justify-center text-white shadow-glow-sm">
           <GraduationCap className="w-4 h-4" />
         </div>
-        <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
+        <span className="font-mono text-xs font-bold uppercase tracking-wider text-ink-2">
           STUDENT_DESK
         </span>
       </div>
@@ -73,11 +75,11 @@ export default function StudentSidebar() {
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 isActive
                   ? "bg-primary-violet text-white shadow-glow-sm font-bold"
-                  : "text-slate-400 hover:bg-slate-100 dark:hover:bg-desk-canvas hover:text-white"
+                  : "text-ink-3 hover:bg-surface-2 dark:hover:bg-desk-canvas hover:text-white"
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-ink-3"}`} />
                 <span>{link.label}</span>
               </div>
               {link.badge && (
@@ -99,7 +101,7 @@ export default function StudentSidebar() {
       <div className="pt-4 mt-4 border-t border-desk-border">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-mono font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-mono font-semibold text-danger hover:bg-danger/10 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>

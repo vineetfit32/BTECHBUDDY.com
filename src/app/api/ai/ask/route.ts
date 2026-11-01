@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { enforceRateLimits, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();
+    const limited = enforceRateLimits([
+      { key: `ai:${user?.id ?? getClientIp(req)}`, limit: user ? 30 : 8, windowMs: 10 * 60_000 },
+    ]);
+    if (limited) return limited;
     const body = await req.json();
     const { prompt, subjectId } = body;
 

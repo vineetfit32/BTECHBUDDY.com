@@ -56,50 +56,50 @@ export default function AdminDoubtsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           <AdminSidebar />
 
           <main className="flex-1 w-full space-y-6">
-            <div className="bg-white dark:bg-[#1C2541] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+            <div className="bg-surface p-6 rounded-2xl border border-line shadow-xs flex items-center justify-between">
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <ShieldAlert className="w-6 h-6 text-rose-600" />
+                <h1 className="text-xl sm:text-2xl font-black text-ink flex items-center gap-2">
+                  <ShieldAlert className="w-6 h-6 text-danger" />
                   Doubt Moderation & Safety Queue
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                <p className="text-xs sm:text-sm text-ink-3 mt-1">
                   Review student community reports and take moderation actions with server audit logs.
                 </p>
               </div>
 
-              <span className="px-3 py-1 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 text-xs font-bold border border-rose-200 dark:border-rose-800">
+              <span className="px-3 py-1 rounded-xl bg-danger-soft text-danger text-xs font-bold border border-danger/35">
                 {reports.length} Flagged Reports
               </span>
             </div>
 
             {statusMessage && (
-              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+              <div className="p-4 rounded-xl bg-ok-soft border border-ok/35 text-ok text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{statusMessage}</span>
               </div>
             )}
 
-            <div className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div className="bg-surface rounded-2xl border border-line overflow-hidden shadow-xs">
               {loading ? (
-                <div className="py-20 text-center text-xs text-slate-500">
+                <div className="py-20 text-center text-xs text-ink-3">
                   Loading reports queue...
                 </div>
               ) : reports.length === 0 ? (
-                <div className="py-16 text-center text-xs text-slate-500">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+                <div className="py-16 text-center text-xs text-ink-3">
+                  <CheckCircle2 className="w-10 h-10 text-ok mx-auto mb-2" />
                   All clean! No active doubt reports in the queue.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                    <thead className="bg-surface-2 text-ink-3 font-bold border-b border-line uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Reason / Reported At</th>
                         <th className="py-3 px-4">Post Title & Author</th>
@@ -107,20 +107,20 @@ export default function AdminDoubtsPage() {
                         <th className="py-3 px-4 text-right">Moderation Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-line">
                       {reports.map((r) => (
-                        <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                        <tr key={r.id} className="hover:bg-surface-2/50">
                           <td className="py-3.5 px-4">
-                            <span className="font-bold text-rose-600 block">{r.reason}</span>
-                            <span className="text-[11px] text-slate-400">
+                            <span className="font-bold text-danger block">{r.reason}</span>
+                            <span className="text-[11px] text-ink-3">
                               {new Date(r.createdAt).toLocaleDateString()}
                             </span>
                           </td>
                           <td className="py-3.5 px-4 max-w-sm">
-                            <span className="font-bold text-slate-900 dark:text-slate-100 block line-clamp-1">
+                            <span className="font-bold text-ink block line-clamp-1">
                               {r.post?.title || "Deleted Post"}
                             </span>
-                            <span className="text-[11px] text-slate-400">
+                            <span className="text-[11px] text-ink-3">
                               By {r.post?.user?.name} ({r.post?.user?.email})
                             </span>
                           </td>
@@ -128,8 +128,8 @@ export default function AdminDoubtsPage() {
                             <span
                               className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                                 r.status === "PENDING"
-                                  ? "bg-amber-100 text-amber-800"
-                                  : "bg-slate-100 text-slate-600"
+                                  ? "bg-warn-soft text-warn"
+                                  : "bg-surface-2 text-ink-2"
                               }`}
                             >
                               {r.status}
@@ -141,7 +141,7 @@ export default function AdminDoubtsPage() {
                                 <Link
                                   href={`/doubts/${r.postId}`}
                                   target="_blank"
-                                  className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100"
+                                  className="p-1.5 rounded-lg text-ink-3 hover:text-brand hover:bg-surface-2"
                                   title="View Post"
                                 >
                                   <ExternalLink className="w-4 h-4" />
@@ -149,14 +149,14 @@ export default function AdminDoubtsPage() {
                               )}
                               <button
                                 onClick={() => handleAction("DISMISS_REPORT", r.id)}
-                                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold"
+                                className="px-2.5 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 text-ink-2 text-[11px] font-bold"
                               >
                                 Dismiss
                               </button>
                               {r.post && (
                                 <button
                                   onClick={() => handleAction("DELETE_POST", r.id, r.postId)}
-                                  className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold"
+                                  className="px-2.5 py-1 rounded-lg bg-danger hover:bg-danger/90 text-white text-[11px] font-bold"
                                 >
                                   Delete Post
                                 </button>

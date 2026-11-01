@@ -56,7 +56,7 @@ export default async function BranchDetailPage({
             {branch.code} DEPARTMENT
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-white">{branch.name}</h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-ink-2 text-sm sm:text-base leading-relaxed">
             {branch.description || "Complete 4-year engineering curriculum, semester roadmaps, topper handwritten notes, and video lectures."}
           </p>
         </div>
@@ -68,16 +68,16 @@ export default async function BranchDetailPage({
           <div className="font-mono text-xs text-primary-violet uppercase tracking-widest font-bold">
             Curriculum Structure
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-extrabold text-ink">
             Semester-Wise Subjects
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-xs sm:text-sm text-ink-3">
             Click on any subject to access unit notes, question papers, video lectures, and practice quizzes.
           </p>
         </div>
 
         {Object.keys(subjectsBySemester).length === 0 ? (
-          <div className="p-8 text-center rounded-2xl desk-card text-slate-400 font-mono text-sm">
+          <div className="p-8 text-center rounded-2xl desk-card text-ink-3 font-mono text-sm">
             Subjects for this branch are currently being curated by the academic team. Check back shortly!
           </div>
         ) : (
@@ -86,7 +86,7 @@ export default async function BranchDetailPage({
             .map(([semNum, subs]) => (
               <div key={semNum} className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-desk-border pb-2">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-bold text-ink">
                     Semester {semNum}
                   </h3>
                   <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary-violet/10 border border-primary-violet/30 text-primary-violet">
@@ -102,18 +102,18 @@ export default async function BranchDetailPage({
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-mono text-xs font-bold text-primary-violet px-2 py-0.5 rounded bg-primary-violet/10 border border-primary-violet/30">
+                          <span className="font-mono text-xs font-bold text-primary-violet px-2 py-0.5 rounded-sm bg-primary-violet/10 border border-primary-violet/30">
                             {sub.code}
                           </span>
-                          <span className="font-mono text-[11px] text-slate-400">{sub.credits} Credits</span>
+                          <span className="font-mono text-[11px] text-ink-3">{sub.credits} Credits</span>
                         </div>
-                        <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-2">
+                        <h4 className="text-base font-bold text-ink mt-2">
                           {sub.name}
                         </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-ink-3 mt-2 line-clamp-2 leading-relaxed">
                           {sub.syllabus || "Comprehensive unit notes, previous papers, and video tutorials."}
                         </p>
-                        <div className="mt-4 flex items-center gap-3 text-xs font-mono text-slate-400">
+                        <div className="mt-4 flex items-center gap-3 text-xs font-mono text-ink-3">
                           <span className="flex items-center gap-1">
                             <FileText className="w-3.5 h-3.5 text-primary-violet" /> {sub._count.notes} Notes
                           </span>
@@ -135,7 +135,7 @@ export default async function BranchDetailPage({
                         </Link>
                         <Link
                           href={`/notes?subjectId=${sub.id}`}
-                          className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold desk-card hover:border-primary-violet text-slate-700 dark:text-slate-300"
+                          className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold desk-card hover:border-primary-violet text-ink-2"
                         >
                           Notes
                         </Link>

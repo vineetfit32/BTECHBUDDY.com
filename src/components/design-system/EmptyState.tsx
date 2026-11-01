@@ -1,5 +1,7 @@
 import React from "react";
 import Button from "./Button";
+import Buddy from "@/components/mascot/Buddy";
+import type { Mood } from "@/lib/mascot/machine";
 
 interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -9,6 +11,7 @@ interface EmptyStateProps {
   actionHref?: string;
   onAction?: () => void;
   className?: string;
+  mood?: Mood;
 }
 
 export default function EmptyState({
@@ -19,29 +22,19 @@ export default function EmptyState({
   actionHref,
   onAction,
   className = "",
+  mood = "sleepy",
 }: EmptyStateProps) {
   return (
-    <div
-      className={`desk-card rounded-3xl p-8 sm:p-12 text-center max-w-lg mx-auto ${className}`}
-    >
-      {icon && (
-        <div className="w-16 h-16 rounded-2xl bg-primary-violet-subtle text-primary-violet flex items-center justify-center mx-auto mb-4 border border-primary-violet/20 shadow-glow-sm">
-          {icon}
-        </div>
+    <div className={`bento mx-auto max-w-lg p-8 text-center sm:p-12 ${className}`}>
+      {icon ? (
+        <div className="clay mx-auto mb-4 flex size-16 items-center justify-center text-brand">{icon}</div>
+      ) : (
+        <Buddy mood={mood} className="mx-auto mb-2 h-28 w-28" />
       )}
-      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
-        {title}
-      </h3>
-      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
-        {description}
-      </p>
+      <h3 className="mb-2 font-display text-lg font-bold text-ink">{title}</h3>
+      <p className="mb-6 text-sm leading-relaxed text-ink-3">{description}</p>
       {actionLabel && (
-        <Button
-          variant="primary"
-          size="sm"
-          href={actionHref}
-          onClick={onAction}
-        >
+        <Button variant="primary" size="sm" href={actionHref} onClick={onAction}>
           {actionLabel}
         </Button>
       )}

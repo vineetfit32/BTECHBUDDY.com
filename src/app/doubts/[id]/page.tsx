@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { reward } from "@/lib/reward";
 import {
   MessageSquare,
   ThumbsUp,
@@ -119,9 +120,13 @@ export default function SingleDoubtPage({
       }
 
       if (res.ok) {
+        const data = await res.json();
         setReplyText("");
-        setStatusNotice("Answer published! You earned +20 XP.");
+        reward({ xp: data.xpEarned, reason: "Answer published" });
         fetchDoubt();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setStatusNotice(data.error || "Could not post your answer.");
         setTimeout(() => setStatusNotice(null), 3500);
       }
     } catch (err) {
@@ -155,10 +160,10 @@ export default function SingleDoubtPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+      <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
                 <div className="py-24 text-center">
-          <div className="inline-block w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-          <p className="text-slate-500 text-sm">Loading discussion thread...</p>
+          <div className="inline-block w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="text-ink-3 text-sm">Loading discussion thread...</p>
         </div>
               </div>
     );
@@ -166,13 +171,13 @@ export default function SingleDoubtPage({
 
   if (!doubt) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+      <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
                 <div className="py-24 text-center max-w-md mx-auto px-4">
-          <MessageSquare className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+          <MessageSquare className="w-12 h-12 text-ink-3 mx-auto mb-3" />
+          <h2 className="text-lg font-bold text-ink mb-2">
             Question Not Found
           </h2>
-          <Link href="/doubts" className="text-xs font-bold text-indigo-600 hover:underline">
+          <Link href="/doubts" className="text-xs font-bold text-brand hover:underline">
             ← Back to Doubt Forum
           </Link>
         </div>
@@ -183,39 +188,39 @@ export default function SingleDoubtPage({
   const isAuthor = currentUser && currentUser.id === doubt.userId;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
         <Link
           href="/doubts"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 mb-6 transition"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3 hover:text-brand mb-6 transition"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Doubt Feed
         </Link>
 
         {statusNotice && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+          <div className="mb-6 p-4 rounded-xl bg-ok-soft border border-ok/35 text-ok text-xs font-bold flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             <span>{statusNotice}</span>
           </div>
         )}
 
         {/* Question Container */}
-        <div className="bg-white dark:bg-[#1C2541] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm mb-8 space-y-4">
+        <div className="bg-surface rounded-3xl border border-line p-6 sm:p-8 shadow-xs mb-8 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               {doubt.isResolved ? (
-                <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-ok-soft text-ok border border-ok/35">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Solved
                 </span>
               ) : (
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-surface-2 text-ink-2">
                   Open Question
                 </span>
               )}
 
               {doubt.subject && (
-                <span className="text-xs font-bold px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-bold px-3 py-1 rounded-xl bg-brand-soft text-brand">
                   {doubt.subject.code} • {doubt.subject.name}
                 </span>
               )}
@@ -223,18 +228,18 @@ export default function SingleDoubtPage({
 
             <button
               onClick={() => setReportModalOpen(true)}
-              className="text-slate-400 hover:text-rose-600 text-xs flex items-center gap-1"
+              className="text-ink-3 hover:text-danger text-xs flex items-center gap-1"
               title="Report Question"
             >
               <Flag className="w-3.5 h-3.5" /> Report
             </button>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-snug">
+          <h1 className="text-xl sm:text-2xl font-black text-ink leading-snug">
             {doubt.title}
           </h1>
 
-          <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line py-2">
+          <div className="text-xs sm:text-sm text-ink leading-relaxed whitespace-pre-line py-2">
             {doubt.content}
           </div>
 
@@ -243,7 +248,7 @@ export default function SingleDoubtPage({
               {doubt.tags.split(",").map((t: string) => (
                 <span
                   key={t}
-                  className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[11px] font-medium"
+                  className="px-2 py-0.5 rounded-md bg-surface-2 text-ink-2 text-[11px] font-medium"
                 >
                   #{t.trim()}
                 </span>
@@ -252,16 +257,16 @@ export default function SingleDoubtPage({
           )}
 
           {/* Author Details & Upvote */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-line text-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center uppercase">
+              <div className="w-8 h-8 rounded-full bg-linear-to-tr from-brand to-accent text-white font-bold text-xs flex items-center justify-center uppercase">
                 {doubt.user?.name?.[0] || "U"}
               </div>
               <div>
-                <span className="font-bold text-slate-900 dark:text-slate-100 block">
+                <span className="font-bold text-ink block">
                   {doubt.user?.name}
                 </span>
-                <span className="text-slate-400 text-[11px]">
+                <span className="text-ink-3 text-[11px]">
                   {doubt.user?.college || doubt.user?.branch || "Student"} •{" "}
                   {new Date(doubt.createdAt).toLocaleDateString()}
                 </span>
@@ -270,7 +275,7 @@ export default function SingleDoubtPage({
 
             <button
               onClick={() => handleVote(doubt.id, "DOUBT")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/40 text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 font-bold transition"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-2 hover:bg-brand-soft text-ink-2 hover:text-brand font-bold transition"
             >
               <ThumbsUp className="w-4 h-4" />
               <span>{doubt.upvotes} Upvotes</span>
@@ -281,8 +286,8 @@ export default function SingleDoubtPage({
         {/* Answers Section */}
         <div className="space-y-6 mb-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-indigo-600" />
+            <h2 className="text-lg font-bold text-ink flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-brand" />
               {doubt.answers?.length || 0} Community Answers
             </h2>
           </div>
@@ -292,15 +297,15 @@ export default function SingleDoubtPage({
               key={ans.id}
               className={`p-6 rounded-2xl border transition-all ${
                 ans.isAccepted
-                  ? "bg-emerald-50/20 dark:bg-emerald-950/10 border-emerald-400 dark:border-emerald-800 shadow-sm"
-                  : "bg-white dark:bg-[#1C2541] border-slate-200 dark:border-slate-800 shadow-sm"
+                  ? "bg-ok/20 border-ok shadow-xs"
+                  : "bg-surface border-line shadow-xs"
               }`}
             >
               {/* Badges: Accepted & Verified */}
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2">
                   {ans.isAccepted && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-xs">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-ok text-white font-black text-xs shadow-2xs">
                       <CheckCircle2 className="w-4 h-4" /> Accepted Solution
                     </span>
                   )}
@@ -314,7 +319,7 @@ export default function SingleDoubtPage({
                 {isAuthor && !ans.isAccepted && (
                   <button
                     onClick={() => handleAcceptAnswer(ans.id)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-bold transition border border-emerald-200 dark:border-emerald-800"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ok-soft hover:bg-ok-soft text-ok text-xs font-bold transition border border-ok/35"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" /> Accept as Best Solution
                   </button>
@@ -322,21 +327,21 @@ export default function SingleDoubtPage({
               </div>
 
               {/* Answer Content */}
-              <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line mb-4">
+              <div className="text-xs sm:text-sm text-ink leading-relaxed whitespace-pre-line mb-4">
                 {ans.content}
               </div>
 
               {/* Author & Upvote */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-line text-xs">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-center uppercase">
+                  <div className="w-7 h-7 rounded-full bg-surface-3 text-ink font-bold text-xs flex items-center justify-center uppercase">
                     {ans.user?.name?.[0] || "U"}
                   </div>
                   <div>
-                    <span className="font-bold text-slate-900 dark:text-slate-100">
+                    <span className="font-bold text-ink">
                       {ans.user?.name}
                     </span>
-                    <span className="text-slate-400 text-[11px] ml-1.5">
+                    <span className="text-ink-3 text-[11px] ml-1.5">
                       {ans.user?.role === "INSTRUCTOR" ? "Faculty" : "Student"} •{" "}
                       {new Date(ans.createdAt).toLocaleDateString()}
                     </span>
@@ -345,7 +350,7 @@ export default function SingleDoubtPage({
 
                 <button
                   onClick={() => handleVote(ans.id, "ANSWER")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/40 text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 font-bold transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-2 hover:bg-brand-soft text-ink-2 hover:text-brand font-bold transition"
                 >
                   <ThumbsUp className="w-3.5 h-3.5" />
                   <span>{ans.upvotes} Helpful</span>
@@ -356,11 +361,11 @@ export default function SingleDoubtPage({
         </div>
 
         {/* Answer Submission Form */}
-        <div className="bg-white dark:bg-[#1C2541] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
-          <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-2">
+        <div className="bg-surface rounded-3xl border border-line p-6 sm:p-8 shadow-xs">
+          <h3 className="text-base font-bold text-ink mb-2">
             Your Answer / Solution
           </h3>
-          <p className="text-xs text-slate-500 mb-4">
+          <p className="text-xs text-ink-3 mb-4">
             Provide clear step-by-step logic, proofs, or code snippets to help the student understand.
           </p>
 
@@ -371,14 +376,14 @@ export default function SingleDoubtPage({
               placeholder="Write your explanation or proof here..."
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
-              className="w-full p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm text-slate-800 dark:text-slate-100"
+              className="w-full p-3 rounded-2xl border border-line bg-surface-2 text-xs sm:text-sm text-ink"
             />
 
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={replyLoading || !replyText.trim()}
-                className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition disabled:opacity-50 flex items-center gap-1.5"
+                className="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-strong text-white font-bold text-xs shadow-md transition disabled:opacity-50 flex items-center gap-1.5"
               >
                 <Send className="w-4 h-4" />
                 <span>Post Answer (+20 XP)</span>
@@ -391,17 +396,17 @@ export default function SingleDoubtPage({
       {/* Report Modal */}
       {reportModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
-              <Flag className="w-4 h-4 text-rose-600" /> Report Question
+          <div className="bg-surface rounded-3xl max-w-sm w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-base font-bold text-ink mb-3 flex items-center gap-2">
+              <Flag className="w-4 h-4 text-danger" /> Report Question
             </h3>
-            <p className="text-xs text-slate-500 mb-4">
+            <p className="text-xs text-ink-3 mb-4">
               Select reason for reporting this doubt to platform moderators:
             </p>
             <select
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold mb-4"
+              className="w-full p-2.5 rounded-xl border border-line bg-surface-2 text-xs font-semibold mb-4"
             >
               <option value="Spam / Inappropriate Content">Spam / Inappropriate Content</option>
               <option value="Incorrect or Misleading Question">Incorrect or Misleading Question</option>
@@ -411,13 +416,13 @@ export default function SingleDoubtPage({
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setReportModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-slate-500 text-xs font-semibold"
+                className="px-4 py-2 rounded-xl text-ink-3 text-xs font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReportPost}
-                className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700"
+                className="px-4 py-2 rounded-xl bg-danger text-white text-xs font-bold hover:bg-danger/90"
               >
                 Submit Report
               </button>

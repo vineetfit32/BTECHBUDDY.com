@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import { prisma } from "../src/lib/prisma";
 import { translations } from "../src/lib/i18n";
 
-const prisma = new PrismaClient();
 
 async function runTests() {
   console.log("==========================================");

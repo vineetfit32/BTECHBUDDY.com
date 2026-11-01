@@ -28,7 +28,7 @@ export default function SubjectCard({
 }: SubjectCardProps) {
   return (
     <div
-      className={`desk-card rounded-2xl p-5 flex flex-col justify-between group transition-all ${className}`}
+      className={`bento p-5 flex flex-col justify-between group hover:-translate-y-1 ${className}`}
     >
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -36,17 +36,17 @@ export default function SubjectCard({
             {code}
           </Badge>
           {credits && (
-            <span className="text-[11px] font-mono text-slate-500 font-semibold">
+            <span className="text-[11px] font-mono text-ink-3 font-semibold">
               {credits} Credits
             </span>
           )}
         </div>
 
-        <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 group-hover:text-primary-violet transition-colors line-clamp-2 mb-2">
+        <h3 className="font-bold text-base text-ink group-hover:text-primary-violet transition-colors line-clamp-2 mb-2">
           {name}
         </h3>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-4">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-ink-3 mb-4">
           {branchName && <span>{branchName}</span>}
           {semesterNumber && (
             <>
@@ -57,17 +57,17 @@ export default function SubjectCard({
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-xs text-slate-500">
+      <div className="pt-4 border-t border-line flex items-center justify-between">
+        <div className="flex items-center gap-3 text-xs text-ink-3">
           {unitsCount !== undefined && (
             <span className="flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-slate-400" />
+              <Layers className="w-3.5 h-3.5 text-ink-3" />
               {unitsCount} Units
             </span>
           )}
           {notesCount !== undefined && (
             <span className="flex items-center gap-1">
-              <FileText className="w-3.5 h-3.5 text-slate-400" />
+              <FileText className="w-3.5 h-3.5 text-ink-3" />
               {notesCount} Notes
             </span>
           )}

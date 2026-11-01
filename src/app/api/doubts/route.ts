@@ -1,25 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { enforceRateLimits } from "@/lib/rate-limit";
+import { ownedFileUrl, optionalId, optionalText, parseJson, parseQuery, text, z } from "@/lib/validation";
+
+const listQuery = z.object({
+  subjectId: optionalId,
+  tag: optionalText(40),
+  search: optionalText(120),
+  resolved: z.enum(["true", "false"]).optional(),
+});
+
+const createBody = z.object({
+  title: text(200, "Title"),
+  content: text(10_000, "Content"),
+  subjectId: optionalId,
+  tags: optionalText(200),
+  imageUrl: ownedFileUrl,
+});
 
 export async function GET(req: NextRequest) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
-    const tag = searchParams.get("tag");
-    const search = searchParams.get("search");
-    const resolved = searchParams.get("resolved");
+  const parsed = parseQuery(req, listQuery);
+  if (parsed.error) return parsed.error;
+  const { subjectId, tag, search, resolved } = parsed.data;
 
-    const where: any = {};
+  try {
+    const where: Record<string, unknown> = {};
     if (subjectId) where.subjectId = subjectId;
-    if (tag) where.tags = { contains: tag };
-    if (resolved === "true") where.isResolved = true;
-    if (resolved === "false") where.isResolved = false;
+    if (tag) where.tags = { contains: tag, mode: "insensitive" };
+    if (resolved) where.isResolved = resolved === "true";
     if (search) {
       where.OR = [
-        { title: { contains: search } },
-        { content: { contains: search } },
-        { tags: { contains: search } },
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+        { tags: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -42,40 +56,38 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Please log in to ask a doubt" }, { status: 401 });
+  }
+
+  const limited = enforceRateLimits(
+    [{ key: `doubt:${user.id}`, limit: 10, windowMs: 10 * 60_000 }],
+    "You're posting very quickly. Take a breather and try again in a few minutes."
+  );
+  if (limited) return limited;
+
+  const parsed = await parseJson(req, createBody);
+  if (parsed.error) return parsed.error;
+  const { title, content, subjectId, tags, imageUrl } = parsed.data;
+
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Please log in to ask a doubt" }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const { title, content, subjectId, tags, imageUrl } = body;
-
-    if (!title || !content) {
-      return NextResponse.json({ error: "Title and content are required" }, { status: 400 });
-    }
-
     const doubt = await prisma.doubtPost.create({
       data: {
         userId: user.id,
         title,
         content,
-        subjectId: subjectId || null,
-        tags: tags || null,
-        imageUrl: imageUrl || null,
+        subjectId: subjectId ?? null,
+        tags: tags ?? null,
+        imageUrl: imageUrl ?? null,
       },
     });
 
-    // Award XP for engaging in community Q&A
     await prisma.xpTransaction.create({
-      data: {
-        userId: user.id,
-        amount: 10,
-        action: "POST_DOUBT",
-      },
+      data: { userId: user.id, amount: 10, action: "POST_DOUBT" },
     });
 
-    return NextResponse.json({ doubt }, { status: 201 });
+    return NextResponse.json({ doubt, xpEarned: 10 }, { status: 201 });
   } catch (error) {
     console.error("Error creating doubt:", error);
     return NextResponse.json({ error: "Failed to create doubt" }, { status: 500 });

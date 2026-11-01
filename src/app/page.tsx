@@ -1,569 +1,505 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import {
-  GraduationCap,
-  BookOpen,
-  FileText,
-  Video,
-  Radio,
-  HelpCircle,
   ArrowRight,
-  Download,
-  Star,
-  Code,
-  Cpu,
-  Bot,
   BarChart3,
-  Radio as RadioIcon,
-  Zap,
-  Cog,
+  Bot,
+  BrainCircuit,
   Building2,
-  Sparkles,
-  Compass,
+  Code,
+  Cog,
+  Cpu,
+  FileText,
   Layers,
-  CheckCircle2,
-  Terminal,
+  MoonStar,
+  NotebookPen,
+  PlayCircle,
+  Radio,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Timer,
+  Zap,
+  type LucideIcon,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import Hero from "@/components/hero/Hero";
 import LiveCountdown from "@/components/live/LiveCountdown";
+import Buddy from "@/components/mascot/Buddy";
+import { Badge, ButtonLink, Eyebrow } from "@/components/kit";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { CountUp, Magnetic, Marquee, TiltCard } from "@/components/motion/Interactive";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 
-export const revalidate = 60; // ISR cache
+export const revalidate = 60;
 
-export default async function HomePage() {
-  // Fetch real data from database
-  const [branches, featuredNotes, featuredVideos, upcomingLiveClass, announcements] =
-    await Promise.all([
-      prisma.branch.findMany({
-        orderBy: { order: "asc" },
-        take: 8,
-        include: { _count: { select: { subjects: true, notes: true } } },
-      }),
+const BRANCH_ICONS: Record<string, LucideIcon> = {
+  CSE: Code,
+  IT: Cpu,
+  AIML: Bot,
+  DS: BarChart3,
+  ECE: Radio,
+  EE: Zap,
+  ME: Cog,
+  CE: Building2,
+};
+
+const UNIVERSITIES = ["AKTU", "VTU", "RTU", "SPPU", "GTU", "MAKAUT", "JNTU", "Anna Univ", "IPU", "DTU", "BPUT", "RGPV"];
+
+const YEARS = [
+  { year: 1, title: "Common Engineering", sems: "Sem 1 & 2", desc: "Physics, Chemistry, C Programming, Basic Electrical, Calculus." },
+  { year: 2, title: "Core Department", sems: "Sem 3 & 4", desc: "DSA, OOP in Java/C++, Operating Systems, COA, Discrete Maths." },
+  { year: 3, title: "Advanced Systems", sems: "Sem 5 & 6", desc: "DBMS, Computer Networks, Theory of Computation, DAA." },
+  { year: 4, title: "GATE & Placements", sems: "Sem 7 & 8", desc: "AI, Cloud & DevOps, Cyber Security, electives, major project." },
+];
+
+const REVIEWS = [
+  { name: "Siddharth Maurya", college: "AKTU Lucknow · CSE 3rd year", text: "The handwritten DSA and OS notes have exact exam questions. The flashcards made revision stick. Scored 8.9 SGPA!" },
+  { name: "Ananya Iyer", college: "VTU Belagavi · ECE 2nd year", text: "Timed quizzes found my weak spots in Digital Electronics, and Buddy turned every wrong answer into a flashcard." },
+  { name: "Karan Patel", college: "RTU Kota · IT 4th year", text: "Night Study mode for late prep, live doubt rooms with a whiteboard, and DBMS cheat sheets. Cracked my first offer!" },
+];
+
+async function loadHome() {
+  try {
+    const [branches, featuredNotes, featuredVideos, upcomingLiveClass, announcement, paperCount, questionCount] = await Promise.all([
+      prisma.branch.findMany({ orderBy: { order: "asc" }, take: 8, include: { _count: { select: { subjects: true, notes: true } } } }),
       prisma.note.findMany({
         where: { isPublished: true, isFeatured: true },
-        include: {
-          subject: { select: { name: true, code: true } },
-          branch: { select: { name: true, code: true } },
-        },
+        include: { subject: { select: { name: true, code: true } } },
         take: 4,
         orderBy: { downloadCount: "desc" },
       }),
-      prisma.videoLecture.findMany({
-        where: { isPublished: true },
-        include: { subject: { select: { name: true, code: true } } },
-        take: 3,
-        orderBy: { order: "asc" },
-      }),
+      prisma.videoLecture.findMany({ where: { isPublished: true }, include: { subject: { select: { name: true, code: true } } }, take: 3, orderBy: { order: "asc" } }),
       prisma.liveClass.findFirst({
         where: { status: { in: ["SCHEDULED", "LIVE"] } },
-        include: {
-          instructor: { select: { name: true, college: true } },
-          subject: { select: { name: true, code: true } },
-        },
+        include: { instructor: { select: { name: true } }, subject: { select: { name: true, code: true } } },
         orderBy: { scheduledAt: "asc" },
       }),
-      prisma.announcement.findMany({
-        where: { isPublished: true },
-        take: 1,
-        orderBy: { createdAt: "desc" },
-      }),
+      prisma.announcement.findFirst({ where: { isPublished: true }, orderBy: { createdAt: "desc" } }),
+      prisma.examPaper.count(),
+      prisma.questionBank.count(),
     ]);
+    return { branches, featuredNotes, featuredVideos, upcomingLiveClass, announcement, paperCount, questionCount };
+  } catch (error) {
+    console.error("Home page data unavailable:", error);
+    return { branches: [], featuredNotes: [], featuredVideos: [], upcomingLiveClass: null, announcement: null, paperCount: 0, questionCount: 0 };
+  }
+}
 
-  const branchIcons: Record<string, any> = {
-    CSE: Code,
-    IT: Cpu,
-    AIML: Bot,
-    DS: BarChart3,
-    ECE: RadioIcon,
-    EE: Zap,
-    ME: Cog,
-    CE: Building2,
-  };
+export default async function HomePage() {
+  const { branches, featuredNotes, featuredVideos, upcomingLiveClass, announcement, paperCount, questionCount } = await loadHome();
 
   return (
-    <div className="space-y-16 lg:space-y-24 pb-20 relative">
-      {/* Top Notification Ticker if announcement exists */}
-      {announcements.length > 0 && (
-        <div className="bg-desk-card border-b border-desk-border text-slate-200 py-2.5 px-4 text-xs font-medium text-center flex items-center justify-center gap-2">
-          <span className="font-mono bg-primary-violet/20 text-primary-violet border border-primary-violet/30 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
-            NOTICE
-          </span>
-          <span className="truncate">{announcements[0].title}</span>
-          <Link href="/notes" className="font-mono text-accent-cyan underline font-bold hover:text-accent-cyan/80 shrink-0">
-            Learn More →
+    <div className="relative pb-10">
+      <ScrollProgress />
+
+      {announcement && (
+        <div className="relative z-20 border-b border-line bg-surface/80 px-4 py-2 text-center text-xs font-medium text-ink-2">
+          <Badge tone="brand" className="mr-2">Notice</Badge>
+          <span>{announcement.title}</span>
+          <Link href="/notes" className="ml-2 font-bold text-accent hover:underline">
+            Learn more →
           </Link>
         </div>
       )}
 
-      {/* 1. Hero Section: The Engineer's Study Desk */}
-      <section className="relative overflow-hidden pt-8 lg:pt-16">
-        {/* Subtle Blueprint grid overlay */}
-        <div className="absolute inset-0 bg-blueprint opacity-60 pointer-events-none" />
-
-        {/* Ambient Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-primary-violet/10 blur-3xl pointer-events-none rounded-full" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-6">
-            {/* System Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full desk-card text-xs font-mono font-medium text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-accent-cyan animate-ping" />
-              <span className="text-accent-cyan font-bold">EDTECH_OS</span>
-              <span className="text-slate-500">•</span>
-              <span>Dedicated B.Tech Engineering Learning Desk</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
-              Your Engineering Journey,{" "}
-              <span className="bg-gradient-to-r from-primary-violet via-indigo-500 to-accent-cyan bg-clip-text text-transparent">
-                Simplified.
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-              High-yield topper handwritten notes, solved previous year papers (PYQs), unit-wise video lectures, live doubt clearing classes, and online practice quizzes for all 4 years of B.Tech across India.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <Link
-                href="/notes"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-primary-violet hover:bg-primary-violet/90 shadow-glow-sm hover:shadow-glow transition-all hover:scale-105"
-              >
-                <Download className="w-4 h-4" />
-                Download Study Notes
-              </Link>
-              <Link
-                href="/pyq"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 desk-card hover:border-primary-violet transition-all shadow-xs"
-              >
-                <FileText className="w-4 h-4 text-accent-cyan" />
-                Solved PYQ Bank
-              </Link>
-              <Link
-                href="/quizzes"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 desk-card hover:border-primary-violet transition-all shadow-xs"
-              >
-                <HelpCircle className="w-4 h-4 text-accent-amber" />
-                Practice Quizzes
-              </Link>
-            </div>
-
-            {/* Desk Metric Chips */}
-            <div className="pt-8 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto border-t border-desk-border mt-8">
-              <div className="p-3 desk-card rounded-xl text-center">
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">8+</div>
-                <div className="font-mono text-[11px] text-slate-400 font-medium uppercase mt-0.5">B.Tech Branches</div>
-              </div>
-              <div className="p-3 desk-card rounded-xl text-center">
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-primary-violet">4 Years</div>
-                <div className="font-mono text-[11px] text-slate-400 font-medium uppercase mt-0.5">Sem Roadmaps</div>
-              </div>
-              <div className="p-3 desk-card rounded-xl text-center">
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-accent-cyan">100% Free</div>
-                <div className="font-mono text-[11px] text-slate-400 font-medium uppercase mt-0.5">Open Materials</div>
-              </div>
-              <div className="p-3 desk-card rounded-xl text-center">
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-accent-amber">4.9 / 5.0</div>
-                <div className="font-mono text-[11px] text-slate-400 font-medium uppercase mt-0.5">Student Rating</div>
-              </div>
-            </div>
+      <Hero>
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-2" data-hero-fade>
+            <span className="sticker bg-warn text-canvas">Self-hosted · Free forever</span>
+            <span className="glass inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-ink-2">
+              <ShieldCheck className="size-3.5 text-ok" /> No third-party trackers
+            </span>
           </div>
+
+          <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] font-bold leading-[1.02] text-ink">
+            <span data-split>Your engineering journey,</span>{" "}
+            <span data-split-word className="text-gradient-brand inline-block pb-1">
+              simplified.
+            </span>
+          </h1>
+
+          <p className="max-w-xl text-base leading-relaxed text-ink-2 sm:text-lg" data-hero-fade>
+            Topper notes, solved PYQs, lectures and live doubt rooms for all four years of B.Tech, plus Buddy, a private AI study
+            partner who plans your days, quizzes you with spaced repetition and cheers every streak.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3" data-hero-fade>
+            <Magnetic>
+              <ButtonLink href="/student/board" size="lg" iconRight={<ArrowRight />}>
+                Open Study Board
+              </ButtonLink>
+            </Magnetic>
+            <ButtonLink href="/pyq" variant="secondary" size="lg" icon={<FileText className="text-accent" />}>
+              Solved PYQ bank
+            </ButtonLink>
+          </div>
+
+          <dl className="grid max-w-xl grid-cols-2 gap-3 pt-2 sm:grid-cols-4" data-hero-fade>
+            {[
+              { label: "Branches", value: Math.max(branches.length, 8), suffix: "" },
+              { label: "PYQ papers", value: paperCount, suffix: "+" },
+              { label: "Questions", value: questionCount, suffix: "+" },
+              { label: "Free", value: 100, suffix: "%" },
+            ].map((stat) => (
+              <div key={stat.label} className="glass rounded-2xl px-3 py-2.5">
+                <dd className="font-display text-2xl font-bold text-ink">
+                  <CountUp value={stat.value} suffix={stat.suffix} />
+                </dd>
+                <dt className="font-mono text-[10px] font-bold uppercase tracking-wider text-ink-3">{stat.label}</dt>
+              </div>
+            ))}
+          </dl>
         </div>
+      </Hero>
+
+      <section aria-label="Universities covered" className="relative z-10 border-y border-line bg-surface/60 py-5">
+        <Marquee>
+          {UNIVERSITIES.map((u, i) => (
+            <span
+              key={u}
+              className="sticker whitespace-nowrap bg-surface px-3 py-1 text-xs text-ink"
+              style={{ transform: `rotate(${i % 2 ? 2 : -2}deg)`, boxShadow: `2px 2px 0 0 var(--${["brand", "accent", "warn", "ok"][i % 4]})` }}
+            >
+              {u}
+            </span>
+          ))}
+        </Marquee>
       </section>
 
-      {/* 2. Upcoming Live Class Alert Bar */}
-      {upcomingLiveClass && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl desk-card p-6 sm:p-8 text-white border-primary-violet/40 shadow-glow-sm">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-violet/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+          <Eyebrow className="text-brand">Everything for exam season</Eyebrow>
+          <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-5xl">One desk. Every tool you need.</h2>
+          <p className="mt-3 text-ink-3">Built and hosted by us: the AI, the video, the live rooms and the search all run on our own servers.</p>
+        </Reveal>
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500 text-white uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> LIVE CLASS
-                  </span>
-                  <span className="font-mono text-xs text-slate-400">
-                    Subject: {upcomingLiveClass.subject.name} ({upcomingLiveClass.subject.code})
-                  </span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-white">{upcomingLiveClass.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-300 max-w-2xl line-clamp-2">
-                  {upcomingLiveClass.description}
-                </p>
-                <div className="text-xs text-slate-400 font-mono">
-                  Instructor: <span className="text-slate-200">{upcomingLiveClass.instructor?.name || "Senior Faculty"}</span> • {upcomingLiveClass.durationMinutes} Mins
-                </div>
+        <Stagger className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-4 md:grid-cols-6">
+          <StaggerItem className="bento group p-6 md:col-span-4 md:row-span-2">
+            <div className="flex h-full flex-col justify-between gap-6">
+              <div>
+                <Badge tone="brand">Study Board</Badge>
+                <h3 className="mt-3 font-display text-2xl font-bold text-ink sm:text-3xl">Plan, focus and revise in one dark-mode board.</h3>
+                <p className="mt-2 max-w-md text-sm text-ink-3">Pomodoro focus with Buddy&apos;s headphones on, today&apos;s plan from your exam countdown, and a GitHub-style study heatmap.</p>
               </div>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
-                <LiveCountdown
-                  scheduledAt={upcomingLiveClass.scheduledAt}
-                  status={upcomingLiveClass.status}
-                />
-                <Link
-                  href={`/live-classes/${upcomingLiveClass.id}`}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-primary-violet hover:bg-primary-violet/90 text-white shadow-glow-sm transition-all hover:scale-105"
-                >
-                  Join Class →
-                </Link>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="clay flex flex-col items-center justify-center p-4">
+                  <Timer className="size-6 text-brand" />
+                  <span className="mt-2 font-mono text-2xl font-black text-ink">25:00</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-3">Focus</span>
+                </div>
+                <div className="col-span-2 rounded-2xl border border-line bg-surface-2 p-4">
+                  <div className="grid grid-cols-[repeat(14,1fr)] gap-1">
+                    {Array.from({ length: 56 }, (_, i) => (
+                      <span
+                        key={i}
+                        className="aspect-square rounded-[3px]"
+                        style={{ background: `color-mix(in oklab, var(--ok) ${[8, 30, 55, 85, 15, 0, 65][(i * 7 + i) % 7]}%, var(--surface-3))` }}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-ink-3">12-day streak · 34 focus hours</p>
+                </div>
               </div>
             </div>
-          </div>
+          </StaggerItem>
+
+          <StaggerItem className="bento p-6 md:col-span-2 md:row-span-2">
+            <div className="flex h-full flex-col">
+              <Badge tone="accent">AI Buddy</Badge>
+              <h3 className="mt-3 font-display text-xl font-bold text-ink">Answers from your syllabus, not the internet.</h3>
+              <div className="glass mt-4 rounded-2xl rounded-bl-md p-3 text-xs text-ink-2">Explain the 4 Coffman conditions with a PYQ.</div>
+              <div className="mt-auto flex items-end justify-between pt-4">
+                <p className="max-w-[60%] text-xs text-ink-3">Runs on our own GPU with retrieval over BTECHBUDDY notes and PYQs.</p>
+                <Buddy mood="thinking" className="h-28 w-28" />
+              </div>
+            </div>
+          </StaggerItem>
+
+          {[
+            { color: "text-warn", icon: Layers, title: "Spaced-repetition flashcards", body: "FSRS schedules every PYQ so you revise right before you'd forget.", href: "/student/flashcards" },
+            { color: "text-ok", icon: Radio, title: "Live rooms + whiteboard", body: "Self-hosted video classes with a shared whiteboard and recordings.", href: "/live-classes" },
+            { color: "text-danger", icon: NotebookPen, title: "Notes reader", body: "Dark reading mode, highlights, page memory and offline saving.", href: "/notes" },
+          ].map(({ color, icon: Icon, title, body, href }) => (
+            <StaggerItem key={title} className="md:col-span-2">
+              <Link href={href} className="bento group flex h-full flex-col p-6">
+                <span className={`clay flex size-12 items-center justify-center !rounded-2xl ${color}`}>
+                  <Icon className="size-5" />
+                </span>
+                <h3 className="mt-4 font-display text-lg font-bold text-ink">{title}</h3>
+                <p className="mt-1 text-sm text-ink-3">{body}</p>
+                <span className="mt-auto inline-flex items-center gap-1 pt-4 text-xs font-bold text-brand">
+                  Explore <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {upcomingLiveClass && (
+        <section className="relative z-10 mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="brutal relative overflow-hidden p-6 sm:p-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="sticker bg-danger text-canvas">
+                    <span className="size-1.5 animate-pulse rounded-full bg-canvas" /> Live class
+                  </span>
+                  <span className="font-mono text-xs text-ink-3">
+                    {upcomingLiveClass.subject.name} ({upcomingLiveClass.subject.code})
+                  </span>
+                </div>
+                <h3 className="font-display text-xl font-bold text-ink sm:text-2xl">{upcomingLiveClass.title}</h3>
+                {upcomingLiveClass.description && <p className="line-clamp-2 max-w-2xl text-sm text-ink-2">{upcomingLiveClass.description}</p>}
+                <p className="font-mono text-xs text-ink-3">
+                  With <span className="text-ink">{upcomingLiveClass.instructor?.name ?? "Senior faculty"}</span> · {upcomingLiveClass.durationMinutes} min
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-col items-start gap-4 sm:flex-row sm:items-center">
+                <LiveCountdown scheduledAt={upcomingLiveClass.scheduledAt} status={upcomingLiveClass.status} />
+                <ButtonLink href={`/live-classes/${upcomingLiveClass.id}`} iconRight={<ArrowRight />}>
+                  Join class
+                </ButtonLink>
+              </div>
+            </div>
+          </Reveal>
         </section>
       )}
 
-      {/* 3. Academic Year Grid (1st, 2nd, 3rd, 4th Year) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-          <div className="font-mono text-xs text-primary-violet uppercase tracking-widest font-bold">
-            Curriculum Structure
+      <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <Eyebrow className="text-accent">Curriculum</Eyebrow>
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Pick your year</h2>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-            Choose Your Academic Year
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Curated roadmaps, subject notes, previous question papers, and video lectures.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              year: 1,
-              title: "1st Year B.Tech",
-              subtitle: "Common Engineering",
-              sems: "Semesters 1 & 2",
-              desc: "Engineering Physics, Chemistry, C Programming, Basic Electrical, Calculus.",
-              code: "YEAR_01",
-            },
-            {
-              year: 2,
-              title: "2nd Year B.Tech",
-              subtitle: "Core Department",
-              sems: "Semesters 3 & 4",
-              desc: "Data Structures & Algorithms, Java/C++ OOP, Operating Systems, COA.",
-              code: "YEAR_02",
-            },
-            {
-              year: 3,
-              title: "3rd Year B.Tech",
-              subtitle: "Advanced Systems",
-              sems: "Semesters 5 & 6",
-              desc: "DBMS, Computer Networks, Theory of Computation, Algorithm Design.",
-              code: "YEAR_03",
-            },
-            {
-              year: 4,
-              title: "4th Year B.Tech",
-              subtitle: "GATE & Placements",
-              sems: "Semesters 7 & 8",
-              desc: "Artificial Intelligence, Cloud DevOps, Cyber Security, Major Projects.",
-              code: "YEAR_04",
-            },
-          ].map((item) => (
-            <Link
-              key={item.year}
-              href={`/year/${item.year}`}
-              className="group relative p-6 rounded-2xl desk-card hover:border-primary-violet transition-all hover:-translate-y-1 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-primary-violet/10 text-primary-violet flex items-center justify-center font-mono font-black text-lg border border-primary-violet/30 group-hover:scale-105 transition-transform">
-                    {item.year}
+          <p className="max-w-md text-sm text-ink-3">Roadmaps, subject notes, PYQs and lectures mapped to your semester.</p>
+        </Reveal>
+        <Stagger className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {YEARS.map((y, i) => (
+            <StaggerItem key={y.year}>
+              <TiltCard className="h-full rounded-2xl">
+                <Link href={`/year/${y.year}`} className="brutal brutal-interactive group flex h-full flex-col p-6">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="clay flex size-14 items-center justify-center font-display text-2xl font-black text-ink"
+                      style={{ boxShadow: undefined, color: `var(--${["brand", "accent", "warn", "ok"][i]})` }}
+                    >
+                      {y.year}
+                    </span>
+                    <span className="font-mono text-[10px] font-bold text-ink-3">{y.sems}</span>
                   </div>
-                  <span className="font-mono text-[10px] text-slate-400 border border-desk-border px-2 py-0.5 rounded">
-                    [{item.code}]
+                  <h3 className="mt-5 font-display text-lg font-bold text-ink">{y.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-3">{y.desc}</p>
+                  <span className="mt-auto inline-flex items-center gap-1 pt-5 text-xs font-bold text-brand">
+                    View roadmap <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                   </span>
-                </div>
-
-                <span className="font-mono text-[11px] font-bold text-accent-cyan uppercase tracking-wider">
-                  {item.subtitle}
-                </span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1 group-hover:text-primary-violet transition-colors">
-                  {item.title}
-                </h3>
-                <p className="font-mono text-[11px] font-medium text-slate-400 mt-0.5">{item.sems}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-desk-border flex items-center justify-between text-xs font-mono font-bold text-primary-violet">
-                <span>View Roadmaps</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. Engineering Branches */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="font-mono text-xs text-accent-cyan uppercase tracking-widest font-bold">
-              Specialized Departments
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Engineering Branches
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Organized curricula conforming to major Indian technical universities.
-            </p>
-          </div>
-          <Link
-            href="/branches"
-            className="font-mono text-xs font-bold text-primary-violet hover:underline flex items-center gap-1"
-          >
-            All Branches <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {branches.map((b) => {
-            const Icon = branchIcons[b.code] || BookOpen;
-            return (
-              <Link
-                key={b.id}
-                href={`/branches/${b.id}`}
-                className="p-5 rounded-2xl desk-card hover:border-primary-violet transition-all hover:-translate-y-0.5 group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary-violet/10 text-primary-violet flex items-center justify-center mb-3 group-hover:bg-primary-violet group-hover:text-white transition-colors border border-primary-violet/20">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div className="font-mono text-xs font-bold text-accent-cyan">
-                  {b.code}
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary-violet transition-colors mt-0.5">
-                  {b.name}
-                </h3>
-                <div className="font-mono text-[11px] text-slate-400 mt-2">
-                  {b._count.subjects} Subjects • {b._count.notes} Notes
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 5. Featured Notes & PYQs */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="font-mono text-xs text-accent-amber uppercase tracking-widest font-bold">
-              High-Yield Resources
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Topper Handwritten Notes & PYQs
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Chapter-wise verified notes and solved previous year examination papers.
-            </p>
-          </div>
-          <Link
-            href="/notes"
-            className="font-mono text-xs font-bold text-primary-violet hover:underline flex items-center gap-1"
-          >
-            Explore All Notes <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredNotes.map((note) => (
-            <div
-              key={note.id}
-              className="p-5 rounded-2xl desk-card hover:border-primary-violet flex flex-col justify-between transition-all"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                    {note.fileType}
-                  </span>
-                  {note.isPYQ ? (
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-accent-amber/10 text-accent-amber border border-accent-amber/30">
-                      PYQ Solved
-                    </span>
-                  ) : (
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-primary-violet/10 text-primary-violet border border-primary-violet/30">
-                      Topper Note
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
-                  {note.title}
-                </h3>
-                <p className="font-mono text-xs text-primary-violet font-semibold mt-1">
-                  {note.subject.name}
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
-                  {note.description}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-desk-border flex items-center justify-between">
-                <div className="font-mono text-[11px] text-slate-400 flex items-center gap-2">
-                  <span>{note.fileSize}</span>
-                  <span>•</span>
-                  <span>{note.downloadCount} dl</span>
-                </div>
-                <Link
-                  href={`/notes/${note.id}`}
-                  className="px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-primary-violet hover:bg-primary-violet/90 text-white transition-colors"
-                >
-                  Preview PDF
                 </Link>
-              </div>
-            </div>
+              </TiltCard>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
-      {/* 6. Video Lecture Showcase */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="font-mono text-xs text-primary-violet uppercase tracking-widest font-bold">
-              Visual Learning
+      {branches.length > 0 && (
+        <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <Eyebrow className="text-warn">Departments</Eyebrow>
+              <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Engineering branches</h2>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Curated Video Lectures
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Engineering concepts explained clearly with step-by-step problem walkthroughs.
-            </p>
-          </div>
-          <Link
-            href="/videos"
-            className="font-mono text-xs font-bold text-primary-violet hover:underline flex items-center gap-1"
-          >
-            All Lectures <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredVideos.map((video) => (
-            <Link
-              key={video.id}
-              href={`/videos/${video.id}`}
-              className="group rounded-2xl desk-card overflow-hidden hover:border-primary-violet transition-all"
-            >
-              <div className="relative aspect-video bg-desk-card overflow-hidden">
-                <img
-                  src={video.thumbnail || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600"}
-                  alt={video.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-primary-violet/90 text-white flex items-center justify-center shadow-glow-sm group-hover:scale-110 transition-transform">
-                    <Video className="w-5 h-5 ml-0.5" />
-                  </div>
-                </div>
-                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-desk-canvas/90 text-white border border-desk-border">
-                  {video.duration}
-                </span>
-              </div>
-              <div className="p-4">
-                <div className="font-mono text-xs font-semibold text-primary-violet">
-                  {video.subject.name}
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-1 line-clamp-2 group-hover:text-primary-violet transition-colors">
-                  {video.title}
-                </h3>
-              </div>
+            <Link href="/branches" className="inline-flex items-center gap-1 text-sm font-bold text-brand hover:underline">
+              All branches <ArrowRight className="size-4" />
             </Link>
-          ))}
-        </div>
-      </section>
+          </Reveal>
+          <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4" stagger={0.05}>
+            {branches.map((b) => {
+              const Icon = BRANCH_ICONS[b.code] ?? BrainCircuit;
+              return (
+                <StaggerItem key={b.id} variant="pop">
+                  <Link href={`/branches/${b.id}`} className="bento group flex h-full flex-col p-5">
+                    <span className="clay flex size-12 items-center justify-center !rounded-2xl text-brand transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                      <Icon className="size-5" />
+                    </span>
+                    <span className="mt-4 font-mono text-xs font-bold text-accent">{b.code}</span>
+                    <h3 className="text-sm font-bold text-ink">{b.name}</h3>
+                    <span className="mt-2 font-mono text-[11px] text-ink-3">
+                      {b._count.subjects} subjects · {b._count.notes} notes
+                    </span>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
+          </Stagger>
+        </section>
+      )}
 
-      {/* 7. Student Reviews & EdTech Pride */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-          <div className="font-mono text-xs text-accent-cyan uppercase tracking-widest font-bold">
-            Verified Testimonials
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-            Trusted by Engineering Students
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Real feedback from students who aced semester exams and placement interviews.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              name: "Siddharth Maurya",
-              college: "AKTU Lucknow (CSE 3rd Year)",
-              text: "BTECHBUDDY notes saved my semester exams! The handwritten DSA and Operating System notes have step-by-step diagrams and exact exam questions. Scored 8.9 SGPA!",
-              rating: 5,
-            },
-            {
-              name: "Ananya Iyer",
-              college: "VTU Belagavi (ECE 2nd Year)",
-              text: "The timed practice quizzes helped me pinpoint my weak areas in Digital Electronics. The explanations after each attempt are crystal clear.",
-              rating: 5,
-            },
-            {
-              name: "Karan Patel",
-              college: "RTU Kota (IT 4th Year)",
-              text: "The live doubt sessions and DBMS normalization cheat sheets made all the difference during placements. Cracked my first product engineering offer!",
-              rating: 5,
-            },
-          ].map((review, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-2xl desk-card space-y-3"
-            >
-              <div className="flex items-center gap-1 text-accent-amber">
-                {[...Array(review.rating)].map((_, r) => (
-                  <Star key={r} className="w-4 h-4 fill-accent-amber" />
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 italic leading-relaxed">
-                &ldquo;{review.text}&rdquo;
-              </p>
-              <div className="pt-2 border-t border-desk-border">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100">{review.name}</div>
-                <div className="font-mono text-[11px] text-slate-400">{review.college}</div>
-              </div>
+      {featuredNotes.length > 0 && (
+        <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <Eyebrow className="text-danger">High-yield</Eyebrow>
+              <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Topper notes & solved PYQs</h2>
             </div>
-          ))}
-        </div>
-      </section>
+            <Link href="/notes" className="inline-flex items-center gap-1 text-sm font-bold text-brand hover:underline">
+              Explore all notes <ArrowRight className="size-4" />
+            </Link>
+          </Reveal>
+          <Stagger className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {featuredNotes.map((note) => (
+              <StaggerItem key={note.id}>
+                <Link href={`/notes/${note.id}`} className="bento group flex h-full flex-col p-5">
+                  <div className="flex items-center justify-between">
+                    <Badge tone="danger">{note.fileType}</Badge>
+                    <Badge tone={note.isPYQ ? "warn" : "brand"}>{note.isPYQ ? "PYQ solved" : "Topper note"}</Badge>
+                  </div>
+                  <h3 className="mt-4 line-clamp-2 font-display text-base font-bold text-ink group-hover:text-brand">{note.title}</h3>
+                  <p className="mt-1 font-mono text-xs font-semibold text-brand">{note.subject.name}</p>
+                  {note.description && <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink-3">{note.description}</p>}
+                  <div className="mt-auto flex items-center justify-between border-t border-line pt-4 font-mono text-[11px] text-ink-3">
+                    <span>
+                      {note.fileSize} · {note.downloadCount} downloads
+                    </span>
+                    <ArrowRight className="size-4 text-brand transition-transform group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      )}
 
-      {/* 8. Bottom CTA Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl desk-card p-8 sm:p-12 text-center space-y-6 shadow-glow-sm relative overflow-hidden border-primary-violet/40">
-          <div className="absolute inset-0 bg-blueprint opacity-50 pointer-events-none" />
-          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-1.5 font-mono text-xs text-accent-cyan px-2.5 py-1 rounded bg-accent-cyan/10 border border-accent-cyan/30">
-              <Terminal className="w-3.5 h-3.5" /> START STUDYING NOW
+      {featuredVideos.length > 0 && (
+        <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <Eyebrow className="text-brand">Lectures</Eyebrow>
+              <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Watch, even on 2G</h2>
+              <p className="mt-2 max-w-lg text-sm text-ink-3">Adaptive streaming from our own servers, with a 240p data-saver track.</p>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">
-              Ready to Ace Your B.Tech Journey?
-            </h2>
-            <p className="text-sm sm:text-base text-slate-300 font-normal">
-              Join thousands of B.Tech students across India. Access verified topper notes, PYQs, and video masterclasses today.
+            <Link href="/videos" className="inline-flex items-center gap-1 text-sm font-bold text-brand hover:underline">
+              All lectures <ArrowRight className="size-4" />
+            </Link>
+          </Reveal>
+          <Stagger className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            {featuredVideos.map((video) => (
+              <StaggerItem key={video.id}>
+                <Link href={`/videos/${video.id}`} className="bento group block overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden bg-surface-2">
+                    <img
+                      src={video.thumbnail || "/placeholders/lecture.svg"}
+                      alt=""
+                      loading="lazy"
+                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-canvas/30 opacity-0 transition-opacity group-hover:opacity-100">
+                      <PlayCircle className="size-14 text-on-brand drop-shadow-lg" />
+                    </div>
+                    <span className="absolute bottom-2 right-2 rounded-md bg-canvas/85 px-2 py-0.5 font-mono text-[10px] font-bold text-ink">{video.duration}</span>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-mono text-xs font-semibold text-brand">{video.subject.name}</p>
+                    <h3 className="mt-1 line-clamp-2 text-sm font-bold text-ink group-hover:text-brand">{video.title}</h3>
+                  </div>
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      )}
+
+      <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <Reveal>
+            <Eyebrow className="text-warn">Made for 2 AM revision</Eyebrow>
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Four themes. Zero eye strain.</h2>
+            <p className="mt-3 max-w-lg text-ink-3">
+              Study Board is a calm ink-navy chalkboard. Night Study removes blue light after 10 PM automatically. Paper is for bright
+              daylight and High Contrast is for maximum legibility. Change it any time from the palette menu.
             </p>
-            <div className="pt-2 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/register"
-                className="px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-primary-violet hover:bg-primary-violet/90 text-white transition-all shadow-glow-sm hover:scale-105"
-              >
-                Create Free Account
-              </Link>
-              <Link
-                href="/login"
-                className="px-6 py-3 rounded-xl text-xs sm:text-sm font-bold desk-card text-white hover:border-primary-violet transition-all"
-              >
-                Sign In
-              </Link>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <Badge tone="brand" variant="sticker">
+                <MoonStar className="size-3" /> Auto night mode
+              </Badge>
+              <Badge tone="accent" variant="sticker">
+                Focus mode
+              </Badge>
+              <Badge tone="ok" variant="sticker">
+                Data saver
+              </Badge>
+            </div>
+          </Reveal>
+          <Stagger className="grid grid-cols-2 gap-4" stagger={0.1}>
+            {[
+              { name: "Study Board", theme: "study" },
+              { name: "Night Study", theme: "night" },
+              { name: "Paper", theme: "light" },
+              { name: "High Contrast", theme: "contrast" },
+            ].map((t) => (
+              <StaggerItem key={t.theme}>
+                <div data-theme={t.theme} className={`${t.theme === "light" ? "" : "dark"} brutal overflow-hidden bg-canvas p-4 text-ink`}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="size-2.5 rounded-full bg-danger" />
+                    <span className="size-2.5 rounded-full bg-warn" />
+                    <span className="size-2.5 rounded-full bg-ok" />
+                  </div>
+                  <div className="rounded-xl border border-line bg-surface p-3">
+                    <div className="h-2 w-2/3 rounded-full bg-ink/80" />
+                    <div className="mt-2 h-2 w-full rounded-full bg-ink-3/50" />
+                    <div className="mt-1.5 h-2 w-4/5 rounded-full bg-ink-3/50" />
+                    <div className="mt-3 inline-flex rounded-lg bg-brand px-2 py-1 text-[10px] font-black text-on-brand">Start</div>
+                  </div>
+                  <p className="mt-3 font-display text-sm font-bold">{t.name}</p>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      <section className="relative z-10 mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+          <Eyebrow className="text-accent">Students say</Eyebrow>
+          <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-4xl">Trusted across India</h2>
+        </Reveal>
+        <Stagger className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {REVIEWS.map((review, i) => (
+            <StaggerItem key={review.name}>
+              <figure className="brutal h-full p-6" style={{ transform: `rotate(${[-1, 0.6, -0.4][i]}deg)` }}>
+                <div className="flex gap-1 text-warn">
+                  {Array.from({ length: 5 }, (_, r) => (
+                    <Star key={r} className="size-4 fill-warn" />
+                  ))}
+                </div>
+                <blockquote className="mt-3 text-sm leading-relaxed text-ink-2">&ldquo;{review.text}&rdquo;</blockquote>
+                <figcaption className="mt-4 border-t border-line pt-3">
+                  <div className="text-sm font-bold text-ink">{review.name}</div>
+                  <div className="font-mono text-[11px] text-ink-3">{review.college}</div>
+                </figcaption>
+              </figure>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      <section className="relative z-10 mx-auto mt-24 max-w-5xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="brutal relative overflow-hidden p-8 text-center sm:p-12">
+          <div className="aurora opacity-30" />
+          <div className="relative">
+            <Buddy mood="celebrate" className="mx-auto h-32 w-32" />
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink sm:text-5xl">Ready to ace this semester?</h2>
+            <p className="mx-auto mt-3 max-w-xl text-ink-2">Create a free account and Buddy will build your first 14-day exam plan in under a minute.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Magnetic>
+                <ButtonLink href="/register" size="lg" icon={<Sparkles />}>
+                  Create free account
+                </ButtonLink>
+              </Magnetic>
+              <ButtonLink href="/login" variant="secondary" size="lg">
+                I have an account
+              </ButtonLink>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

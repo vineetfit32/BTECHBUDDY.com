@@ -28,17 +28,17 @@ export default function StatCard({
 
   return (
     <div
-      className={`desk-card rounded-2xl p-5 flex items-center justify-between gap-4 ${className}`}
+      className={`bento p-5 flex items-center justify-between gap-4 ${className}`}
     >
       <div className="space-y-1">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+        <span className="text-xs font-bold uppercase tracking-wider text-ink-3 block">
           {label}
         </span>
-        <div className="font-mono text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100">
+        <div className="font-mono text-2xl sm:text-3xl font-black text-ink">
           {value}
         </div>
         {(subtext || trend) && (
-          <div className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+          <div className="text-[11px] text-ink-3 font-medium flex items-center gap-1.5">
             {trend && <span className="font-bold text-accent-emerald">{trend}</span>}
             {subtext && <span>{subtext}</span>}
           </div>
@@ -47,7 +47,7 @@ export default function StatCard({
 
       {icon && (
         <div
-          className={`w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 ${colorStyles}`}
+          className={`clay size-12 !rounded-2xl border flex items-center justify-center shrink-0 ${colorStyles}`}
         >
           {icon}
         </div>

@@ -75,18 +75,18 @@ export default function AdminAcademicPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-ink">
             Academic Hierarchy & Taxonomy
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-3">
             Configure B.Tech engineering branches, semester subjects, units, and university curricula
           </p>
         </div>
         <button
           onClick={() => setShowSubjectModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-danger hover:bg-danger/90 text-white shadow-2xs"
         >
           <Plus className="w-3.5 h-3.5" /> Add New Subject
         </button>
@@ -94,23 +94,23 @@ export default function AdminAcademicPage() {
 
       {/* Branches List */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Layers className="w-4 h-4 text-indigo-500" /> Configured Branches ({branches.length})
+        <h2 className="text-lg font-bold text-ink flex items-center gap-2">
+          <Layers className="w-4 h-4 text-brand" /> Configured Branches ({branches.length})
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {branches.map((b) => (
             <div
               key={b.id}
-              className="p-4 rounded-xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs"
+              className="p-4 rounded-xl bg-surface border border-line shadow-2xs"
             >
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-bold text-brand">
                 {b.code}
               </span>
-              <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-0.5 truncate">
+              <h4 className="text-xs font-bold text-ink mt-0.5 truncate">
                 {b.name}
               </h4>
-              <div className="text-[10px] text-slate-400 mt-1">
+              <div className="text-[10px] text-ink-3 mt-1">
                 {b._count?.subjects || 0} Subjects • {b._count?.notes || 0} Notes
               </div>
             </div>
@@ -120,19 +120,19 @@ export default function AdminAcademicPage() {
 
       {/* Subjects Catalog */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-emerald-500" /> Subjects Catalog ({subjects.length})
+        <h2 className="text-lg font-bold text-ink flex items-center gap-2">
+          <BookOpen className="w-4 h-4 text-ok" /> Subjects Catalog ({subjects.length})
         </h2>
 
         {loading ? (
-          <div className="py-12 text-center text-slate-400">
-            <Loader2 className="w-8 h-8 text-rose-500 animate-spin mx-auto mb-2" />
+          <div className="py-12 text-center text-ink-3">
+            <Loader2 className="w-8 h-8 text-danger animate-spin mx-auto mb-2" />
             <span className="text-xs">Loading academic catalog...</span>
           </div>
         ) : (
-          <div className="rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 uppercase font-bold text-[10px] text-slate-400 border-b border-slate-200 dark:border-slate-800">
+          <div className="rounded-2xl bg-surface border border-line overflow-hidden shadow-2xs">
+            <table className="w-full text-left text-xs text-ink-2">
+              <thead className="bg-surface-2 uppercase font-bold text-[10px] text-ink-3 border-b border-line">
                 <tr>
                   <th className="px-4 py-3">Code</th>
                   <th className="px-4 py-3">Subject Name</th>
@@ -141,18 +141,18 @@ export default function AdminAcademicPage() {
                   <th className="px-4 py-3">Materials</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-line">
                 {subjects.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="px-4 py-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  <tr key={sub.id} className="hover:bg-surface-2/50">
+                    <td className="px-4 py-3 font-mono font-bold text-brand">
                       {sub.code}
                     </td>
-                    <td className="px-4 py-3 font-bold text-slate-900 dark:text-white">
+                    <td className="px-4 py-3 font-bold text-ink">
                       {sub.name}
                     </td>
                     <td className="px-4 py-3">{sub.branch?.name || "All Branches"}</td>
                     <td className="px-4 py-3">{sub.credits}</td>
-                    <td className="px-4 py-3 text-slate-400 text-[11px]">
+                    <td className="px-4 py-3 text-ink-3 text-[11px]">
                       {sub._count?.notes || 0} Notes • {sub._count?.videos || 0} Videos
                     </td>
                   </tr>

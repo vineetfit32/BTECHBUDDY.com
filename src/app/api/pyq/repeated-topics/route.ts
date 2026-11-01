@@ -1,67 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { optionalId, parseQuery, z } from "@/lib/validation";
+
+const query = z.object({ subjectId: optionalId });
 
 export async function GET(req: NextRequest) {
+  const parsed = parseQuery(req, query);
+  if (parsed.error) return parsed.error;
+
   try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
-
-    const where: any = {};
-    if (subjectId) where.subjectId = subjectId;
-
-    const questions = await prisma.questionBank.findMany({
-      where,
-      select: {
-        id: true,
-        topicTag: true,
-        marks: true,
-        frequencyCount: true,
-        subjectId: true,
-        subject: { select: { name: true, code: true } },
-      },
+    const groups = await prisma.questionBank.groupBy({
+      by: ["subjectId", "topicTag"],
+      where: parsed.data.subjectId ? { subjectId: parsed.data.subjectId } : undefined,
+      _sum: { frequencyCount: true, marks: true },
+      _count: { _all: true },
     });
 
-    // Aggregate frequency and count by topic
-    const topicMap: Record<
-      string,
-      {
-        topic: string;
-        frequency: number;
-        questionCount: number;
-        subjectName: string;
-        subjectCode: string;
-        averageMarks: number;
-        totalMarks: number;
-      }
-    > = {};
+    const subjects = await prisma.subject.findMany({
+      where: { id: { in: [...new Set(groups.map((g) => g.subjectId))] } },
+      select: { id: true, name: true, code: true },
+    });
+    const subjectById = new Map(subjects.map((s) => [s.id, s]));
 
-    for (const q of questions) {
-      const key = `${q.subjectId}_${q.topicTag}`;
-      if (!topicMap[key]) {
-        topicMap[key] = {
-          topic: q.topicTag,
-          frequency: q.frequencyCount,
-          questionCount: 1,
-          subjectName: q.subject.name,
-          subjectCode: q.subject.code,
-          averageMarks: q.marks,
-          totalMarks: q.marks,
+    const topics = groups
+      .map((g) => {
+        const count = g._count._all;
+        const totalMarks = g._sum.marks ?? 0;
+        const subject = subjectById.get(g.subjectId);
+        return {
+          topic: g.topicTag,
+          frequency: g._sum.frequencyCount ?? 0,
+          questionCount: count,
+          subjectName: subject?.name ?? "",
+          subjectCode: subject?.code ?? "",
+          averageMarks: count ? Math.round(totalMarks / count) : 0,
+          totalMarks,
         };
-      } else {
-        topicMap[key].frequency += q.frequencyCount;
-        topicMap[key].questionCount += 1;
-        topicMap[key].totalMarks += q.marks;
-        topicMap[key].averageMarks = Math.round(
-          topicMap[key].totalMarks / topicMap[key].questionCount
-        );
-      }
-    }
+      })
+      .sort((a, b) => b.frequency - a.frequency);
 
-    const repeatedTopics = Object.values(topicMap).sort(
-      (a, b) => b.frequency - a.frequency
-    );
-
-    return NextResponse.json({ topics: repeatedTopics });
+    return NextResponse.json({ topics });
   } catch (error) {
     console.error("Error computing repeated topics:", error);
     return NextResponse.json({ error: "Failed to compute topics" }, { status: 500 });

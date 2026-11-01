@@ -129,18 +129,18 @@ export default function AdminNotesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-ink">
             Study Materials & PDF Management
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-3">
             Upload notes, assign semesters, units, PYQs, and manage student downloads
           </p>
         </div>
         <button
           onClick={() => setShowUploadModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-danger hover:bg-danger/90 text-white shadow-2xs"
         >
           <Plus className="w-3.5 h-3.5" /> Upload Study Material
         </button>
@@ -148,18 +148,18 @@ export default function AdminNotesPage() {
 
       {/* Notes Table */}
       {loading ? (
-        <div className="py-20 text-center text-slate-400">
-          <Loader2 className="w-8 h-8 text-rose-500 animate-spin mx-auto mb-2" />
+        <div className="py-20 text-center text-ink-3">
+          <Loader2 className="w-8 h-8 text-danger animate-spin mx-auto mb-2" />
           <span className="text-xs">Loading study materials...</span>
         </div>
       ) : notes.length === 0 ? (
-        <div className="p-8 text-center rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 text-xs text-slate-500">
+        <div className="p-8 text-center rounded-2xl bg-surface border border-line text-xs text-ink-3">
           No notes uploaded yet. Click &ldquo;Upload Study Material&rdquo; to add your first PDF.
         </div>
       ) : (
-        <div className="rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 uppercase font-bold text-[10px] text-slate-400 border-b border-slate-200 dark:border-slate-800">
+        <div className="rounded-2xl bg-surface border border-line overflow-hidden shadow-2xs">
+          <table className="w-full text-left text-xs text-ink-2">
+            <thead className="bg-surface-2 uppercase font-bold text-[10px] text-ink-3 border-b border-line">
               <tr>
                 <th className="px-4 py-3">Document Title</th>
                 <th className="px-4 py-3">Subject</th>
@@ -168,32 +168,32 @@ export default function AdminNotesPage() {
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-line">
               {notes.map((note) => (
-                <tr key={note.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                <tr key={note.id} className="hover:bg-surface-2/50">
                   <td className="px-4 py-3.5">
-                    <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <div className="font-bold text-ink flex items-center gap-2">
                       <span>{note.title}</span>
                       {note.isPYQ && (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-50 dark:bg-amber-950 text-amber-600">
+                        <span className="px-1.5 py-0.2 rounded-sm text-[9px] font-bold bg-warn-soft text-warn">
                           PYQ
                         </span>
                       )}
                       {note.isFeatured && (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-600">
+                        <span className="px-1.5 py-0.2 rounded-sm text-[9px] font-bold bg-brand-soft text-brand">
                           Featured
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-400 line-clamp-1">{note.description}</div>
+                    <div className="text-[11px] text-ink-3 line-clamp-1">{note.description}</div>
                   </td>
-                  <td className="px-4 py-3.5 text-indigo-600 dark:text-indigo-400 font-semibold">
+                  <td className="px-4 py-3.5 text-brand font-semibold">
                     {note.subject?.name} ({note.subject?.code})
                   </td>
-                  <td className="px-4 py-3.5 text-slate-500">
+                  <td className="px-4 py-3.5 text-ink-3">
                     {note.fileSize} • {note.fileType}
                   </td>
-                  <td className="px-4 py-3.5 text-slate-400 text-[11px]">
+                  <td className="px-4 py-3.5 text-ink-3 text-[11px]">
                     {note.downloadCount} downloads • {note.viewCount} views
                   </td>
                   <td className="px-4 py-3.5 text-right space-x-2">
@@ -205,14 +205,14 @@ export default function AdminNotesPage() {
                           id: note.id,
                         })
                       }
-                      className="p-1 rounded text-slate-500 hover:text-indigo-600"
+                      className="p-1 rounded-sm text-ink-3 hover:text-brand"
                       title="Preview PDF"
                     >
                       <Eye className="w-4 h-4 inline" />
                     </button>
                     <button
                       onClick={() => handleDelete(note.id)}
-                      className="p-1 rounded text-slate-500 hover:text-rose-600"
+                      className="p-1 rounded-sm text-ink-3 hover:text-danger"
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4 inline" />
@@ -228,13 +228,13 @@ export default function AdminNotesPage() {
       {/* Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          <div className="w-full max-w-lg bg-surface rounded-2xl p-6 border border-line shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-ink">
               Upload Study Notes & PDFs
             </h3>
 
             {error && (
-              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950 border border-rose-300 text-rose-600 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-danger-soft border border-danger/35 text-danger text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -242,34 +242,34 @@ export default function AdminNotesPage() {
 
             <form onSubmit={handleUploadSubmit} className="space-y-3.5 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Select PDF File</label>
+                <label className="font-bold text-ink-2">Select PDF File</label>
                 <input
                   type="file"
                   accept="application/pdf"
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  className="w-full p-2 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Document Title</label>
+                <label className="font-bold text-ink-2">Document Title</label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Unit 1: Arrays & Linked Lists Handwritten Notes"
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Target Subject</label>
+                  <label className="font-bold text-ink-2">Target Subject</label>
                   <select
                     value={subjectId}
                     onChange={(e) => setSubjectId(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                    className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   >
                     {subjects.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -280,11 +280,11 @@ export default function AdminNotesPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Branch (Optional)</label>
+                  <label className="font-bold text-ink-2">Branch (Optional)</label>
                   <select
                     value={branchId}
                     onChange={(e) => setBranchId(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                    className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   >
                     <option value="">All Branches</option>
                     {branches.map((b) => (
@@ -297,13 +297,13 @@ export default function AdminNotesPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Description</label>
+                <label className="font-bold text-ink-2">Description</label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe topics covered, handwritten style, or exam tips..."
-                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                  className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                 />
               </div>
 
@@ -313,7 +313,7 @@ export default function AdminNotesPage() {
                     type="checkbox"
                     checked={isFeatured}
                     onChange={(e) => setIsFeatured(e.target.checked)}
-                    className="rounded border-slate-300 text-indigo-600"
+                    className="rounded-sm border-line-strong text-brand"
                   />
                   <span>Mark as Featured Topper Note</span>
                 </label>
@@ -323,7 +323,7 @@ export default function AdminNotesPage() {
                     type="checkbox"
                     checked={isPYQ}
                     onChange={(e) => setIsPYQ(e.target.checked)}
-                    className="rounded border-slate-300 text-amber-600"
+                    className="rounded-sm border-line-strong text-warn"
                   />
                   <span>Is Solved PYQ Paper</span>
                 </label>
@@ -331,29 +331,29 @@ export default function AdminNotesPage() {
 
               {isPYQ && (
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">PYQ Academic Session</label>
+                  <label className="font-bold text-ink-2">PYQ Academic Session</label>
                   <input
                     type="text"
                     value={yearPYQ}
                     onChange={(e) => setYearPYQ(e.target.value)}
                     placeholder="2023-24"
-                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+                    className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
                   />
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
                 <button
                   type="button"
                   onClick={() => setShowUploadModal(false)}
-                  className="px-3.5 py-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold"
+                  className="px-3.5 py-2 rounded-xl text-ink-3 hover:bg-surface-2 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-danger hover:bg-danger/90 text-white font-bold flex items-center gap-1.5"
                 >
                   {uploading ? (
                     <>

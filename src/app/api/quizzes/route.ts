@@ -1,25 +1,51 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, isAuthorized } from "@/lib/auth";
+import { id, optionalId, optionalText, parseJson, parseQuery, text, z } from "@/lib/validation";
+
+const listQuery = z.object({ subjectId: optionalId });
+
+const optionInput = z.object({
+  optionText: text(1000, "Option"),
+  isCorrect: z.boolean().default(false),
+});
+
+const questionInput = z
+  .object({
+    questionText: text(5000, "Question"),
+    marks: z.coerce.number().int().min(1).max(20).default(1),
+    explanation: optionalText(5000),
+    options: z.array(optionInput).min(2, "Each question needs at least two options").max(8),
+  })
+  .refine((q) => q.options.filter((o) => o.isCorrect).length === 1, "Each question needs exactly one correct option");
+
+const createBody = z.object({
+  title: text(200, "Title"),
+  description: optionalText(2000),
+  subjectId: id,
+  unitId: optionalId,
+  durationMinutes: z.coerce.number().int().min(1).max(300).default(20),
+  totalMarks: z.coerce.number().int().min(1).optional(),
+  passingMarks: z.coerce.number().int().min(0).optional(),
+  negativeMarkingRate: z.coerce.number().min(0).max(1).default(0),
+  questions: z.array(questionInput).min(1, "Add at least one question").max(200),
+});
 
 export async function GET(req: Request) {
+  const parsed = parseQuery(req, listQuery);
+  if (parsed.error) return parsed.error;
+
   try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
-
-    const where: any = { isPublished: true };
-    if (subjectId) where.subjectId = subjectId;
-
     const quizzes = await prisma.quiz.findMany({
-      where,
+      where: { isPublished: true, ...(parsed.data.subjectId && { subjectId: parsed.data.subjectId }) },
       include: {
         subject: { select: { id: true, name: true, code: true } },
         unit: { select: { id: true, title: true, unitNumber: true } },
         _count: { select: { questions: true, attempts: true } },
       },
       orderBy: { createdAt: "desc" },
+      take: 300,
     });
-
     return NextResponse.json({ quizzes });
   } catch (error) {
     console.error("Fetch quizzes error:", error);
@@ -28,70 +54,38 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const user = await getCurrentUser();
+  if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
+  }
+  const parsed = await parseJson(req, createBody);
+  if (parsed.error) return parsed.error;
+  const input = parsed.data;
+  const marksSum = input.questions.reduce((sum, q) => sum + q.marks, 0);
+
   try {
-    const user = await getCurrentUser();
-    if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
-      return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
-    }
-
-    const body = await req.json();
-    const {
-      title,
-      description,
-      subjectId,
-      unitId,
-      durationMinutes,
-      totalMarks,
-      passingMarks,
-      negativeMarkingRate,
-      questions,
-    } = body;
-
-    if (!title || !subjectId || !questions || !Array.isArray(questions)) {
-      return NextResponse.json(
-        { error: "Title, subject, and questions are required" },
-        { status: 400 }
-      );
-    }
-
     const quiz = await prisma.quiz.create({
       data: {
-        title,
-        description,
-        subjectId,
-        unitId: unitId || null,
-        durationMinutes: parseInt(durationMinutes || 20),
-        totalMarks: parseInt(totalMarks || questions.length),
-        passingMarks: parseInt(passingMarks || Math.ceil(questions.length * 0.4)),
-        negativeMarkingRate: parseFloat(negativeMarkingRate || 0),
-      },
-    });
-
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      const createdQ = await prisma.quizQuestion.create({
-        data: {
-          quizId: quiz.id,
-          questionText: q.questionText,
-          marks: q.marks || 1,
-          explanation: q.explanation || null,
-          order: i + 1,
+        title: input.title,
+        description: input.description ?? null,
+        subjectId: input.subjectId,
+        unitId: input.unitId ?? null,
+        durationMinutes: input.durationMinutes,
+        totalMarks: input.totalMarks ?? marksSum,
+        passingMarks: input.passingMarks ?? Math.ceil(marksSum * 0.4),
+        negativeMarkingRate: input.negativeMarkingRate,
+        questions: {
+          create: input.questions.map((q, i) => ({
+            questionText: q.questionText,
+            marks: q.marks,
+            explanation: q.explanation ?? null,
+            order: i + 1,
+            options: { create: q.options },
+          })),
         },
-      });
-
-      if (q.options && Array.isArray(q.options)) {
-        for (const opt of q.options) {
-          await prisma.quizOption.create({
-            data: {
-              questionId: createdQ.id,
-              optionText: opt.optionText,
-              isCorrect: Boolean(opt.isCorrect),
-            },
-          });
-        }
-      }
-    }
-
+      },
+      select: { id: true },
+    });
     return NextResponse.json({ success: true, quizId: quiz.id });
   } catch (error) {
     console.error("Create quiz error:", error);

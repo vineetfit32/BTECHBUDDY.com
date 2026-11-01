@@ -19,25 +19,25 @@ export default async function StudentBookmarksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+      <div className="border-b border-line pb-3">
+        <h1 className="text-2xl font-black text-ink">
           My Bookmarks & Saved Items
         </h1>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink-3">
           Saved notes, video lectures, and revision formulas for rapid access
         </p>
       </div>
 
       {bookmarks.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-800 space-y-3">
-          <Bookmark className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">No Bookmarks Saved</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+        <div className="p-12 text-center rounded-2xl bg-surface border border-line space-y-3">
+          <Bookmark className="w-10 h-10 text-ink-3 mx-auto" />
+          <h3 className="text-sm font-bold text-ink">No Bookmarks Saved</h3>
+          <p className="text-xs text-ink-3 max-w-sm mx-auto">
             You can bookmark any note, video lecture, or practice quiz to quickly access it from here.
           </p>
           <Link
             href="/notes"
-            className="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white"
+            className="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-brand text-white"
           >
             Explore Study Notes
           </Link>
@@ -47,19 +47,19 @@ export default async function StudentBookmarksPage() {
           {bookmarks.map((bm) => (
             <div
               key={bm.id}
-              className="p-5 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs flex items-center justify-between"
+              className="p-5 rounded-2xl bg-surface border border-line shadow-2xs flex items-center justify-between"
             >
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand">
                   {bm.itemType}
                 </span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">
+                <h4 className="text-sm font-bold text-ink mt-0.5">
                   Saved Resource #{bm.itemId.slice(0, 8)}
                 </h4>
               </div>
               <Link
                 href={bm.itemType === "NOTE" ? `/notes/${bm.itemId}` : `/videos/${bm.itemId}`}
-                className="text-xs font-bold text-indigo-600 hover:underline"
+                className="text-xs font-bold text-brand hover:underline"
               >
                 Open →
               </Link>

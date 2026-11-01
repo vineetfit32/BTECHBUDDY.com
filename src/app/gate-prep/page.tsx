@@ -45,33 +45,33 @@ export default function GatePrepPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
+        <div className="bg-linear-to-r from-ok via-teal-800 to-accent rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-emerald-200 text-xs font-semibold mb-4 border border-white/10">
-              <Sparkles className="w-4 h-4 text-emerald-200" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-ok text-xs font-semibold mb-4 border border-white/10">
+              <Sparkles className="w-4 h-4 text-ok" />
               <span>GATE CS & IT 2025 • High-Yield Topic Prep</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">
               GATE Engineering Preparation Hub
             </h1>
-            <p className="text-emerald-100 text-sm sm:text-base leading-relaxed mb-6">
+            <p className="text-ok text-sm sm:text-base leading-relaxed mb-6">
               Official past year GATE 1-mark and 2-mark questions with step-by-step mathematical proofs,
               subject weightage distribution, and quick formula sheets.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/placement-hub"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-emerald-800 font-bold text-sm shadow-md hover:bg-emerald-50 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface text-ok font-bold text-sm shadow-md hover:bg-ok-soft transition-all"
               >
                 Placement DSA Sheet
               </Link>
               <Link
                 href="/pyq"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all border border-white/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-xs transition-all border border-white/20"
               >
                 University PYQ Papers
               </Link>
@@ -80,10 +80,10 @@ export default function GatePrepPage() {
         </div>
 
         {/* Subject Weightage Breakdown */}
-        <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm mb-10">
+        <div className="bg-surface rounded-2xl p-6 border border-line shadow-xs mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <BarChart2 className="w-5 h-5 text-ok" />
+            <h2 className="text-base font-bold text-ink">
               GATE CSE Subject Weightage Breakdown (Last 10 Years Average)
             </h2>
           </div>
@@ -92,12 +92,12 @@ export default function GatePrepPage() {
             {weightage.map((item, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800"
+                className="p-4 rounded-xl bg-surface-2 border border-line/80"
               >
-                <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <div className="text-xs font-bold text-ink-2 mb-1">
                   {item.subject}
                 </div>
-                <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                <div className="text-xl font-black text-ok">
                   {item.marks}
                 </div>
               </div>
@@ -108,19 +108,19 @@ export default function GatePrepPage() {
         {/* GATE Practice Questions */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Award className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <h2 className="text-xl font-black text-ink flex items-center gap-2">
+              <Award className="w-5 h-5 text-ok" />
               Previous Year GATE Questions
             </h2>
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-ink-3">
               {questions.length} Questions Available
             </span>
           </div>
 
           {loading ? (
             <div className="py-20 text-center">
-              <div className="inline-block w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="text-slate-500 text-sm">Loading GATE questions...</p>
+              <div className="inline-block w-8 h-8 border-4 border-ok border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-ink-3 text-sm">Loading GATE questions...</p>
             </div>
           ) : (
             <div className="space-y-5">
@@ -133,23 +133,23 @@ export default function GatePrepPage() {
                 return (
                   <div
                     key={q.id}
-                    className="bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm"
+                    className="bg-surface rounded-2xl p-6 border border-line shadow-xs"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-extrabold text-xs border border-emerald-200 dark:border-emerald-800">
+                        <span className="px-2.5 py-1 rounded-lg bg-ok-soft text-ok font-extrabold text-xs border border-ok/35">
                           GATE {q.year}
                         </span>
-                        <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-bold border border-amber-200 dark:border-amber-800">
+                        <span className="px-2 py-0.5 rounded-md bg-warn-soft text-warn text-xs font-bold border border-warn/35">
                           {q.marks} Mark{q.marks > 1 ? "s" : ""}
                         </span>
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold">
+                        <span className="px-2 py-0.5 rounded-md bg-surface-2 text-ink-2 text-xs font-semibold">
                           {q.subject?.name} • {q.topic}
                         </span>
                       </div>
                     </div>
 
-                    <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 mb-4 leading-relaxed">
+                    <p className="text-sm sm:text-base font-semibold text-ink mb-4 leading-relaxed">
                       Q{idx + 1}. {q.question}
                     </p>
 
@@ -157,15 +157,15 @@ export default function GatePrepPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                       {q.options?.map((opt: string, optIdx: number) => {
                         let btnStyle =
-                          "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80";
+                          "border-line hover:bg-surface-2";
 
                         if (isAnswered) {
                           if (opt === q.answer) {
                             btnStyle =
-                              "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-bold";
+                              "border-ok bg-ok-soft text-ok font-bold";
                           } else if (opt === selected) {
                             btnStyle =
-                              "border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300";
+                              "border-danger bg-danger-soft text-danger";
                           }
                         }
 
@@ -179,10 +179,10 @@ export default function GatePrepPage() {
                               <strong>({String.fromCharCode(65 + optIdx)})</strong> {opt}
                             </span>
                             {isAnswered && opt === q.answer && (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <CheckCircle2 className="w-4 h-4 text-ok shrink-0" />
                             )}
                             {isAnswered && opt === selected && opt !== q.answer && (
-                              <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                              <XCircle className="w-4 h-4 text-danger shrink-0" />
                             )}
                           </button>
                         );
@@ -191,7 +191,7 @@ export default function GatePrepPage() {
 
                     {/* Explanation Toggle */}
                     {isAnswered && (
-                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+                      <div className="pt-3 border-t border-line">
                         <button
                           onClick={() =>
                             setShowExplanation((prev) => ({
@@ -199,7 +199,7 @@ export default function GatePrepPage() {
                               [q.id]: !prev[q.id],
                             }))
                           }
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-ok hover:underline"
                         >
                           {isExpOpen ? (
                             <>
@@ -213,8 +213,8 @@ export default function GatePrepPage() {
                         </button>
 
                         {isExpOpen && (
-                          <div className="mt-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1.5">
-                            <div className="font-bold text-emerald-600 dark:text-emerald-400 uppercase text-[11px]">
+                          <div className="mt-3 p-4 rounded-xl bg-surface-2 border border-line text-xs sm:text-sm text-ink-2 space-y-1.5">
+                            <div className="font-bold text-ok uppercase text-[11px]">
                               Correct Answer: {q.answer}
                             </div>
                             <p className="leading-relaxed whitespace-pre-line">{q.explanation}</p>

@@ -53,7 +53,7 @@ export default function ProgressRing({
         />
       </svg>
       {showText && (
-        <span className="absolute font-mono text-xs font-black text-slate-800 dark:text-slate-200">
+        <span className="absolute font-mono text-xs font-black text-ink">
           {Math.round(normalizedProgress)}%
         </span>
       )}
