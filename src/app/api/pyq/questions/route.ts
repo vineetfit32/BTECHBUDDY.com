@@ -2,29 +2,50 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, isAuthorized } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-logger";
+import { id, optionalId, optionalText, parseJson, parseQuery, text, z } from "@/lib/validation";
+
+const difficulty = z.enum(["EASY", "MEDIUM", "HARD"]);
+
+const listQuery = z.object({
+  subjectId: optionalId,
+  unitId: optionalId,
+  paperId: optionalId,
+  isImportant: z.enum(["true", "false"]).optional(),
+  difficulty: difficulty.optional(),
+  topic: optionalText(80),
+});
+
+const createBody = z.object({
+  paperId: optionalId,
+  subjectId: id,
+  unitId: optionalId,
+  topicTag: text(80, "Topic"),
+  questionText: text(10_000, "Question"),
+  marks: z.coerce.number().int().min(1).max(30).default(10),
+  difficulty: difficulty.default("MEDIUM"),
+  frequencyCount: z.coerce.number().int().min(1).max(50).default(1),
+  isImportant: z.boolean().default(false),
+  solutionText: optionalText(20_000),
+  solutionVideoUrl: z
+    .preprocess((v) => (v === "" || v === null ? undefined : v), z.string().regex(/^\/videos\/[\w-]+$/, "Link a BTECHBUDDY lecture, e.g. /videos/<id>").optional()),
+});
 
 export async function GET(req: NextRequest) {
+  const parsed = parseQuery(req, listQuery);
+  if (parsed.error) return parsed.error;
+  const { subjectId, unitId, paperId, isImportant, difficulty: level, topic } = parsed.data;
+
   try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
-    const unitId = searchParams.get("unitId");
-    const paperId = searchParams.get("paperId");
-    const isImportant = searchParams.get("isImportant");
-    const difficulty = searchParams.get("difficulty");
-    const topic = searchParams.get("topic");
-
     const user = await getCurrentUser();
-
-    const where: any = {};
-    if (subjectId) where.subjectId = subjectId;
-    if (unitId) where.unitId = unitId;
-    if (paperId) where.paperId = paperId;
-    if (isImportant === "true") where.isImportant = true;
-    if (difficulty) where.difficulty = difficulty;
-    if (topic) where.topicTag = { contains: topic };
-
     const questions = await prisma.questionBank.findMany({
-      where,
+      where: {
+        ...(subjectId && { subjectId }),
+        ...(unitId && { unitId }),
+        ...(paperId && { paperId }),
+        ...(isImportant === "true" && { isImportant: true }),
+        ...(level && { difficulty: level }),
+        ...(topic && { topicTag: { contains: topic, mode: "insensitive" as const } }),
+      },
       include: {
         subject: { select: { id: true, name: true, code: true } },
         unit: { select: { id: true, unitNumber: true, title: true } },
@@ -37,20 +58,11 @@ export async function GET(req: NextRequest) {
             university: { select: { code: true, name: true } },
           },
         },
-        attempts: user
-          ? {
-              where: { userId: user.id },
-              select: { id: true, attemptedAt: true, notes: true },
-            }
-          : false,
-        bookmarks: user
-          ? {
-              where: { userId: user.id },
-              select: { id: true, createdAt: true },
-            }
-          : false,
+        attempts: user ? { where: { userId: user.id }, select: { id: true, attemptedAt: true, notes: true } } : false,
+        bookmarks: user ? { where: { userId: user.id }, select: { id: true, createdAt: true } } : false,
       },
       orderBy: [{ frequencyCount: "desc" }, { createdAt: "desc" }],
+      take: 500,
     });
 
     const transformed = questions.map((q) => ({
@@ -68,55 +80,31 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+  const parsed = await parseJson(req, createBody);
+  if (parsed.error) return parsed.error;
+  const input = parsed.data;
+
   try {
-    const user = await getCurrentUser();
-    if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
-
-    const body = await req.json();
-    const {
-      paperId,
-      subjectId,
-      unitId,
-      topicTag,
-      questionText,
-      marks,
-      difficulty,
-      frequencyCount,
-      isImportant,
-      solutionText,
-      solutionVideoUrl,
-    } = body;
-
-    if (!subjectId || !topicTag || !questionText) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
     const question = await prisma.questionBank.create({
       data: {
-        paperId: paperId || null,
-        subjectId,
-        unitId: unitId || null,
-        topicTag,
-        questionText,
-        marks: marks ? Number(marks) : 10,
-        difficulty: difficulty || "MEDIUM",
-        frequencyCount: frequencyCount ? Number(frequencyCount) : 1,
-        isImportant: Boolean(isImportant),
-        solutionText: solutionText || null,
-        solutionVideoUrl: solutionVideoUrl || null,
+        ...input,
+        paperId: input.paperId ?? null,
+        unitId: input.unitId ?? null,
+        solutionText: input.solutionText ?? null,
+        solutionVideoUrl: input.solutionVideoUrl ?? null,
       },
     });
-
     await logActivity({
       userId: user.id,
       action: "CREATE_QUESTION_BANK",
       entityType: "QuestionBank",
       entityId: question.id,
-      details: { topicTag, marks, subjectId },
+      details: { topicTag: input.topicTag, marks: input.marks, subjectId: input.subjectId },
     });
-
     return NextResponse.json({ question }, { status: 201 });
   } catch (error) {
     console.error("Error creating question:", error);

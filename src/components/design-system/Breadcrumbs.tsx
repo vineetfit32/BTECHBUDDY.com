@@ -16,7 +16,7 @@ export default function Breadcrumbs({ items, className = "" }: BreadcrumbsProps)
   return (
     <nav
       aria-label="Breadcrumbs"
-      className={`flex items-center gap-1.5 text-xs text-slate-500 overflow-x-auto py-1 scrollbar-none ${className}`}
+      className={`flex items-center gap-1.5 text-xs text-ink-3 overflow-x-auto py-1 scrollbar-none ${className}`}
     >
       <Link
         href="/"
@@ -30,7 +30,7 @@ export default function Breadcrumbs({ items, className = "" }: BreadcrumbsProps)
         const isLast = idx === items.length - 1;
         return (
           <React.Fragment key={idx}>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <ChevronRight className="w-3.5 h-3.5 text-ink-3 shrink-0" />
             {item.href && !isLast ? (
               <Link
                 href={item.href}
@@ -39,7 +39,7 @@ export default function Breadcrumbs({ items, className = "" }: BreadcrumbsProps)
                 {item.label}
               </Link>
             ) : (
-              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[160px] sm:max-w-[240px]">
+              <span className="font-semibold text-ink truncate max-w-[160px] sm:max-w-[240px]">
                 {item.label}
               </span>
             )}

@@ -46,7 +46,7 @@ export default function NoteCard({
               </Badge>
             )}
             {unitNumber && (
-              <span className="text-[11px] font-semibold text-slate-500">
+              <span className="text-[11px] font-semibold text-ink-3">
                 Unit {unitNumber}
               </span>
             )}
@@ -63,19 +63,19 @@ export default function NoteCard({
           )}
         </div>
 
-        <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 group-hover:text-primary-violet transition-colors line-clamp-2 mb-2">
+        <h3 className="font-bold text-sm sm:text-base text-ink group-hover:text-primary-violet transition-colors line-clamp-2 mb-2">
           {title}
         </h3>
 
         {subjectName && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 truncate mb-4">
+          <p className="text-xs text-ink-3 truncate mb-4">
             {subjectName}
           </p>
         )}
       </div>
 
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
-        <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="pt-4 border-t border-line space-y-3">
+        <div className="flex items-center justify-between text-xs text-ink-3">
           <span>{fileSize}</span>
           <span>{downloadCount} downloads</span>
         </div>

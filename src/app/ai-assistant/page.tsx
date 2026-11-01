@@ -84,23 +84,23 @@ export default function AiAssistantPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full flex flex-col">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-brand to-accent flex items-center justify-center text-white shadow-md">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-ink flex items-center gap-2">
                 BTECHBUDDY AI Copilot
-                <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold border border-indigo-200 dark:border-indigo-800">
+                <span className="px-2 py-0.5 rounded-full bg-brand-soft text-brand text-[10px] font-extrabold border border-brand/35">
                   Engineering RAG
                 </span>
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-ink-3">
                 Step-by-step engineering answers cited with university syllabus units and PYQ frequencies.
               </p>
             </div>
@@ -109,13 +109,13 @@ export default function AiAssistantPage() {
 
         {/* Not Configured Banner (If external API key is unset) */}
         {providerStatus && !providerStatus.configured && (
-          <div className="mb-6 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/80 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-3">
-            <Key className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="mb-6 p-4 rounded-2xl bg-warn-soft border border-warn/35 text-warn text-xs flex items-start gap-3">
+            <Key className="w-5 h-5 text-warn shrink-0 mt-0.5" />
             <div>
               <span className="font-bold block mb-0.5">
                 External AI Provider Key Not Configured (Safe Boundary Active)
               </span>
-              <p className="text-[11px] leading-relaxed text-amber-800 dark:text-amber-300">
+              <p className="text-[11px] leading-relaxed text-warn">
                 {providerStatus.message}
                 <br />
                 {providerStatus.setupInstructions}
@@ -127,7 +127,7 @@ export default function AiAssistantPage() {
         )}
 
         {/* Chat Messages Container */}
-        <div className="flex-1 bg-white dark:bg-[#1C2541] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 mb-4 flex flex-col justify-between overflow-hidden min-h-[450px]">
+        <div className="flex-1 bg-surface rounded-3xl border border-line shadow-xs p-6 mb-4 flex flex-col justify-between overflow-hidden min-h-[450px]">
           <div className="space-y-4 overflow-y-auto pr-2 max-h-[500px]">
             {messages.map((m, idx) => (
               <div
@@ -137,7 +137,7 @@ export default function AiAssistantPage() {
                 }`}
               >
                 {m.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-brand text-white flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4" />
                   </div>
                 )}
@@ -145,8 +145,8 @@ export default function AiAssistantPage() {
                 <div
                   className={`p-4 rounded-2xl max-w-2xl leading-relaxed whitespace-pre-line ${
                     m.role === "user"
-                      ? "bg-indigo-600 text-white font-medium rounded-tr-xs"
-                      : "bg-slate-50 dark:bg-slate-900/80 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 rounded-tl-xs"
+                      ? "bg-brand text-white font-medium rounded-tr-xs"
+                      : "bg-surface-2 text-ink border border-line/80 rounded-tl-xs"
                   }`}
                 >
                   {m.content}
@@ -161,16 +161,16 @@ export default function AiAssistantPage() {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-slate-400 py-2">
-                <div className="w-2 h-2 rounded-full bg-indigo-600 animate-ping" />
+              <div className="flex items-center gap-2 text-xs text-ink-3 py-2">
+                <div className="w-2 h-2 rounded-full bg-brand animate-ping" />
                 <span>AI Copilot is retrieving concept citations and formulating answer...</span>
               </div>
             )}
           </div>
 
           {/* Quick Prompts */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-            <span className="text-[11px] font-bold text-slate-400 block mb-2">
+          <div className="pt-4 border-t border-line">
+            <span className="text-[11px] font-bold text-ink-3 block mb-2">
               Popular Engineering Inquiries:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -178,7 +178,7 @@ export default function AiAssistantPage() {
                 <button
                   key={i}
                   onClick={() => handleSend(p)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 transition"
+                  className="px-3 py-1.5 rounded-xl bg-surface-2 border border-line text-[11px] font-semibold text-ink-2 hover:border-brand hover:text-brand transition"
                 >
                   {p}
                 </button>
@@ -195,12 +195,12 @@ export default function AiAssistantPage() {
             value={inputPrompt}
             onChange={(e) => setInputPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            className="flex-1 px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1C2541] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
+            className="flex-1 px-4 py-3 text-xs sm:text-sm rounded-2xl border border-line bg-surface text-ink focus:outline-hidden focus:ring-2 focus:ring-brand shadow-xs"
           />
           <button
             onClick={() => handleSend()}
             disabled={loading || !inputPrompt.trim()}
-            className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5"
+            className="px-5 py-3 rounded-2xl bg-brand hover:bg-brand-strong disabled:opacity-50 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5"
           >
             <Send className="w-4 h-4" />
             <span className="hidden sm:inline">Ask AI</span>

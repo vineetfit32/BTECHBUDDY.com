@@ -15,6 +15,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+import { emitMascot } from "@/lib/mascot/bus";
+import { reward } from "@/lib/reward";
 
 export default function QuizResultPage({
   params,
@@ -27,22 +29,28 @@ export default function QuizResultPage({
 
   useEffect(() => {
     const cached = sessionStorage.getItem(`quiz_result_${quizId}`);
-    if (cached) {
-      try {
-        setResult(JSON.parse(cached));
-      } catch (err) {
-        console.error("Failed to parse cached result", err);
+    if (!cached) return;
+    try {
+      const parsed = JSON.parse(cached);
+      setResult(parsed);
+      const rewardedKey = `quiz_rewarded_${parsed.attemptId}`;
+      if (!sessionStorage.getItem(rewardedKey)) {
+        sessionStorage.setItem(rewardedKey, "1");
+        emitMascot({ type: parsed.passed ? "QUIZ_PASSED" : "QUIZ_FAILED", percentage: parsed.percentage ?? 0 });
+        reward({ xp: parsed.xpEarned, badges: parsed.newBadges, reason: "Quiz passed" });
       }
+    } catch (err) {
+      console.error("Failed to parse cached result", err);
     }
   }, [quizId]);
 
   if (!result) {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+        <h2 className="text-xl font-bold text-ink">
           No active test submission found
         </h2>
-        <p className="font-mono text-xs text-slate-400">
+        <p className="font-mono text-xs text-ink-3">
           Your test session may have expired or was opened in another window.
         </p>
         <Link
@@ -71,14 +79,14 @@ export default function QuizResultPage({
         className={`p-8 sm:p-10 rounded-3xl text-center space-y-4 desk-card shadow-glow-sm relative overflow-hidden ${
           passed
             ? "border-accent-emerald/40"
-            : "border-rose-500/40"
+            : "border-danger/40"
         }`}
       >
         <div className="inline-flex p-3 rounded-2xl desk-card shadow-md mx-auto">
           {passed ? (
             <Award className="w-10 h-10 text-accent-emerald" />
           ) : (
-            <HelpCircle className="w-10 h-10 text-rose-500" />
+            <HelpCircle className="w-10 h-10 text-danger" />
           )}
         </div>
 
@@ -87,15 +95,15 @@ export default function QuizResultPage({
             className={`inline-block px-3 py-1 rounded-full font-mono text-xs font-bold uppercase tracking-wider ${
               passed
                 ? "bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/30"
-                : "bg-rose-500/10 text-rose-400 border border-rose-500/30"
+                : "bg-danger/10 text-danger border border-danger/30"
             }`}
           >
             {passed ? "Assessment Passed" : "Needs Review"}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-black text-ink">
             {passed ? "Excellent Performance!" : "Good Effort, Keep Practicing!"}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+          <p className="text-xs sm:text-sm text-ink-3 max-w-md mx-auto">
             {passed
               ? "You demonstrated strong conceptual mastery in this subject area."
               : "Review the question explanations below to solidify your exam readiness."}
@@ -105,17 +113,17 @@ export default function QuizResultPage({
         {/* Big Score Numbers */}
         <div className="flex justify-center items-center gap-6 pt-4">
           <div className="text-center">
-            <div className="font-mono text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
+            <div className="font-mono text-3xl sm:text-5xl font-black text-ink">
               {score} / {totalMarks}
             </div>
-            <div className="font-mono text-xs text-slate-400 font-semibold mt-1">Final Score</div>
+            <div className="font-mono text-xs text-ink-3 font-semibold mt-1">Final Score</div>
           </div>
           <div className="h-12 w-px bg-desk-border" />
           <div className="text-center">
             <div className="font-mono text-3xl sm:text-5xl font-black text-primary-violet">
               {percentage}%
             </div>
-            <div className="font-mono text-xs text-slate-400 font-semibold mt-1">Accuracy</div>
+            <div className="font-mono text-xs text-ink-3 font-semibold mt-1">Accuracy</div>
           </div>
         </div>
 
@@ -129,7 +137,7 @@ export default function QuizResultPage({
           </Link>
           <Link
             href="/quizzes"
-            className="px-5 py-2.5 rounded-xl font-mono text-xs font-bold desk-card text-slate-300 hover:border-primary-violet transition-colors"
+            className="px-5 py-2.5 rounded-xl font-mono text-xs font-bold desk-card text-ink-2 hover:border-primary-violet transition-colors"
           >
             All Practice Quizzes
           </Link>
@@ -138,7 +146,7 @@ export default function QuizResultPage({
 
       {/* Question Feedback Breakdown */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+        <h2 className="text-xl font-bold text-ink">
           Detailed Solutions & Conceptual Explanations
         </h2>
 
@@ -149,17 +157,17 @@ export default function QuizResultPage({
               className={`p-6 rounded-2xl desk-card transition-all ${
                 item.isCorrect
                   ? "border-accent-emerald/40"
-                  : "border-rose-500/40"
+                  : "border-danger/40"
               }`}
             >
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg font-mono desk-card text-slate-300 flex items-center justify-center font-bold text-xs">
+                  <span className="w-6 h-6 rounded-lg font-mono desk-card text-ink-2 flex items-center justify-center font-bold text-xs">
                     {idx + 1}
                   </span>
                   <span
                     className={`font-mono text-xs font-bold flex items-center gap-1 ${
-                      item.isCorrect ? "text-accent-emerald" : "text-rose-400"
+                      item.isCorrect ? "text-accent-emerald" : "text-danger"
                     }`}
                   >
                     {item.isCorrect ? (
@@ -175,17 +183,17 @@ export default function QuizResultPage({
                 </div>
               </div>
 
-              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 leading-relaxed">
+              <div className="text-sm font-semibold text-ink mb-4 leading-relaxed">
                 {item.questionText}
               </div>
 
               {/* In-depth explanation box */}
               {item.explanation && (
-                <div className="p-4 rounded-xl desk-card border-primary-violet/30 text-xs text-slate-300 space-y-1">
+                <div className="p-4 rounded-xl desk-card border-primary-violet/30 text-xs text-ink-2 space-y-1">
                   <div className="font-mono font-bold text-primary-violet flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-accent-cyan" /> Conceptual Explanation
                   </div>
-                  <p className="leading-relaxed text-slate-300">{item.explanation}</p>
+                  <p className="leading-relaxed text-ink-2">{item.explanation}</p>
                 </div>
               )}
             </div>

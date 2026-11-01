@@ -78,12 +78,12 @@ export default async function VideoWatchPage({
               <span className="font-mono text-xs font-bold text-primary-violet">
                 {video.subject.code} • {video.subject.name}
               </span>
-              <span className="font-mono text-xs text-slate-400">Duration: {video.duration}</span>
+              <span className="font-mono text-xs text-ink-3">Duration: {video.duration}</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-black text-ink">
               {video.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-ink-2 leading-relaxed">
               {video.description || "In-depth engineering explanation covering theoretical definitions, code walkthroughs, and exam problems."}
             </p>
 
@@ -96,7 +96,7 @@ export default async function VideoWatchPage({
               </Link>
               <Link
                 href={`/subjects/${video.subjectId}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-semibold desk-card hover:border-primary-violet text-slate-300 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-semibold desk-card hover:border-primary-violet text-ink-2 transition-colors"
               >
                 <BookOpen className="w-3.5 h-3.5 text-accent-cyan" /> Subject Desk
               </Link>
@@ -123,7 +123,7 @@ export default async function VideoWatchPage({
                     className={`flex items-start gap-3 p-2.5 rounded-xl text-xs transition-colors ${
                       isCurrent
                         ? "bg-primary-violet/20 border border-primary-violet/40 text-primary-violet font-bold"
-                        : "hover:bg-slate-100 dark:hover:bg-desk-canvas text-slate-700 dark:text-slate-300"
+                        : "hover:bg-surface-2 dark:hover:bg-desk-canvas text-ink-2"
                     }`}
                   >
                     <div className="w-6 h-6 rounded-md bg-desk-card border border-desk-border flex items-center justify-center shrink-0 font-mono font-bold text-[10px]">
@@ -131,7 +131,7 @@ export default async function VideoWatchPage({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="truncate">{item.title}</div>
-                      <div className="font-mono text-[10px] text-slate-400 font-normal mt-0.5">
+                      <div className="font-mono text-[10px] text-ink-3 font-normal mt-0.5">
                         {item.duration}
                       </div>
                     </div>

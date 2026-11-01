@@ -87,7 +87,7 @@ export default function AdminPlacementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -95,13 +95,13 @@ export default function AdminPlacementPage() {
 
           <main className="flex-1 w-full space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#1C2541] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface p-6 rounded-2xl border border-line shadow-xs">
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Briefcase className="w-6 h-6 text-rose-600" />
+                <h1 className="text-xl sm:text-2xl font-black text-ink flex items-center gap-2">
+                  <Briefcase className="w-6 h-6 text-danger" />
                   Placement & GATE Hub Management
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                <p className="text-xs sm:text-sm text-ink-3 mt-1">
                   Manage the DSA 450 Sheet and real company interview questions.
                 </p>
               </div>
@@ -110,7 +110,7 @@ export default function AdminPlacementPage() {
                 {activeTab === "companies" && (
                   <button
                     onClick={() => setCompanyModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 shadow-sm transition"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-danger text-white text-xs font-bold hover:bg-danger/90 shadow-xs transition"
                   >
                     <Plus className="w-4 h-4" /> Add Company Question
                   </button>
@@ -120,20 +120,20 @@ export default function AdminPlacementPage() {
 
             {/* Status Alert */}
             {statusMessage && (
-              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+              <div className="p-4 rounded-xl bg-ok-soft border border-ok/35 text-ok text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{statusMessage}</span>
               </div>
             )}
 
             {/* Tab Nav */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+            <div className="flex border-b border-line gap-6">
               <button
                 onClick={() => setActiveTab("dsa")}
                 className={`pb-3 text-sm font-bold border-b-2 transition ${
                   activeTab === "dsa"
-                    ? "border-rose-600 text-rose-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    ? "border-danger text-danger"
+                    : "border-transparent text-ink-3 hover:text-ink-2"
                 }`}
               >
                 DSA Problem Sheet ({problems.length})
@@ -142,8 +142,8 @@ export default function AdminPlacementPage() {
                 onClick={() => setActiveTab("companies")}
                 className={`pb-3 text-sm font-bold border-b-2 transition ${
                   activeTab === "companies"
-                    ? "border-rose-600 text-rose-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    ? "border-danger text-danger"
+                    : "border-transparent text-ink-3 hover:text-ink-2"
                 }`}
               >
                 Company Sets ({companySets.length})
@@ -152,10 +152,10 @@ export default function AdminPlacementPage() {
 
             {/* DSA Sheet Tab */}
             {activeTab === "dsa" && (
-              <div className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div className="bg-surface rounded-2xl border border-line overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                    <thead className="bg-surface-2 text-ink-3 font-bold border-b border-line uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Problem</th>
                         <th className="py-3 px-4">Category</th>
@@ -164,22 +164,22 @@ export default function AdminPlacementPage() {
                         <th className="py-3 px-4">Link</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-line">
                       {problems.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                          <td className="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">
+                        <tr key={p.id} className="hover:bg-surface-2/50">
+                          <td className="py-3 px-4 font-bold text-ink">
                             {p.title}
                           </td>
-                          <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
+                          <td className="py-3 px-4 text-ink-2">
                             {p.category}
                           </td>
                           <td className="py-3 px-4 uppercase text-[10px] font-bold">
                             {p.difficulty}
                           </td>
-                          <td className="py-3 px-4 text-slate-500 text-[11px]">
+                          <td className="py-3 px-4 text-ink-3 text-[11px]">
                             {p.companies}
                           </td>
-                          <td className="py-3 px-4 text-indigo-600 font-semibold">
+                          <td className="py-3 px-4 text-brand font-semibold">
                             {p.leetcodeUrl ? "LeetCode" : "GFG"}
                           </td>
                         </tr>
@@ -192,10 +192,10 @@ export default function AdminPlacementPage() {
 
             {/* Company Sets Tab */}
             {activeTab === "companies" && (
-              <div className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div className="bg-surface rounded-2xl border border-line overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                    <thead className="bg-surface-2 text-ink-3 font-bold border-b border-line uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Company / Role</th>
                         <th className="py-3 px-4">Round</th>
@@ -203,24 +203,24 @@ export default function AdminPlacementPage() {
                         <th className="py-3 px-4">Year</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-line">
                       {companySets.map((s) => (
-                        <tr key={s.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                        <tr key={s.id} className="hover:bg-surface-2/50">
                           <td className="py-3 px-4">
-                            <span className="font-bold text-slate-900 dark:text-slate-100 block">
+                            <span className="font-bold text-ink block">
                               {s.companyName}
                             </span>
-                            <span className="text-[11px] text-slate-400">{s.role}</span>
+                            <span className="text-[11px] text-ink-3">{s.role}</span>
                           </td>
                           <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded-md bg-warn-soft text-warn text-[10px] font-bold">
                               {s.roundType}
                             </span>
                           </td>
-                          <td className="py-3 px-4 max-w-md text-slate-700 dark:text-slate-300 line-clamp-2">
+                          <td className="py-3 px-4 max-w-md text-ink-2 line-clamp-2">
                             {s.question}
                           </td>
-                          <td className="py-3 px-4 text-slate-500 font-semibold">{s.year}</td>
+                          <td className="py-3 px-4 text-ink-3 font-semibold">{s.year}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -235,8 +235,8 @@ export default function AdminPlacementPage() {
       {/* Add Company Set Modal */}
       {companyModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-surface rounded-3xl max-w-lg w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-lg font-bold text-ink mb-4">
               Add Company Interview Question
             </h3>
             <form onSubmit={handleCreateCompanySet} className="space-y-3 text-xs">
@@ -251,7 +251,7 @@ export default function AdminPlacementPage() {
                     onChange={(e) =>
                       setCompanyForm({ ...companyForm, companyName: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
                 <div>
@@ -261,7 +261,7 @@ export default function AdminPlacementPage() {
                     onChange={(e) =>
                       setCompanyForm({ ...companyForm, roundType: e.target.value })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   >
                     <option value="ONLINE_ASSESSMENT">Online Assessment</option>
                     <option value="TECHNICAL_INTERVIEW">Technical Interview</option>
@@ -279,7 +279,7 @@ export default function AdminPlacementPage() {
                     placeholder="e.g. SDE-1 / Digital"
                     value={companyForm.role}
                     onChange={(e) => setCompanyForm({ ...companyForm, role: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
                 <div>
@@ -288,7 +288,7 @@ export default function AdminPlacementPage() {
                     type="text"
                     value={companyForm.year}
                     onChange={(e) => setCompanyForm({ ...companyForm, year: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                   />
                 </div>
               </div>
@@ -303,7 +303,7 @@ export default function AdminPlacementPage() {
                   onChange={(e) =>
                     setCompanyForm({ ...companyForm, question: e.target.value })
                   }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -314,7 +314,7 @@ export default function AdminPlacementPage() {
                   placeholder="Enter solution strategy, time/space complexity..."
                   value={companyForm.answer}
                   onChange={(e) => setCompanyForm({ ...companyForm, answer: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2"
                 />
               </div>
 
@@ -322,13 +322,13 @@ export default function AdminPlacementPage() {
                 <button
                   type="button"
                   onClick={() => setCompanyModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-4 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-700"
+                  className="px-5 py-2 rounded-xl bg-danger text-white font-bold hover:bg-danger/90"
                 >
                   Save Question
                 </button>

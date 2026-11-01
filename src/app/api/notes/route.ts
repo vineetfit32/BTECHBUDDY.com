@@ -1,36 +1,55 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, isAuthorized } from "@/lib/auth";
+import { id, optionalId, optionalInt, optionalText, ownedFileUrl, parseJson, parseQuery, text, z } from "@/lib/validation";
+
+const listQuery = z.object({
+  branchId: optionalId,
+  semesterId: optionalId,
+  subjectId: optionalId,
+  year: optionalInt(1, 4),
+  search: optionalText(120),
+  isPYQ: z.enum(["true", "false"]).optional(),
+  featured: z.enum(["true", "false"]).optional(),
+});
+
+const noteBody = z.object({
+  title: text(200, "Title"),
+  description: optionalText(5000),
+  fileUrl: ownedFileUrl.pipe(z.string({ error: "Upload the PDF first" })),
+  fileSize: optionalText(20),
+  fileType: z.enum(["PDF", "IMAGE"]).default("PDF"),
+  subjectId: id,
+  unitId: optionalId,
+  branchId: optionalId,
+  semesterId: optionalId,
+  academicYearId: optionalId,
+  isFeatured: z.boolean().default(false),
+  isPYQ: z.boolean().default(false),
+  yearPYQ: optionalText(20),
+  tags: optionalText(300),
+  language: z.enum(["ENGLISH", "HINDI", "HINGLISH"]).default("ENGLISH"),
+});
 
 export async function GET(req: Request) {
+  const parsed = parseQuery(req, listQuery);
+  if (parsed.error) return parsed.error;
+  const { branchId, semesterId, subjectId, year, search, isPYQ, featured } = parsed.data;
+
   try {
-    const { searchParams } = new URL(req.url);
-    const branchId = searchParams.get("branchId");
-    const semesterId = searchParams.get("semesterId");
-    const subjectId = searchParams.get("subjectId");
-    const yearNumber = searchParams.get("year");
-    const search = searchParams.get("search");
-    const isPYQ = searchParams.get("isPYQ");
-    const featured = searchParams.get("featured");
-
-    const where: any = { isPublished: true };
-
+    const where: Record<string, unknown> = { isPublished: true };
     if (branchId) where.branchId = branchId;
     if (semesterId) where.semesterId = semesterId;
     if (subjectId) where.subjectId = subjectId;
     if (isPYQ === "true") where.isPYQ = true;
     if (featured === "true") where.isFeatured = true;
-
-    if (yearNumber) {
-      where.academicYear = { yearNumber: parseInt(yearNumber) };
-    }
-
+    if (year) where.academicYear = { yearNumber: year };
     if (search) {
       where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
-        { tags: { contains: search } },
-        { subject: { name: { contains: search } } },
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { tags: { contains: search, mode: "insensitive" } },
+        { subject: { name: { contains: search, mode: "insensitive" } } },
       ];
     }
 
@@ -43,6 +62,7 @@ export async function GET(req: Request) {
         unit: { select: { id: true, title: true, unitNumber: true } },
       },
       orderBy: { createdAt: "desc" },
+      take: 200,
     });
 
     return NextResponse.json({ notes });
@@ -53,56 +73,28 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const user = await getCurrentUser();
+  if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
+  }
+  const parsed = await parseJson(req, noteBody);
+  if (parsed.error) return parsed.error;
+  const input = parsed.data;
+
   try {
-    const user = await getCurrentUser();
-    if (!user || !isAuthorized(user.role, ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"])) {
-      return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
-    }
-
-    const body = await req.json();
-    const {
-      title,
-      description,
-      fileUrl,
-      fileSize,
-      fileType,
-      subjectId,
-      unitId,
-      branchId,
-      semesterId,
-      academicYearId,
-      isFeatured,
-      isPYQ,
-      yearPYQ,
-      tags,
-    } = body;
-
-    if (!title || !fileUrl || !subjectId) {
-      return NextResponse.json(
-        { error: "Title, file URL, and subject are required" },
-        { status: 400 }
-      );
-    }
-
     const note = await prisma.note.create({
       data: {
-        title,
-        description,
-        fileUrl,
-        fileSize: fileSize || "1.5 MB",
-        fileType: fileType || "PDF",
-        subjectId,
-        unitId: unitId || null,
-        branchId: branchId || null,
-        semesterId: semesterId || null,
-        academicYearId: academicYearId || null,
-        isFeatured: Boolean(isFeatured),
-        isPYQ: Boolean(isPYQ),
-        yearPYQ: yearPYQ || null,
-        tags: tags || null,
+        ...input,
+        description: input.description ?? null,
+        fileSize: input.fileSize ?? "1.5 MB",
+        unitId: input.unitId ?? null,
+        branchId: input.branchId ?? null,
+        semesterId: input.semesterId ?? null,
+        academicYearId: input.academicYearId ?? null,
+        yearPYQ: input.yearPYQ ?? null,
+        tags: input.tags ?? null,
       },
     });
-
     return NextResponse.json({ success: true, note });
   } catch (error) {
     console.error("Create note error:", error);

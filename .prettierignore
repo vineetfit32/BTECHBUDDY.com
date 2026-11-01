@@ -1,0 +1,9 @@
+.next
+node_modules
+public/vendor
+src/generated
+storage
+package-lock.json
+coverage
+playwright-report
+test-results

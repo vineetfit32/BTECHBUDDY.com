@@ -2,82 +2,99 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GraduationCap, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { GraduationCap, Mail, ArrowLeft, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Could not send the reset link. Please try again.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("You appear to be offline. Reconnect and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6 bg-white dark:bg-[#1C2541] p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-700/80 shadow-2xl">
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md">
-              <GraduationCap className="w-6 h-6" />
+    <div className="relative flex min-h-[75vh] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <div className="pointer-events-none absolute inset-0 bg-blueprint opacity-30" />
+      <div className="glass relative z-10 w-full max-w-md space-y-6 rounded-3xl p-8 sm:p-10">
+        <div className="space-y-2 text-center">
+          <Link href="/" className="inline-flex items-center gap-2" aria-label="BTECHBUDDY home">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-tr from-brand to-accent text-on-brand shadow-glow-sm">
+              <GraduationCap className="h-6 w-6" />
             </div>
           </Link>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-            Reset Password
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Enter your registered student email address to receive password reset instructions
-          </p>
+          <h1 className="font-display text-2xl font-bold text-ink">Reset your password</h1>
+          <p className="text-sm text-ink-3">Enter the email you registered with and we&apos;ll send you a reset link.</p>
         </div>
 
         {submitted ? (
-          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-center space-y-3">
-            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Reset Link Dispatched
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              If an account with <span className="font-semibold text-slate-900 dark:text-white">{email}</span> exists, you will receive a secure recovery email within 2 minutes.
+          <div className="space-y-3 rounded-2xl border border-ok/40 bg-ok-soft p-5 text-center" role="status">
+            <CheckCircle2 className="mx-auto h-8 w-8 text-ok" />
+            <h2 className="text-sm font-bold text-ink">Check your inbox</h2>
+            <p className="text-sm text-ink-2">
+              If an account exists for <span className="font-semibold text-ink">{email}</span>, a reset link is on its way. It
+              expires in 30 minutes.
             </p>
-            <Link
-              href="/login"
-              className="inline-block px-4 py-2 text-xs font-bold bg-indigo-600 text-white rounded-xl shadow-xs"
-            >
-              Back to Login
+            <Link href="/login" className="btn-brutal inline-flex px-4 py-2 text-xs">
+              Back to sign in
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Email Address</label>
+            {error && (
+              <div className="flex items-center gap-2 rounded-xl border border-danger/40 bg-danger-soft p-3 text-xs text-danger" role="alert">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="text-xs font-bold text-ink-2">
+                Email address
+              </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-3" aria-hidden />
                 <input
+                  id="email"
                   type="email"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@college.edu.in"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-indigo-500"
+                  className="field pl-10"
                 />
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/30 transition-all"
-            >
-              Send Password Reset Link
+            <button type="submit" disabled={loading} className="btn-brutal w-full justify-center py-3 text-sm">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send reset link"}
             </button>
           </form>
         )}
 
         <div className="text-center">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Login
+          <Link href="/login" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-3 transition-colors hover:text-brand">
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
           </Link>
         </div>
       </div>

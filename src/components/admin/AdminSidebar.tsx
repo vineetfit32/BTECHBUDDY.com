@@ -63,16 +63,16 @@ export default function AdminSidebar() {
     <aside className="w-full lg:w-64 desk-card rounded-2xl p-4 shrink-0 shadow-glow-sm h-fit">
       <div className="flex items-center justify-between px-3 py-2 mb-4 border-b border-desk-border">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-rose-500 flex items-center justify-center text-white shadow-xs">
+          <div className="w-7 h-7 rounded-lg bg-danger flex items-center justify-center text-white shadow-2xs">
             <Shield className="w-4 h-4" />
           </div>
-          <span className="font-mono text-xs font-bold uppercase tracking-wider text-rose-400">
+          <span className="font-mono text-xs font-bold uppercase tracking-wider text-danger">
             ADMIN_DESK
           </span>
         </div>
         <Link
           href="/"
-          className="font-mono text-[11px] text-slate-400 hover:text-white flex items-center gap-1"
+          className="font-mono text-[11px] text-ink-3 hover:text-white flex items-center gap-1"
         >
           <ArrowLeft className="w-3 h-3" /> Home
         </Link>
@@ -88,11 +88,11 @@ export default function AdminSidebar() {
               href={link.href}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                 isActive
-                  ? "bg-rose-500 text-white font-semibold shadow-xs"
-                  : "text-slate-400 hover:bg-slate-100 dark:hover:bg-desk-canvas hover:text-slate-200"
+                  ? "bg-danger text-white font-semibold shadow-2xs"
+                  : "text-ink-3 hover:bg-surface-2 dark:hover:bg-desk-canvas hover:text-ink"
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400"}`} />
+              <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-ink-3"}`} />
               <span>{link.label}</span>
             </Link>
           );
@@ -102,7 +102,7 @@ export default function AdminSidebar() {
       <div className="pt-4 mt-4 border-t border-desk-border">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-mono text-xs text-rose-400 hover:bg-rose-500/10 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-mono text-xs text-danger hover:bg-danger/10 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Exit Console</span>

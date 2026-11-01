@@ -51,19 +51,19 @@ export default function PDFViewerModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className={`bg-white dark:bg-[#1C2541] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden transition-all duration-300 ${
+        className={`bg-surface rounded-2xl shadow-2xl border border-line flex flex-col overflow-hidden transition-all duration-300 ${
           isFullscreen ? "w-full h-full" : "w-full max-w-5xl h-[88vh]"
         }`}
       >
         {/* Header Bar */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-[#0B132B]/80">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-line bg-surface-2">
           <div className="flex items-center gap-3 min-w-0 pr-4">
-            <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-danger/10 text-danger flex items-center justify-center shrink-0">
               <FileText className="w-4 h-4" />
             </div>
             <div className="truncate">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{title}</h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">BTECHBUDDY In-App Document Reader</p>
+              <h3 className="text-sm font-bold text-ink truncate">{title}</h3>
+              <p className="text-[11px] text-ink-3">BTECHBUDDY In-App Document Reader</p>
             </div>
           </div>
 
@@ -72,11 +72,11 @@ export default function PDFViewerModal({
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand hover:bg-brand-strong text-white transition-all shadow-2xs"
             >
               {downloaded ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-300" /> Downloaded
+                  <Check className="w-3.5 h-3.5 text-ok" /> Downloaded
                 </>
               ) : (
                 <>
@@ -92,7 +92,7 @@ export default function PDFViewerModal({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open in new window"
-              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+              className="p-1.5 rounded-lg text-ink-2 hover:bg-surface-3"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
@@ -101,7 +101,7 @@ export default function PDFViewerModal({
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
               aria-label="Toggle Fullscreen"
-              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+              className="p-1.5 rounded-lg text-ink-2 hover:bg-surface-3"
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -110,7 +110,7 @@ export default function PDFViewerModal({
             <button
               onClick={onClose}
               aria-label="Close"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"
+              className="p-1.5 rounded-lg text-ink-3 hover:text-ink-2 hover:bg-surface-3"
             >
               <X className="w-5 h-5" />
             </button>
@@ -118,7 +118,7 @@ export default function PDFViewerModal({
         </div>
 
         {/* PDF Embedded View */}
-        <div className="flex-1 w-full h-full bg-slate-100 dark:bg-slate-900 relative">
+        <div className="flex-1 w-full h-full bg-surface-2 relative">
           <iframe
             src={`${pdfUrl}#toolbar=1`}
             title={title}

@@ -11,13 +11,13 @@ export const USER_ROLES = {
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 export const BRANCHES_DEF = [
-  { code: "CSE", name: "Computer Science & Engineering", icon: "Code", color: "from-blue-600 to-indigo-600" },
-  { code: "IT", name: "Information Technology", icon: "Cpu", color: "from-cyan-600 to-blue-600" },
-  { code: "AIML", name: "Artificial Intelligence & ML", icon: "Bot", color: "from-purple-600 to-indigo-600" },
-  { code: "DS", name: "Data Science", icon: "BarChart3", color: "from-indigo-600 to-violet-600" },
-  { code: "ECE", name: "Electronics & Communication", icon: "Radio", color: "from-emerald-600 to-teal-600" },
-  { code: "EE", name: "Electrical Engineering", icon: "Zap", color: "from-amber-600 to-yellow-600" },
-  { code: "ME", name: "Mechanical Engineering", icon: "Cog", color: "from-orange-600 to-red-600" },
+  { code: "CSE", name: "Computer Science & Engineering", icon: "Code", color: "from-blue-600 to-brand" },
+  { code: "IT", name: "Information Technology", icon: "Cpu", color: "from-accent to-blue-600" },
+  { code: "AIML", name: "Artificial Intelligence & ML", icon: "Bot", color: "from-brand to-brand" },
+  { code: "DS", name: "Data Science", icon: "BarChart3", color: "from-brand to-brand" },
+  { code: "ECE", name: "Electronics & Communication", icon: "Radio", color: "from-ok to-teal-600" },
+  { code: "EE", name: "Electrical Engineering", icon: "Zap", color: "from-warn to-warn" },
+  { code: "ME", name: "Mechanical Engineering", icon: "Cog", color: "from-orange-600 to-danger" },
   { code: "CE", name: "Civil Engineering", icon: "Building2", color: "from-stone-600 to-zinc-600" },
 ];
 

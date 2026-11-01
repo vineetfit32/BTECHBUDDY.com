@@ -20,15 +20,15 @@ export default function ProgressBar({
   return (
     <div className={`w-full ${className}`}>
       {showLabel && (
-        <div className="flex justify-between items-center text-xs font-semibold mb-1 text-slate-500">
+        <div className="flex justify-between items-center text-xs font-semibold mb-1 text-ink-3">
           <span>Progress</span>
-          <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+          <span className="font-mono text-ink-2 font-bold">
             {Math.round(normalized)}%
           </span>
         </div>
       )}
       <div
-        className="w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"
+        className="w-full bg-surface-3 rounded-full overflow-hidden"
         style={{ height }}
       >
         <div

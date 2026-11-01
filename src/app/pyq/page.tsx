@@ -79,14 +79,14 @@ export default function PYQPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
+        <div className="bg-linear-to-r from-blue-700 via-brand to-brand rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-cyan-300 text-xs font-semibold mb-4 border border-white/10">
-              <Sparkles className="w-4 h-4 text-cyan-300" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-accent text-xs font-semibold mb-4 border border-white/10">
+              <Sparkles className="w-4 h-4 text-accent" />
               <span>AKTU • RTU • VTU • SPPU • GTU • JNTUH & More</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">
@@ -99,14 +99,14 @@ export default function PYQPage() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/subjects"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-blue-700 font-bold text-sm shadow-md hover:bg-blue-50 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface text-blue-700 font-bold text-sm shadow-md hover:bg-blue-50 transition-all"
               >
                 <BookOpen className="w-4 h-4" />
                 Browse by Subject
               </Link>
               <Link
                 href="/universities"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all border border-white/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-xs transition-all border border-white/20"
               >
                 <School className="w-4 h-4" />
                 Select University
@@ -116,17 +116,17 @@ export default function PYQPage() {
         </div>
 
         {/* Filters and Search Bar */}
-        <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm mb-8 space-y-4">
+        <div className="bg-surface rounded-2xl p-6 border border-line shadow-xs mb-8 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {/* Search Input */}
             <div className="lg:col-span-2 relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Search className="w-4 h-4 text-ink-3 absolute left-3.5 top-3.5" />
               <input
                 type="text"
                 placeholder="Search subject, university, or code..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-line bg-surface-2 text-ink focus:outline-hidden focus:ring-2 focus:ring-brand"
               />
             </div>
 
@@ -135,7 +135,7 @@ export default function PYQPage() {
               <select
                 value={selectedUni}
                 onChange={(e) => setSelectedUni(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2.5 text-sm rounded-xl border border-line bg-surface-2 text-ink focus:outline-hidden focus:ring-2 focus:ring-brand"
               >
                 <option value="">All Universities</option>
                 {universities.map((u) => (
@@ -151,7 +151,7 @@ export default function PYQPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2.5 text-sm rounded-xl border border-line bg-surface-2 text-ink focus:outline-hidden focus:ring-2 focus:ring-brand"
               >
                 <option value="">All Exam Years</option>
                 <option value="2024">2024</option>
@@ -166,7 +166,7 @@ export default function PYQPage() {
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2.5 text-sm rounded-xl border border-line bg-surface-2 text-ink focus:outline-hidden focus:ring-2 focus:ring-brand"
               >
                 <option value="">All Exam Types</option>
                 <option value="END_TERM">End-Term Regular</option>
@@ -180,16 +180,16 @@ export default function PYQPage() {
         {/* Papers Grid */}
         {loading ? (
           <div className="py-20 text-center">
-            <div className="inline-block w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-slate-500 text-sm">Loading exam papers...</p>
+            <div className="inline-block w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4" />
+            <p className="text-ink-3 text-sm">Loading exam papers...</p>
           </div>
         ) : filteredPapers.length === 0 ? (
-          <div className="bg-white dark:bg-[#1C2541] rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800 shadow-sm">
-            <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">
+          <div className="bg-surface rounded-2xl p-12 text-center border border-line shadow-xs">
+            <FileText className="w-12 h-12 text-ink-3 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-ink mb-2">
               No Question Papers Found
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+            <p className="text-sm text-ink-3 max-w-md mx-auto mb-6">
               Try adjusting your university, year, or search filters to find available past exam papers.
             </p>
             <button
@@ -200,7 +200,7 @@ export default function PYQPage() {
                 setSelectedType("");
                 setSearchQuery("");
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-xl text-xs font-semibold hover:bg-brand-strong transition"
             >
               Reset Filters
             </button>
@@ -210,43 +210,43 @@ export default function PYQPage() {
             {filteredPapers.map((paper) => (
               <div
                 key={paper.id}
-                className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex flex-col justify-between p-6 group"
+                className="bg-surface rounded-2xl border border-line shadow-xs hover:shadow-md transition-all flex flex-col justify-between p-6 group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-800">
+                    <span className="px-2.5 py-1 rounded-lg bg-brand-soft text-brand text-xs font-bold border border-brand/35">
                       {paper.university?.code || "UNIV"}
                     </span>
-                    <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 text-[11px] font-semibold border border-amber-200/80 dark:border-amber-800/80">
+                    <span className="px-2 py-0.5 rounded-md bg-warn-soft text-warn text-[11px] font-semibold border border-warn/80">
                       {paper.examYear} • {paper.examType.replace("_", " ")}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2 line-clamp-2">
+                  <h3 className="text-base font-bold text-ink group-hover:text-brand transition-colors mb-2 line-clamp-2">
                     {paper.title}
                   </h3>
 
-                  <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 mb-6">
+                  <div className="space-y-1.5 text-xs text-ink-2 mb-6">
                     <div className="flex items-center gap-2">
-                      <GraduationCap className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <GraduationCap className="w-3.5 h-3.5 text-ink-3 shrink-0" />
                       <span>{paper.subject?.name} ({paper.subject?.code})</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <Layers className="w-3.5 h-3.5 text-ink-3 shrink-0" />
                       <span>{paper.branch?.name} • Sem {paper.semester?.semesterNumber || "Any"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <div className="flex items-center gap-2 text-ink-3">
+                      <Calendar className="w-3.5 h-3.5 text-ink-3 shrink-0" />
                       <span>Size: {paper.fileSize} • {paper.downloadCount} Downloads</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="space-y-2 pt-4 border-t border-line">
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setActivePdf({ url: paper.pdfUrl, title: paper.title })}
-                      className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                      className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-brand-soft text-brand text-xs font-bold hover:bg-brand-soft transition-colors"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       Preview PDF
@@ -263,7 +263,7 @@ export default function PYQPage() {
 
                   <Link
                     href={`/subjects/${paper.subjectId}/important-questions`}
-                    className="block text-center py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+                    className="block text-center py-2 text-xs font-semibold text-brand hover:underline"
                   >
                     View Subject's Repeated Questions →
                   </Link>

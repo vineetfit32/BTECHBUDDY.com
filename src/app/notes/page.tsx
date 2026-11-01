@@ -94,10 +94,10 @@ function NotesContent() {
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs font-bold text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/30 uppercase tracking-wider">
           <FileText className="w-3.5 h-3.5" /> High-Yield Engineering Notes
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl font-black text-ink">
           Study Materials, Notes & PYQs
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        <p className="text-sm sm:text-base text-ink-2">
           Search and download verified handwritten university topper notes, formula cheat sheets, and solved previous year question papers.
         </p>
       </div>
@@ -106,13 +106,13 @@ function NotesContent() {
       <div className="p-4 sm:p-6 rounded-2xl desk-card space-y-4">
         {/* Top search input */}
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-ink-3 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search notes by subject name, topic, or keyword (e.g. DSA, Trees, Normalization)..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-desk-canvas border border-desk-border rounded-xl text-xs sm:text-sm outline-none focus:border-primary-violet transition-colors text-slate-800 dark:text-slate-100"
+            className="w-full pl-11 pr-4 py-3 bg-surface-2 dark:bg-desk-canvas border border-desk-border rounded-xl text-xs sm:text-sm outline-hidden focus:border-primary-violet transition-colors text-ink"
           />
         </div>
 
@@ -123,7 +123,7 @@ function NotesContent() {
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
             aria-label="Filter by Year"
-            className="w-full p-2.5 bg-slate-50 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-none text-slate-700 dark:text-slate-200 focus:border-primary-violet"
+            className="w-full p-2.5 bg-surface-2 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-hidden text-ink-2 focus:border-primary-violet"
           >
             <option value="">All Academic Years</option>
             <option value="1">1st Year (Sem 1 & 2)</option>
@@ -137,7 +137,7 @@ function NotesContent() {
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
             aria-label="Filter by Branch"
-            className="w-full p-2.5 bg-slate-50 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-none text-slate-700 dark:text-slate-200 focus:border-primary-violet"
+            className="w-full p-2.5 bg-surface-2 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-hidden text-ink-2 focus:border-primary-violet"
           >
             <option value="">All Branches</option>
             {branches.map((b) => (
@@ -152,7 +152,7 @@ function NotesContent() {
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
             aria-label="Filter by Subject"
-            className="w-full p-2.5 bg-slate-50 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-none text-slate-700 dark:text-slate-200 focus:border-primary-violet"
+            className="w-full p-2.5 bg-surface-2 dark:bg-desk-canvas border border-desk-border rounded-xl font-mono text-xs font-semibold outline-hidden text-ink-2 focus:border-primary-violet"
           >
             <option value="">All Subjects</option>
             {subjects.map((s) => (
@@ -167,8 +167,8 @@ function NotesContent() {
             onClick={() => setIsPYQOnly(!isPYQOnly)}
             className={`w-full p-2.5 rounded-xl font-mono text-xs font-bold transition-all border flex items-center justify-center gap-2 ${
               isPYQOnly
-                ? "bg-accent-amber text-slate-950 border-accent-amber shadow-xs"
-                : "desk-card hover:border-accent-amber text-slate-700 dark:text-slate-300"
+                ? "bg-accent-amber text-ink border-accent-amber shadow-2xs"
+                : "desk-card hover:border-accent-amber text-ink-2"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -179,15 +179,15 @@ function NotesContent() {
 
       {/* Notes Results Grid */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+        <div className="flex flex-col items-center justify-center py-20 text-ink-3">
           <Loader2 className="w-8 h-8 text-primary-violet animate-spin mb-2" />
           <span className="font-mono text-xs font-semibold">Filtering study notes catalog...</span>
         </div>
       ) : notes.length === 0 ? (
         <div className="p-12 text-center rounded-2xl desk-card space-y-3">
-          <FileText className="w-10 h-10 text-slate-400 mx-auto" />
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">No Notes Found</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          <FileText className="w-10 h-10 text-ink-3 mx-auto" />
+          <h3 className="text-base font-bold text-ink">No Notes Found</h3>
+          <p className="text-xs text-ink-3 max-w-sm mx-auto">
             Try adjusting your search filters or clearing the branch/year selection.
           </p>
           <button
@@ -212,21 +212,21 @@ function NotesContent() {
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm bg-danger/10 text-danger border border-danger/20">
                     {note.fileType}
                   </span>
                   {note.isPYQ ? (
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-accent-amber/10 text-accent-amber border border-accent-amber/30">
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-sm bg-accent-amber/10 text-accent-amber border border-accent-amber/30">
                       PYQ Solved {note.yearPYQ ? `(${note.yearPYQ})` : ""}
                     </span>
                   ) : (
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-primary-violet/10 text-primary-violet border border-primary-violet/30">
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-sm bg-primary-violet/10 text-primary-violet border border-primary-violet/30">
                       Topper Notes
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
+                <h3 className="text-base font-bold text-ink line-clamp-2">
                   {note.title}
                 </h3>
 
@@ -234,13 +234,13 @@ function NotesContent() {
                   {note.subject?.name} ({note.subject?.code})
                 </div>
 
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-ink-3 mt-2 line-clamp-3 leading-relaxed">
                   {note.description}
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-desk-border flex items-center justify-between">
-                <div className="font-mono text-[11px] text-slate-400">
+                <div className="font-mono text-[11px] text-ink-3">
                   <span>{note.fileSize}</span> • <span>{note.downloadCount} dl</span>
                 </div>
 
@@ -249,7 +249,7 @@ function NotesContent() {
                   <button
                     onClick={() => handleDownload(note)}
                     aria-label="Download note"
-                    className="p-2 rounded-xl desk-card hover:border-primary-violet text-slate-400 hover:text-white transition-colors"
+                    className="p-2 rounded-xl desk-card hover:border-primary-violet text-ink-3 hover:text-white transition-colors"
                   >
                     <Download className="w-4 h-4" />
                   </button>
@@ -290,7 +290,7 @@ function NotesContent() {
 
 export default function NotesPage() {
   return (
-    <Suspense fallback={<div className="font-mono text-center py-20 text-slate-400">Loading notes catalog...</div>}>
+    <Suspense fallback={<div className="font-mono text-center py-20 text-ink-3">Loading notes catalog...</div>}>
       <NotesContent />
     </Suspense>
   );

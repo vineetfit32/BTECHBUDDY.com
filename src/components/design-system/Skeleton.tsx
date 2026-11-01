@@ -9,7 +9,7 @@ export default function Skeleton({ className = "h-4 w-full", count = 1 }: Skelet
   if (count === 1) {
     return (
       <div
-        className={`animate-pulse bg-slate-200/80 dark:bg-slate-800/80 rounded-xl ${className}`}
+        className={`animate-pulse bg-surface-3/80 rounded-xl ${className}`}
       />
     );
   }
@@ -19,7 +19,7 @@ export default function Skeleton({ className = "h-4 w-full", count = 1 }: Skelet
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className={`animate-pulse bg-slate-200/80 dark:bg-slate-800/80 rounded-xl ${className}`}
+          className={`animate-pulse bg-surface-3/80 rounded-xl ${className}`}
         />
       ))}
     </div>

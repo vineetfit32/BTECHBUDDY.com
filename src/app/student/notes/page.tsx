@@ -25,18 +25,18 @@ export default async function StudentNotesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex items-center justify-between border-b border-line pb-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-ink">
             My Study Notes & Downloads
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-3">
             Quick access to your semester notes and saved PDF study materials
           </p>
         </div>
         <Link
           href="/notes"
-          className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700"
+          className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand text-white hover:bg-brand-strong"
         >
           All Notes Directory
         </Link>
@@ -46,33 +46,33 @@ export default async function StudentNotesPage() {
         {notes.map((note) => (
           <div
             key={note.id}
-            className="p-5 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs flex flex-col justify-between"
+            className="p-5 rounded-2xl bg-surface border border-line shadow-2xs flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm bg-danger-soft text-danger">
                   {note.fileType}
                 </span>
                 {note.isPYQ && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-warn-soft text-warn">
                     Solved PYQ
                   </span>
                 )}
               </div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2">
+              <h3 className="text-sm font-bold text-ink line-clamp-2">
                 {note.title}
               </h3>
-              <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
+              <p className="text-xs text-brand mt-1">
                 {note.subject.name}
               </p>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400">{note.fileSize}</span>
+            <div className="mt-5 pt-3 border-t border-line flex items-center justify-between">
+              <span className="text-[11px] text-ink-3">{note.fileSize}</span>
               <div className="flex items-center gap-2">
                 <Link
                   href={`/notes/${note.id}`}
-                  className="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700"
+                  className="px-3 py-1 rounded-lg text-xs font-bold bg-brand text-white hover:bg-brand-strong"
                 >
                   Open PDF
                 </Link>

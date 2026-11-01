@@ -2,57 +2,55 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  FileText,
-  Briefcase,
-  HelpCircle,
-  User,
-} from "lucide-react";
+import { motion } from "motion/react";
+import { Home, LayoutDashboard, NotebookPen, Sparkles, FileText } from "lucide-react";
+import { useT } from "@/lib/use-t";
+import { cn } from "@/lib/utils";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const t = useT();
 
-  // If inside active quiz attempt room or resume builder print, hide bottom nav
   if (pathname.includes("/quizzes/") && pathname.endsWith("/attempt")) return null;
   if (pathname === "/tools/resume-builder") return null;
 
   const tabs = [
-    { label: "Home", href: "/", icon: Home },
-    { label: "Notes", href: "/notes", icon: FileText },
-    { label: "Placement", href: "/placement-hub", icon: Briefcase },
-    { label: "Quizzes", href: "/quizzes", icon: HelpCircle },
-    { label: "Portal", href: "/student/dashboard", icon: User },
+    { label: t("home"), href: "/", icon: Home },
+    { label: t("notes"), href: "/notes", icon: NotebookPen },
+    { label: t("studyBoard"), href: "/student/board", icon: LayoutDashboard },
+    { label: t("pyqPapers"), href: "/pyq", icon: FileText },
+    { label: t("aiCopilot"), href: "/ai-assistant", icon: Sparkles },
   ];
 
   return (
     <nav
-      aria-label="Mobile Bottom Navigation"
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0E162E]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800/80 px-2 py-1 shadow-lg print:hidden"
+      data-chrome
+      aria-label="Mobile navigation"
+      className="glass fixed inset-x-3 bottom-3 z-40 rounded-2xl px-1.5 py-1 print:hidden lg:hidden"
     >
-      <div className="flex items-center justify-around max-w-md mx-auto">
+      <div className="mx-auto flex max-w-md items-center justify-around">
         {tabs.map((tab) => {
-          const isActive =
-            tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+          const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
           const Icon = tab.icon;
-
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center py-1.5 px-3 min-w-[56px] min-h-[48px] rounded-xl transition-all ${
-                isActive
-                  ? "text-primary-violet font-bold"
-                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium"
-              }`}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "relative flex min-h-[52px] min-w-[60px] flex-col items-center justify-center rounded-xl px-2 py-1 transition-colors",
+                active ? "text-ink" : "text-ink-3"
+              )}
             >
-              <div className="relative">
-                <Icon className={`w-5 h-5 ${isActive ? "scale-110" : ""}`} />
-                {isActive && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary-violet shadow-glow-sm" />
-                )}
-              </div>
-              <span className="text-[10px] mt-1">{tab.label}</span>
+              {active && (
+                <motion.span
+                  layoutId="mobile-tab"
+                  className="absolute inset-0 -z-10 rounded-xl bg-brand-soft"
+                  transition={{ type: "spring", stiffness: 450, damping: 36 }}
+                />
+              )}
+              <Icon className={cn("size-5", active && "text-brand")} />
+              <span className="mt-0.5 max-w-[68px] truncate text-[10px] font-semibold">{tab.label}</span>
             </Link>
           );
         })}

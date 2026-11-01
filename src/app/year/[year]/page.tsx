@@ -107,7 +107,7 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
             <Compass className="w-3.5 h-3.5" /> YEAR_0{yearNumber} ROADMAP
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white">{meta.title}</h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{meta.focus}</p>
+          <p className="text-ink-2 text-sm sm:text-base leading-relaxed">{meta.focus}</p>
         </div>
       </div>
 
@@ -117,7 +117,7 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
           <Layers className="w-4 h-4 text-primary-violet" />
           Year {yearNumber} High-Scoring Exam Strategy
         </h3>
-        <ul className="space-y-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+        <ul className="space-y-2.5 text-xs sm:text-sm text-ink-2">
           {meta.tips.map((tip, idx) => (
             <li key={idx} className="flex items-start gap-2.5">
               <CheckCircle2 className="w-4 h-4 text-accent-cyan shrink-0 mt-0.5" />
@@ -133,10 +133,10 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
           <div key={sem.id} className="space-y-4">
             <div className="flex items-center justify-between border-b border-desk-border pb-3">
               <div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-ink">
                   {sem.title}
                 </h2>
-                <p className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                <p className="font-mono text-xs text-ink-3">
                   Core & elective courses for Semester {sem.semesterNumber}
                 </p>
               </div>
@@ -153,20 +153,20 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-xs font-bold text-primary-violet px-2 py-0.5 rounded bg-primary-violet/10 border border-primary-violet/30">
+                      <span className="font-mono text-xs font-bold text-primary-violet px-2 py-0.5 rounded-sm bg-primary-violet/10 border border-primary-violet/30">
                         {sub.code}
                       </span>
-                      <span className="font-mono text-[11px] text-slate-400">
+                      <span className="font-mono text-[11px] text-ink-3">
                         {sub.credits} Credits
                       </span>
                     </div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-1 mt-2">
+                    <h3 className="text-base font-bold text-ink line-clamp-1 mt-2">
                       {sub.name}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-ink-3 mt-2 line-clamp-2 leading-relaxed">
                       {sub.syllabus || "Complete syllabus breakdown, unit notes, and exam question papers."}
                     </p>
-                    <div className="mt-4 flex items-center gap-3 text-xs font-mono text-slate-400">
+                    <div className="mt-4 flex items-center gap-3 text-xs font-mono text-ink-3">
                       <span className="flex items-center gap-1">
                         <FileText className="w-3.5 h-3.5 text-primary-violet" /> {sub._count.notes} Notes
                       </span>
@@ -188,7 +188,7 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
                     </Link>
                     <Link
                       href={`/notes?subjectId=${sub.id}`}
-                      className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold desk-card hover:border-primary-violet text-slate-700 dark:text-slate-300"
+                      className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold desk-card hover:border-primary-violet text-ink-2"
                     >
                       Notes
                     </Link>
@@ -204,7 +204,7 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
       {notes.length > 0 && (
         <div className="space-y-4 pt-6 border-t border-desk-border">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold text-ink">
               Popular Notes for {academicYear.title}
             </h2>
             <Link
@@ -223,18 +223,18 @@ export default async function YearPage({ params }: { params: Promise<{ year: str
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded-sm bg-danger/10 text-danger border border-danger/20">
                       {note.fileType}
                     </span>
-                    <span className="font-mono text-xs text-slate-400">{note.fileSize}</span>
+                    <span className="font-mono text-xs text-ink-3">{note.fileSize}</span>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2 mt-1">
+                  <h3 className="text-sm font-bold text-ink line-clamp-2 mt-1">
                     {note.title}
                   </h3>
                   <p className="font-mono text-xs text-primary-violet mt-1">{note.subject.name}</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-desk-border flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-slate-400">{note.downloadCount} dl</span>
+                  <span className="font-mono text-[11px] text-ink-3">{note.downloadCount} dl</span>
                   <Link
                     href={`/notes/${note.id}`}
                     className="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-primary-violet text-white hover:bg-primary-violet/90"

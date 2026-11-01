@@ -1,55 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { enforceRateLimits } from "@/lib/rate-limit";
+import { ownedFileUrl, parseJson, text, z } from "@/lib/validation";
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+const body = z.object({
+  content: text(10_000, "Answer"),
+  imageUrl: ownedFileUrl,
+});
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Please log in to answer" }, { status: 401 });
+  }
+
+  const limited = enforceRateLimits(
+    [{ key: `answer:${user.id}`, limit: 20, windowMs: 10 * 60_000 }],
+    "You're answering very quickly. Please wait a few minutes."
+  );
+  if (limited) return limited;
+
+  const parsed = await parseJson(req, body);
+  if (parsed.error) return parsed.error;
+
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Please log in to answer" }, { status: 401 });
-    }
-
     const { id: postId } = await params;
-    const body = await req.json();
-    const { content, imageUrl } = body;
-
-    if (!content) {
-      return NextResponse.json({ error: "Answer content cannot be empty" }, { status: 400 });
-    }
-
-    const doubt = await prisma.doubtPost.findUnique({
-      where: { id: postId },
-    });
-
+    const doubt = await prisma.doubtPost.findUnique({ where: { id: postId } });
     if (!doubt) {
       return NextResponse.json({ error: "Doubt post not found" }, { status: 404 });
     }
 
-    const isInstructor = user.role === "INSTRUCTOR" || user.role === "ADMIN" || user.role === "SUPER_ADMIN";
+    const isInstructor = ["INSTRUCTOR", "ADMIN", "SUPER_ADMIN"].includes(user.role);
 
     const answer = await prisma.doubtAnswer.create({
       data: {
         postId,
         userId: user.id,
-        content,
-        imageUrl: imageUrl || null,
+        content: parsed.data.content,
+        imageUrl: parsed.data.imageUrl ?? null,
         isVerified: isInstructor,
       },
     });
 
-    // Award XP to the student who answered
     await prisma.xpTransaction.create({
-      data: {
-        userId: user.id,
-        amount: 20,
-        action: "ANSWER_DOUBT",
-      },
+      data: { userId: user.id, amount: 20, action: "ANSWER_DOUBT" },
     });
 
-    // Notify question author if different user
     if (doubt.userId !== user.id) {
       await prisma.notification.create({
         data: {

@@ -68,7 +68,7 @@ export default async function SubjectDetailPage({
             <span className="px-3 py-1 rounded-full bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/40">
               {subject.branch.name}
             </span>
-            <span className="px-3 py-1 rounded-full desk-card text-slate-300">
+            <span className="px-3 py-1 rounded-full desk-card text-ink-2">
               {subject.semester.title} ({subject.semester.academicYear.title})
             </span>
             <span className="px-3 py-1 rounded-full bg-accent-emerald/20 text-accent-emerald border border-accent-emerald/40">
@@ -77,7 +77,7 @@ export default async function SubjectDetailPage({
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white">{subject.name}</h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-ink-2 text-sm sm:text-base leading-relaxed">
             {subject.description || "Master core concepts with university topper notes, video lectures, solved PYQ question papers, and interactive practice quizzes."}
           </p>
 
@@ -91,7 +91,7 @@ export default async function SubjectDetailPage({
             </Link>
             <Link
               href={`/pyq?branchId=${subject.branch.id}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-bold desk-card hover:border-primary-violet text-slate-300 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-bold desk-card hover:border-primary-violet text-ink-2 transition-colors"
             >
               <FileText className="w-3.5 h-3.5 text-accent-amber" /> Solved PYQs
             </Link>
@@ -103,11 +103,11 @@ export default async function SubjectDetailPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-desk-border pb-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-ink flex items-center gap-2">
               <Layers className="w-5 h-5 text-primary-violet" />
               Syllabus & Course Modules
             </h2>
-            <p className="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-mono text-xs text-ink-3">
               Standard B.Tech 5-unit curriculum structure
             </p>
           </div>
@@ -123,15 +123,15 @@ export default async function SubjectDetailPage({
                 <div className="font-mono text-xs font-bold text-primary-violet uppercase tracking-wider mb-1">
                   UNIT 0{unit.unitNumber}
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{unit.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                <h3 className="text-sm font-bold text-ink">{unit.title}</h3>
+                <p className="text-xs text-ink-3 mt-2 leading-relaxed">
                   {unit.description || "Core unit topics, algorithmic breakdowns, and exam question patterns."}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <div className="p-6 rounded-2xl desk-card text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+          <div className="p-6 rounded-2xl desk-card text-xs sm:text-sm text-ink-2">
             {subject.syllabus || "Complete syllabus breakdown is available across the uploaded chapter notes."}
           </div>
         )}
@@ -141,11 +141,11 @@ export default async function SubjectDetailPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-desk-border pb-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-ink flex items-center gap-2">
               <FileText className="w-5 h-5 text-accent-cyan" />
               Study Notes & Solved Papers ({subject.notes.length})
             </h2>
-            <p className="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-mono text-xs text-ink-3">
               Handwritten notes, revision summaries, and semester PYQs
             </p>
           </div>
@@ -165,23 +165,23 @@ export default async function SubjectDetailPage({
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded-sm bg-danger/10 text-danger border border-danger/20">
                       {note.fileType}
                     </span>
                     {note.isPYQ && (
-                      <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-accent-amber/10 text-accent-amber border border-accent-amber/30">
+                      <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-sm bg-accent-amber/10 text-accent-amber border border-accent-amber/30">
                         PYQ Solved {note.yearPYQ ? `(${note.yearPYQ})` : ""}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{note.title}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                  <h3 className="text-sm font-bold text-ink">{note.title}</h3>
+                  <p className="text-xs text-ink-3 mt-2 line-clamp-2 leading-relaxed">
                     {note.description}
                   </p>
                 </div>
 
                 <div className="mt-5 pt-3 border-t border-desk-border flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-slate-400">
+                  <span className="font-mono text-[11px] text-ink-3">
                     {note.fileSize} • {note.downloadCount} dl
                   </span>
                   <Link
@@ -201,11 +201,11 @@ export default async function SubjectDetailPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-desk-border pb-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-ink flex items-center gap-2">
               <Video className="w-5 h-5 text-primary-violet" />
               Recorded Video Lectures ({subject.videos.length})
             </h2>
-            <p className="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-mono text-xs text-ink-3">
               High-yield video explanations and problem solving
             </p>
           </div>
@@ -226,7 +226,7 @@ export default async function SubjectDetailPage({
               >
                 <div className="relative aspect-video bg-desk-card">
                   <img
-                    src={vid.thumbnail || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600"}
+                    src={vid.thumbnail || "/placeholders/lecture.svg"}
                     alt={vid.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
@@ -235,12 +235,12 @@ export default async function SubjectDetailPage({
                       <Video className="w-4 h-4 ml-0.5" />
                     </div>
                   </div>
-                  <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded font-mono text-[10px] font-bold bg-desk-canvas/90 text-white border border-desk-border">
+                  <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-sm font-mono text-[10px] font-bold bg-desk-canvas/90 text-white border border-desk-border">
                     {vid.duration}
                   </span>
                 </div>
                 <div className="p-3.5">
-                  <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:text-primary-violet transition-colors">
+                  <h3 className="text-xs font-bold text-ink line-clamp-2 group-hover:text-primary-violet transition-colors">
                     {vid.title}
                   </h3>
                 </div>
@@ -254,11 +254,11 @@ export default async function SubjectDetailPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-desk-border pb-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-ink flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-accent-amber" />
               Practice Quizzes ({subject.quizzes.length})
             </h2>
-            <p className="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-mono text-xs text-ink-3">
               Timed self-assessments with instant explanations
             </p>
           </div>
@@ -277,14 +277,14 @@ export default async function SubjectDetailPage({
                 className="p-5 rounded-2xl desk-card hover:border-primary-violet flex items-center justify-between transition-all"
               >
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{q.title}</h3>
-                  <p className="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <h3 className="text-sm font-bold text-ink">{q.title}</h3>
+                  <p className="font-mono text-xs text-ink-3 mt-1">
                     {q.durationMinutes} Mins • Total Marks: {q.totalMarks} • Pass: {q.passingMarks}
                   </p>
                 </div>
                 <Link
                   href={`/quizzes/${q.id}`}
-                  className="px-4 py-2 rounded-xl text-xs font-mono font-bold bg-accent-amber hover:bg-accent-amber/90 text-slate-950 transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-mono font-bold bg-accent-amber hover:bg-accent-amber/90 text-ink transition-colors"
                 >
                   Start Quiz
                 </Link>

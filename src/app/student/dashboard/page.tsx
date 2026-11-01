@@ -83,14 +83,14 @@ export default async function StudentDashboardPage() {
             <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30 flex items-center gap-1.5">
               <Terminal className="w-3 h-3" /> STUDENT_DESK
             </span>
-            <span className="font-mono text-xs text-slate-300">
+            <span className="font-mono text-xs text-ink-2">
               {user.branch || "CSE"} • Semester {user.semester || 3}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white">
             Welcome back, {user.name}! 👋
           </h1>
-          <p className="font-mono text-xs text-slate-300 max-w-2xl">
+          <p className="font-mono text-xs text-ink-2 max-w-2xl">
             {user.college || "B.Tech Engineering College"} • Real-time academic tracking, topper notes & live classes.
           </p>
         </div>
@@ -99,26 +99,26 @@ export default async function StudentDashboardPage() {
       {/* Quick Summary Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl desk-card">
-          <div className="font-mono text-xs text-slate-400 font-medium">Enrolled Tracks</div>
-          <div className="font-mono text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <div className="font-mono text-xs text-ink-3 font-medium">Enrolled Tracks</div>
+          <div className="font-mono text-2xl font-bold text-ink mt-1">
             {enrollments.length}
           </div>
         </div>
         <div className="p-4 rounded-2xl desk-card">
-          <div className="font-mono text-xs text-slate-400 font-medium">Lectures Watched</div>
+          <div className="font-mono text-xs text-ink-3 font-medium">Lectures Watched</div>
           <div className="font-mono text-2xl font-bold text-primary-violet mt-1">
             {videoProgress.length}
           </div>
         </div>
         <div className="p-4 rounded-2xl desk-card">
-          <div className="font-mono text-xs text-slate-400 font-medium">Quizzes Completed</div>
+          <div className="font-mono text-xs text-ink-3 font-medium">Quizzes Completed</div>
           <div className="font-mono text-2xl font-bold text-accent-amber mt-1">
             {quizAttempts.length}
           </div>
         </div>
         <div className="p-4 rounded-2xl desk-card">
-          <div className="font-mono text-xs text-slate-400 font-medium">Live Sessions</div>
-          <div className="font-mono text-2xl font-bold text-rose-400 mt-1">
+          <div className="font-mono text-xs text-ink-3 font-medium">Live Sessions</div>
+          <div className="font-mono text-2xl font-bold text-danger mt-1">
             {liveClasses.length}
           </div>
         </div>
@@ -127,7 +127,7 @@ export default async function StudentDashboardPage() {
       {/* Continue Learning / Enrolled Courses */}
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-desk-border pb-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary-violet" /> My Enrolled Tracks
           </h2>
           <Link href="/courses" className="font-mono text-xs font-bold text-primary-violet hover:underline">
@@ -154,7 +154,7 @@ export default async function StudentDashboardPage() {
                     <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-accent-cyan">
                       {e.course.subject?.code || "TRACK"}
                     </span>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1 mt-0.5">
+                    <h3 className="text-sm font-bold text-ink line-clamp-1 mt-0.5">
                       {e.course.title}
                     </h3>
                   </div>
@@ -166,7 +166,7 @@ export default async function StudentDashboardPage() {
                 <ProgressBar progress={e.progressPercent} />
 
                 <div className="flex items-center justify-between pt-2 text-xs font-mono">
-                  <span className="text-slate-400">{e.course._count.videos} Lectures</span>
+                  <span className="text-ink-3">{e.course._count.videos} Lectures</span>
                   <Link
                     href={`/courses/${e.course.id}`}
                     className="font-bold text-primary-violet hover:underline"
@@ -185,8 +185,8 @@ export default async function StudentDashboardPage() {
         {/* Live Classes Column */}
         <div className="space-y-4">
           <div className="flex items-center justify-between border-b border-desk-border pb-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Radio className="w-4 h-4 text-rose-400" /> Upcoming Live Lectures
+            <h2 className="text-base font-bold text-ink flex items-center gap-2">
+              <Radio className="w-4 h-4 text-danger" /> Upcoming Live Lectures
             </h2>
             <Link href="/live-classes" className="font-mono text-xs font-bold text-primary-violet hover:underline">
               All Classes →
@@ -194,7 +194,7 @@ export default async function StudentDashboardPage() {
           </div>
 
           {liveClasses.length === 0 ? (
-            <div className="p-6 text-center rounded-2xl desk-card text-xs font-mono text-slate-400">
+            <div className="p-6 text-center rounded-2xl desk-card text-xs font-mono text-ink-3">
               No live classes scheduled for today.
             </div>
           ) : (
@@ -210,11 +210,11 @@ export default async function StudentDashboardPage() {
                     </span>
                     <LiveCountdown scheduledAt={item.scheduledAt} status={item.status} />
                   </div>
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-xs sm:text-sm font-bold text-ink">
                     {item.title}
                   </h4>
                   <div className="flex items-center justify-between pt-2 text-xs font-mono">
-                    <span className="text-slate-400">{formatDateTimeIST(item.scheduledAt)}</span>
+                    <span className="text-ink-3">{formatDateTimeIST(item.scheduledAt)}</span>
                     <Link
                       href={`/live-classes/${item.id}`}
                       className="font-bold text-primary-violet hover:underline"
@@ -231,7 +231,7 @@ export default async function StudentDashboardPage() {
         {/* Recent Watch History Column */}
         <div className="space-y-4">
           <div className="flex items-center justify-between border-b border-desk-border pb-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-base font-bold text-ink flex items-center gap-2">
               <Video className="w-4 h-4 text-accent-cyan" /> Continue Watching
             </h2>
             <Link href="/student/history" className="font-mono text-xs font-bold text-primary-violet hover:underline">
@@ -240,7 +240,7 @@ export default async function StudentDashboardPage() {
           </div>
 
           {videoProgress.length === 0 ? (
-            <div className="p-6 text-center rounded-2xl desk-card text-xs font-mono text-slate-400">
+            <div className="p-6 text-center rounded-2xl desk-card text-xs font-mono text-ink-3">
               No watch history yet. Start watching lectures to track your progress!
             </div>
           ) : (
@@ -254,10 +254,10 @@ export default async function StudentDashboardPage() {
                     <span className="font-mono text-[10px] font-bold text-primary-violet">
                       {vp.video.subject.name}
                     </span>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">
+                    <h4 className="text-xs font-bold text-ink line-clamp-1">
                       {vp.video.title}
                     </h4>
-                    <div className="font-mono text-[10px] text-slate-400">
+                    <div className="font-mono text-[10px] text-ink-3">
                       {vp.isCompleted ? (
                         <span className="text-accent-emerald font-semibold">✓ Completed</span>
                       ) : (

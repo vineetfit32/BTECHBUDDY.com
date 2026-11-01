@@ -18,46 +18,46 @@ export default function AdminHomepageContentPage() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+      <div className="border-b border-line pb-3">
+        <h1 className="text-2xl font-black text-ink">
           Manage Homepage Content
         </h1>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink-3">
           Customize hero section headlines, featured banners, and call-to-action messages
         </p>
       </div>
 
-      <div className="p-6 rounded-2xl bg-white dark:bg-[#1C2541] border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4 max-w-2xl">
+      <div className="p-6 rounded-2xl bg-surface border border-line shadow-2xs space-y-4 max-w-2xl">
         {saved && (
-          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 text-xs font-bold flex items-center gap-2">
+          <div className="p-3 rounded-xl bg-ok-soft text-ok text-xs font-bold flex items-center gap-2">
             <CheckCircle className="w-4 h-4" /> Homepage configurations updated successfully!
           </div>
         )}
 
         <form onSubmit={handleSave} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">Hero Main Title</label>
+            <label className="font-bold text-ink-2">Hero Main Title</label>
             <input
               type="text"
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
-              className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+              className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">Hero Subtitle</label>
+            <label className="font-bold text-ink-2">Hero Subtitle</label>
             <textarea
               rows={3}
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
-              className="w-full p-2.5 bg-slate-50 dark:bg-[#0B132B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none"
+              className="w-full p-2.5 bg-surface-2 border border-line rounded-xl outline-hidden"
             />
           </div>
 
           <button
             type="submit"
-            className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold shadow-xs flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-danger hover:bg-danger/90 text-white font-bold shadow-2xs flex items-center gap-2"
           >
             <Save className="w-4 h-4" /> Save Content Changes
           </button>

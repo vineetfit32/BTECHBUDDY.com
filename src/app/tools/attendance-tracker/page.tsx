@@ -147,14 +147,14 @@ export default function AttendanceTrackerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-teal-700 via-indigo-800 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
+        <div className="bg-linear-to-r from-teal-700 via-brand to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-cyan-300 text-xs font-semibold mb-4 border border-white/10">
-              <Sparkles className="w-4 h-4 text-cyan-300" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-accent text-xs font-semibold mb-4 border border-white/10">
+              <Sparkles className="w-4 h-4 text-accent" />
               <span>Smart 75% Attendance & Safe Bunk Engine</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">
@@ -167,13 +167,13 @@ export default function AttendanceTrackerPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-teal-900 font-bold text-sm shadow-md hover:bg-teal-50 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface text-teal-900 font-bold text-sm shadow-md hover:bg-teal-50 transition-all"
               >
                 <Plus className="w-4 h-4" /> Add Subject
               </button>
               <Link
                 href="/tools/sgpa-cgpa-calculator"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all border border-white/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-xs transition-all border border-white/20"
               >
                 SGPA / CGPA Calculator
               </Link>
@@ -208,16 +208,16 @@ export default function AttendanceTrackerPage() {
             return (
               <div
                 key={sub.id}
-                className="bg-white dark:bg-[#1C2541] rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col justify-between"
+                className="bg-surface rounded-2xl border border-line p-6 shadow-xs flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-4">
-                    <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
+                    <h3 className="font-bold text-base text-ink">
                       {sub.subjectName}
                     </h3>
                     <button
                       onClick={() => handleDeleteSubject(sub.id)}
-                      className="text-slate-400 hover:text-rose-500 p-1"
+                      className="text-ink-3 hover:text-danger p-1"
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -230,15 +230,15 @@ export default function AttendanceTrackerPage() {
                       <div
                         className={`text-3xl font-black ${
                           isSafe
-                            ? "text-emerald-600 dark:text-emerald-400"
+                            ? "text-ok"
                             : isWarning
-                            ? "text-amber-500"
-                            : "text-rose-600"
+                            ? "text-warn"
+                            : "text-danger"
                         }`}
                       >
                         {currentPctRounded}%
                       </div>
-                      <span className="text-xs text-slate-500 font-semibold">
+                      <span className="text-xs text-ink-3 font-semibold">
                         {attended} / {total} Classes
                       </span>
                     </div>
@@ -246,10 +246,10 @@ export default function AttendanceTrackerPage() {
                     <span
                       className={`px-3 py-1 rounded-xl text-xs font-bold border ${
                         isSafe
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800"
+                          ? "bg-ok-soft text-ok border-ok/35"
                           : isWarning
-                          ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:border-amber-800"
-                          : "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:border-rose-800"
+                          ? "bg-warn-soft text-warn border-warn/35"
+                          : "bg-danger-soft text-danger border-danger/35"
                       }`}
                     >
                       {isSafe ? "On Track 🟢" : isWarning ? "Warning ⚠️" : "Shortage 🔴"}
@@ -257,10 +257,10 @@ export default function AttendanceTrackerPage() {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden mb-5">
+                  <div className="w-full bg-surface-2 h-2.5 rounded-full overflow-hidden mb-5">
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${
-                        isSafe ? "bg-emerald-500" : isWarning ? "bg-amber-500" : "bg-rose-500"
+                        isSafe ? "bg-ok" : isWarning ? "bg-warn" : "bg-danger"
                       }`}
                       style={{ width: `${Math.min(100, currentPct)}%` }}
                     />
@@ -270,13 +270,13 @@ export default function AttendanceTrackerPage() {
                   <div
                     className={`p-3.5 rounded-xl text-xs font-medium mb-6 ${
                       isSafe
-                        ? "bg-emerald-50/80 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900"
-                        : "bg-rose-50/80 dark:bg-rose-950/30 text-rose-900 dark:text-rose-300 border border-rose-200 dark:border-rose-900"
+                        ? "bg-ok/80 text-ok border border-ok/35"
+                        : "bg-danger/80 text-danger border border-danger/35"
                     }`}
                   >
                     {isSafe ? (
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-ok shrink-0" />
                         <span>
                           You can safely bunk <strong>{canBunk}</strong> next classes and stay above{" "}
                           {sub.minimumPercentage}%.
@@ -284,7 +284,7 @@ export default function AttendanceTrackerPage() {
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                        <AlertTriangle className="w-4 h-4 text-danger shrink-0" />
                         <span>
                           Must attend <strong>{neededClasses}</strong> consecutive classes to reach{" "}
                           {sub.minimumPercentage}%!
@@ -295,17 +295,17 @@ export default function AttendanceTrackerPage() {
                 </div>
 
                 {/* Quick Increment Buttons */}
-                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-line">
                   <button
                     onClick={() => handleUpdate(sub.id, 1, 1)}
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 text-xs font-bold transition"
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-ok-soft hover:bg-ok-soft text-ok text-xs font-bold transition"
                   >
                     <Check className="w-3.5 h-3.5" /> Present
                   </button>
 
                   <button
                     onClick={() => handleUpdate(sub.id, 0, 1)}
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 text-xs font-bold transition"
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-danger-soft hover:bg-danger-soft text-danger text-xs font-bold transition"
                   >
                     <X className="w-3.5 h-3.5" /> Bunked
                   </button>
@@ -319,8 +319,8 @@ export default function AttendanceTrackerPage() {
       {/* Add Subject Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-surface rounded-3xl max-w-md w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-lg font-bold text-ink mb-4">
               Add Subject for Attendance
             </h3>
             <form onSubmit={handleAddSubject} className="space-y-4 text-xs">
@@ -332,7 +332,7 @@ export default function AttendanceTrackerPage() {
                   placeholder="e.g. Operating Systems"
                   value={newSubject.name}
                   onChange={(e) => setNewSubject({ ...newSubject, name: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                 />
               </div>
 
@@ -345,7 +345,7 @@ export default function AttendanceTrackerPage() {
                     onChange={(e) =>
                       setNewSubject({ ...newSubject, attended: Number(e.target.value) })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                   />
                 </div>
 
@@ -357,7 +357,7 @@ export default function AttendanceTrackerPage() {
                     onChange={(e) =>
                       setNewSubject({ ...newSubject, total: Number(e.target.value) })
                     }
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                   />
                 </div>
               </div>
@@ -369,7 +369,7 @@ export default function AttendanceTrackerPage() {
                   onChange={(e) =>
                     setNewSubject({ ...newSubject, target: Number(e.target.value) })
                   }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                 >
                   <option value={75}>75% (Mandatory University Rule)</option>
                   <option value={80}>80%</option>
@@ -381,7 +381,7 @@ export default function AttendanceTrackerPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-4 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>

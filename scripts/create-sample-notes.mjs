@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 function createSimplePDF(title, subtitle, contentLines) {
   const textStreams = [
@@ -62,7 +62,7 @@ ${400 + streamLength}
   return Buffer.from(pdf, 'utf-8');
 }
 
-const dir = path.join(__dirname, '..', 'public', 'sample-notes');
+const dir = path.join(process.cwd(), 'public', 'sample-notes');
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
 }

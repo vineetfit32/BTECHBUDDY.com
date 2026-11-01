@@ -20,12 +20,12 @@ export default function StudyPlannerPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [rebalancing, setRebalancing] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => ({
     subjectName: "Data Structures & Algorithms",
     examDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     targetScore: "85%",
     totalUnits: 5,
-  });
+  }));
 
   const fetchPlanner = async () => {
     try {
@@ -184,33 +184,33 @@ export default function StudyPlannerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B132B] flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-surface-2 flex flex-col font-sans transition-colors">
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-violet-800 via-indigo-900 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
+        <div className="bg-linear-to-r from-brand via-brand to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-cyan-300 text-xs font-semibold mb-4 border border-white/10">
-              <Sparkles className="w-4 h-4 text-cyan-300" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-accent text-xs font-semibold mb-4 border border-white/10">
+              <Sparkles className="w-4 h-4 text-accent" />
               <span>Smart Revision Scheduler with Auto-Rebalancing</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">
               Exam Countdown & Day-by-Day Study Planner
             </h1>
-            <p className="text-indigo-200 text-sm sm:text-base leading-relaxed mb-6">
+            <p className="text-brand text-sm sm:text-base leading-relaxed mb-6">
               Set your target exam date. Our algorithm breaks your syllabus into daily milestones,
               prioritizes repeated PYQs, and automatically rebalances remaining topics if you fall behind.
             </p>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-indigo-900 font-bold text-sm shadow-md hover:bg-indigo-50 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface text-brand font-bold text-sm shadow-md hover:bg-brand-soft transition-all"
               >
                 <Plus className="w-4 h-4" /> Add Exam Target
               </button>
               <Link
                 href="/pyq"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all border border-white/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-xs transition-all border border-white/20"
               >
                 <BookOpen className="w-4 h-4" /> PYQ Paper Bank
               </Link>
@@ -231,18 +231,18 @@ export default function StudyPlannerPage() {
             return (
               <div
                 key={target.id}
-                className="bg-white dark:bg-[#1C2541] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6"
+                className="bg-surface rounded-3xl border border-line p-6 sm:p-8 shadow-xs space-y-6"
               >
                 {/* Target Header & Countdown */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-line">
                   <div>
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-brand uppercase tracking-wider">
                       Upcoming Examination Target
                     </span>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 mt-1">
+                    <h2 className="text-xl sm:text-2xl font-black text-ink mt-1">
                       {target.subjectName}
                     </h2>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                    <div className="flex items-center gap-2 text-xs text-ink-3 mt-1">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>Exam Date: {new Date(target.examDate).toLocaleDateString()}</span>
                       <span>• Target: {target.targetScore}</span>
@@ -251,39 +251,39 @@ export default function StudyPlannerPage() {
 
                   {/* Countdown Badges */}
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-indigo-50 dark:bg-indigo-950/50 rounded-2xl border border-indigo-200 dark:border-indigo-800 text-center min-w-[70px]">
-                      <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+                    <div className="p-3 bg-brand-soft rounded-2xl border border-brand/35 text-center min-w-[70px]">
+                      <div className="text-2xl font-black text-brand">
                         {countdown.days}
                       </div>
-                      <div className="text-[10px] font-bold uppercase text-slate-500">Days</div>
+                      <div className="text-[10px] font-bold uppercase text-ink-3">Days</div>
                     </div>
-                    <div className="p-3 bg-indigo-50 dark:bg-indigo-950/50 rounded-2xl border border-indigo-200 dark:border-indigo-800 text-center min-w-[70px]">
-                      <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+                    <div className="p-3 bg-brand-soft rounded-2xl border border-brand/35 text-center min-w-[70px]">
+                      <div className="text-2xl font-black text-brand">
                         {countdown.hours}
                       </div>
-                      <div className="text-[10px] font-bold uppercase text-slate-500">Hours</div>
+                      <div className="text-[10px] font-bold uppercase text-ink-3">Hours</div>
                     </div>
-                    <div className="p-3 bg-indigo-50 dark:bg-indigo-950/50 rounded-2xl border border-indigo-200 dark:border-indigo-800 text-center min-w-[70px]">
-                      <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+                    <div className="p-3 bg-brand-soft rounded-2xl border border-brand/35 text-center min-w-[70px]">
+                      <div className="text-2xl font-black text-brand">
                         {countdown.minutes}
                       </div>
-                      <div className="text-[10px] font-bold uppercase text-slate-500">Mins</div>
+                      <div className="text-[10px] font-bold uppercase text-ink-3">Mins</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Progress & Rebalance Control */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface-2 border border-line/80">
                   <div className="flex-1 max-w-md">
                     <div className="flex justify-between text-xs font-bold mb-1.5">
-                      <span className="text-slate-600 dark:text-slate-400">Preparation Progress</span>
-                      <span className="text-indigo-600 dark:text-indigo-400">
+                      <span className="text-ink-2">Preparation Progress</span>
+                      <span className="text-brand">
                         {completedCount} / {allTasks.length} Tasks ({progress}%)
                       </span>
                     </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-surface-3 h-2.5 rounded-full overflow-hidden">
                       <div
-                        className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                        className="bg-brand h-full rounded-full transition-all duration-300"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
@@ -292,7 +292,7 @@ export default function StudyPlannerPage() {
                   <button
                     onClick={() => handleRebalance(target.id)}
                     disabled={rebalancing}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition shadow-xs disabled:opacity-50 shrink-0"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-warn hover:bg-warn text-white text-xs font-bold transition shadow-2xs disabled:opacity-50 shrink-0"
                     title="Behind schedule? Auto-redistribute incomplete tasks evenly across remaining days."
                   >
                     <RotateCw className={`w-3.5 h-3.5 ${rebalancing ? "animate-spin" : ""}`} />
@@ -312,22 +312,22 @@ export default function StudyPlannerPage() {
                         key={day.id}
                         className={`p-4 rounded-2xl border transition-all ${
                           isDayDone
-                            ? "bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800"
-                            : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+                            ? "bg-ok/40 border-ok/35"
+                            : "bg-surface border-line"
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400">
+                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-brand-soft text-brand">
                             Day {day.dayNumber}
                           </span>
                           {isDayDone && (
-                            <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                            <span className="text-[11px] font-bold text-ok flex items-center gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Day Completed
                             </span>
                           )}
                         </div>
 
-                        <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 mb-3">
+                        <h4 className="font-bold text-xs sm:text-sm text-ink mb-3">
                           {day.title}
                         </h4>
 
@@ -335,7 +335,7 @@ export default function StudyPlannerPage() {
                           {dayTasks.map((t: any) => (
                             <label
                               key={t.id}
-                              className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer select-none"
+                              className="flex items-start gap-2.5 text-xs text-ink-2 cursor-pointer select-none"
                             >
                               <input
                                 type="checkbox"
@@ -348,9 +348,9 @@ export default function StudyPlannerPage() {
                                     e.target.checked
                                   )
                                 }
-                                className="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                                className="mt-0.5 rounded-sm border-line-strong text-brand focus:ring-brand w-3.5 h-3.5"
                               />
-                              <span className={t.isDone ? "line-through text-slate-400" : ""}>
+                              <span className={t.isDone ? "line-through text-ink-3" : ""}>
                                 {t.title}
                               </span>
                             </label>
@@ -369,8 +369,8 @@ export default function StudyPlannerPage() {
       {/* Add Exam Target Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C2541] rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-surface rounded-3xl max-w-md w-full p-6 border border-line shadow-2xl">
+            <h3 className="text-lg font-bold text-ink mb-4">
               Add Upcoming Exam Target
             </h3>
             <form onSubmit={handleCreateTarget} className="space-y-4 text-xs">
@@ -382,7 +382,7 @@ export default function StudyPlannerPage() {
                   placeholder="e.g. Operating Systems"
                   value={form.subjectName}
                   onChange={(e) => setForm({ ...form, subjectName: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                 />
               </div>
 
@@ -393,7 +393,7 @@ export default function StudyPlannerPage() {
                   required
                   value={form.examDate}
                   onChange={(e) => setForm({ ...form, examDate: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                  className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                 />
               </div>
 
@@ -404,7 +404,7 @@ export default function StudyPlannerPage() {
                     type="text"
                     value={form.targetScore}
                     onChange={(e) => setForm({ ...form, targetScore: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                   />
                 </div>
 
@@ -413,7 +413,7 @@ export default function StudyPlannerPage() {
                   <select
                     value={form.totalUnits}
                     onChange={(e) => setForm({ ...form, totalUnits: Number(e.target.value) })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-semibold"
+                    className="w-full p-2.5 rounded-xl border border-line bg-surface-2 font-semibold"
                   >
                     <option value={4}>4 Units</option>
                     <option value={5}>5 Units (Standard)</option>
@@ -426,13 +426,13 @@ export default function StudyPlannerPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-semibold"
+                  className="px-4 py-2 rounded-xl text-ink-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700"
+                  className="px-5 py-2 rounded-xl bg-brand text-white font-bold hover:bg-brand-strong"
                 >
                   Generate Study Plan
                 </button>
