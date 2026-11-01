@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { HelpCircle, Clock, Award, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function QuizzesPage() {
   const quizzes = await prisma.quiz.findMany({

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import {
   BookOpen,
   FileText,
@@ -16,6 +17,8 @@ import {
 } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
 import EmptyState from "@/components/design-system/EmptyState";
+
+export const dynamic = "force-dynamic";
 
 export default async function SubjectDetailPage({
   params,

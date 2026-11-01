@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { getCurrentUser } from "@/lib/auth";
 import VideoPlayer from "@/components/video/VideoPlayer";
 import { ArrowLeft, BookOpen, FileText, CheckCircle2, Play, Sparkles } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+
+export const dynamic = "force-dynamic";
 
 export default async function VideoWatchPage({
   params,

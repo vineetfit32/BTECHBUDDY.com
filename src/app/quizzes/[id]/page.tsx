@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { HelpCircle, Clock, Award, ArrowLeft, ShieldCheck, CheckCircle2, AlertCircle } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function QuizDetailPage({
   params,

@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { Radio, Calendar, Clock, ArrowLeft, ExternalLink, ShieldCheck, Video } from "lucide-react";
 import LiveCountdown from "@/components/live/LiveCountdown";
 import { formatDateTimeIST } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export default async function LiveClassRoomPage({
   params,

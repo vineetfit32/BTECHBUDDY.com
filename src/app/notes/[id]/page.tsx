@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { FileText, Download, ArrowLeft, Calendar, Eye, Share2, Layers, BookOpen, CheckCircle2 } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+
+export const dynamic = "force-dynamic";
 
 export default async function NoteDetailPage({
   params,
