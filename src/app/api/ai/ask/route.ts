@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { enforceRateLimits, getClientIp } from "@/lib/rate-limit";
+import { answerFromContext } from "@/lib/ai/local";
+import { formatContext, retrieveChunks } from "@/lib/ai/retrieve";
+import { text, parseJson, z } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,14 +12,9 @@ export async function POST(req: NextRequest) {
       { key: `ai:${user?.id ?? getClientIp(req)}`, limit: user ? 30 : 8, windowMs: 10 * 60_000 },
     ]);
     if (limited) return limited;
-    const body = await req.json();
-    const { prompt, subjectId } = body;
-
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+    const parsed = await parseJson(req, z.object({ prompt: text(4000, "Question"), subjectId: z.string().max(64).optional() }));
+    if (parsed.error) return parsed.error;
+    const { prompt } = parsed.data;
 
     // RULE-BASED CONCEPT RETRIEVAL (Acts as high-precision fallback or augment)
     const lowerPrompt = prompt.toLowerCase();
@@ -61,59 +58,24 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    if (!apiKey) {
-      // Credential Boundary: Clear informative state
-      return NextResponse.json({
-        configured: false,
-        message:
-          "AI Provider API Key (GEMINI_API_KEY or OPENAI_API_KEY) is not yet configured in server environment variables.",
-        instantAnswer: instantConcept,
-        setupInstructions:
-          "To enable real-time generative responses, add GEMINI_API_KEY=your_key in .env file and restart the server.",
-      });
-    }
-
-    // If Gemini key is set, call Gemini API
-    if (process.env.GEMINI_API_KEY) {
-      try {
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text: `You are BTECHBUDDY AI, an expert engineering professor helping Indian B.Tech students. Explain clearly with formulas, examples, step-by-step points, and cite relevant engineering syllabus units: ${prompt}`,
-                    },
-                  ],
-                },
-              ],
-            }),
-          }
-        );
-
-        const geminiData = await geminiRes.json();
-        const text =
-          geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "Could not generate answer at this time.";
-
-        return NextResponse.json({
-          configured: true,
-          answer: text,
-          instantAnswer: instantConcept,
-        });
-      } catch (geminiErr) {
-        console.error("Gemini API call error:", geminiErr);
-      }
-    }
+    const chunks = await retrieveChunks(prompt).catch((error) => {
+      console.error("Retrieval failed:", error);
+      return [];
+    });
+    const cached = instantConcept
+      ? `${instantConcept.title}\n${instantConcept.subject} • ${instantConcept.unit}\n${instantConcept.explanation}`
+      : "";
+    const answer = await answerFromContext(prompt, [cached, formatContext(chunks)].filter(Boolean).join("\n\n"));
 
     return NextResponse.json({
-      configured: true,
-      answer: instantConcept ? instantConcept.explanation : "Concept explanation generated.",
+      configured: Boolean(answer),
+      provider: "local",
+      answer: answer ?? instantConcept?.explanation ?? null,
       instantAnswer: instantConcept,
+      sources: chunks.map((chunk) => ({ title: chunk.title, url: chunk.url })),
+      message: answer
+        ? undefined
+        : "The local model is offline. Showing matches from BTECHBUDDY notes only. Start Ollama with docker compose --profile ai up -d.",
     });
   } catch (error) {
     console.error("Error in AI Copilot:", error);
