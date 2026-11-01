@@ -34,6 +34,8 @@ export default function LoginPage() {
       // Route according to user role
       if (data.user.role === "SUPER_ADMIN" || data.user.role === "ADMIN") {
         router.push("/admin/dashboard");
+      } else if (data.user.role === "INSTRUCTOR") {
+        router.push("/teach");
       } else {
         router.push("/student/dashboard");
       }
@@ -44,13 +46,13 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoFill = (role: "student" | "admin") => {
+  const handleDemoFill = (role: "student" | "tutor") => {
     if (role === "student") {
       setEmail("student@btechbuddy.in");
       setPassword("Student@12345");
     } else {
-      setEmail("admin@btechbuddy.in");
-      setPassword("Admin@12345");
+      setEmail("instructor@btechbuddy.in");
+      setPassword("Instructor@12345");
     }
   };
 
@@ -148,10 +150,10 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => handleDemoFill("admin")}
-              className="px-3 py-1 rounded-lg font-mono text-xs font-bold bg-danger/10 text-danger hover:bg-danger/20 transition-colors border border-danger/30"
+              onClick={() => handleDemoFill("tutor")}
+              className="px-3 py-1 rounded-lg font-mono text-xs font-bold bg-brand/10 text-brand hover:bg-brand/20 transition-colors border border-brand/30"
             >
-              Super Admin
+              Tutor
             </button>
           </div>
         </div>

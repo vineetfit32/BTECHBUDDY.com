@@ -115,6 +115,7 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href || (href !== "/" && pathname?.startsWith(href));
   const isAdmin = user && (user.role === "SUPER_ADMIN" || user.role === "ADMIN");
+  const isTutor = user?.role === "INSTRUCTOR";
 
   const handleLogout = async () => {
     await logout();
@@ -256,6 +257,13 @@ export default function Navbar() {
                     <MenuItem asChild>
                       <Link href="/admin/dashboard" className="text-danger">
                         <Shield /> {t("admin")}
+                      </Link>
+                    </MenuItem>
+                  )}
+                  {isTutor && (
+                    <MenuItem asChild>
+                      <Link href="/teach">
+                        <Radio /> Tutor desk
                       </Link>
                     </MenuItem>
                   )}
