@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { Video, Play, Clock, ArrowRight, BookOpen, Compass } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+
+export const dynamic = "force-dynamic";
 
 export default async function VideosPage({
   searchParams,

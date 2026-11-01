@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import {
   Code,
   Cpu,
@@ -15,6 +16,8 @@ import {
   Compass,
 } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+
+export const dynamic = "force-dynamic";
 
 export default async function BranchesPage() {
   // #region agent log

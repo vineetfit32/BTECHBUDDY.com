@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { BookOpen, Clock, Users, ArrowRight, Star, CheckCircle } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function CoursesPage() {
   // #region agent log

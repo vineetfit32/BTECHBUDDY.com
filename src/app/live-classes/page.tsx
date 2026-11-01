@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { Radio, Calendar, Clock, Video, ArrowRight, User } from "lucide-react";
 import LiveCountdown from "@/components/live/LiveCountdown";
 import { formatDateTimeIST } from "@/lib/utils";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
 import EmptyState from "@/components/design-system/EmptyState";
+
+export const dynamic = "force-dynamic";
 
 export default async function LiveClassesPage() {
   const liveClasses = await prisma.liveClass.findMany({

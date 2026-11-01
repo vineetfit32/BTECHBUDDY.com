@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { BookOpen, FileText, Video, ArrowRight, Download, HelpCircle, Layers, Compass, CheckCircle2 } from "lucide-react";
 import Breadcrumbs from "@/components/design-system/Breadcrumbs";
+
+export const dynamic = "force-dynamic";
 
 export default async function YearPage({ params }: { params: Promise<{ year: string }> }) {
   const { year } = await params;

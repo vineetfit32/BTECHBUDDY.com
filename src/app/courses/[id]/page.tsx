@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
 import { getCurrentUser } from "@/lib/auth";
 import {
   BookOpen,
@@ -12,6 +13,8 @@ import {
   ArrowLeft,
   Sparkles,
 } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function CourseDetailPage({
   params,

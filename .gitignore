@@ -21,3 +21,7 @@ out/
 /playwright-report/
 .vercel
 .env*
+
+# Local debug session logs
+/debug-*.log
+.cursor/debug-*.log
