@@ -19,3 +19,5 @@ out/
 /coverage/
 /test-results/
 /playwright-report/
+.vercel
+.env*
