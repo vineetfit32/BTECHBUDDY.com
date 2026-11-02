@@ -200,4 +200,4 @@ npm run build
 © 2026 BTECHBUDDY. Engineered for B.Tech students across India.
 
 </div>
->>>>>>> Stashed changes
+
