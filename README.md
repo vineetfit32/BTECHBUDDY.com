@@ -191,19 +191,13 @@ npm run build
 4. Push the branch: `git push origin feature/your-feature`
 5. Open a pull request
 
-## 📄 License
+<<<<<<< Updated upstream
+=======
 
-<!-- Add a license, e.g. MIT -->
-
-## 👥 Authors
-
-- [vineetfit32](https://github.com/vineetfit32)
-- [vanshchaudharyx](https://github.com/vanshchaudharyx)
-
----
 
 <div align="center">
 
 © 2026 BTECHBUDDY. Engineered for B.Tech students across India.
 
 </div>
+>>>>>>> Stashed changes
