@@ -192,8 +192,6 @@ npm run build
 5. Open a pull request
 
 
-=======
-
 
 <div align="center">
 
