@@ -191,7 +191,7 @@ npm run build
 4. Push the branch: `git push origin feature/your-feature`
 5. Open a pull request
 
-<<<<<<< Updated upstream
+
 =======
 
 
