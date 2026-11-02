@@ -191,16 +191,7 @@ npm run build
 4. Push the branch: `git push origin feature/your-feature`
 5. Open a pull request
 
-## 📄 License
 
-<!-- Add a license, e.g. MIT -->
-
-## 👥 Authors
-
-- [vineetfit32](https://github.com/vineetfit32)
-- [vanshchaudharyx](https://github.com/vanshchaudharyx)
-
----
 
 <div align="center">
 
