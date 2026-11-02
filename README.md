@@ -191,3 +191,13 @@ npm run build
 4. Push the branch: `git push origin feature/your-feature`
 5. Open a pull request
 
+<<<<<<< Updated upstream
+=======
+
+
+<div align="center">
+
+© 2026 BTECHBUDDY. Engineered for B.Tech students across India.
+
+</div>
+>>>>>>> Stashed changes
